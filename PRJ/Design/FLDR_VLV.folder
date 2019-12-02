@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Folder config v. 1.0 >
+<Folder Name="VLV">
+    <Items>
+        <Item Name="FLDR_VLV_KC1_STU3.folder" />
+        <Item Name="HMI_VLV.type" />
+        <Item Name="LG_VLV.type" />
+    </Items>
+</Folder>

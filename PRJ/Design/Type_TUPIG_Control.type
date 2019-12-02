@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TUPIG_Control" Kind="Struct" UUID="8E6518D744AEDC88B1D8DFB4E0061E73">
+    <Fields>
+        <Field Name="cmd" Type="UINT" UUID="05F454834F8CC7F1B338B6BBA6CD813E" Comment="Команда (923 - Авария объекта)" />
+    </Fields>
+</Type>

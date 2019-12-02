@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TStep" Kind="Struct" Comment="Шаги алгоритмов" UUID="8C327652475044D4E487FAAAD0D8F361">
+    <Fields>
+        <Field Name="AOb" Type="INT" UUID="629B21E2431331B4980371A67947D7A4" Comment="Аварийный останов без стравливания" />
+        <Field Name="AOs" Type="INT" UUID="F9E873464877C08691B1F992F8C3E436" Comment="Аварийный останов со стравливанием" />
+    </Fields>
+</Type>

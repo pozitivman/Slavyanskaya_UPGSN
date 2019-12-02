@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Folder config v. 1.0 >
+<Folder Name="AI">
+    <Items>
+        <Item Name="AI_Config.type" />
+        <Item Name="AI_Dbg.type" />
+        <Item Name="AI_HMI.type" />
+        <Item Name="AI_Oper.type" />
+        <Item Name="AI_Ust.type" />
+        <Item Name="FLDR_AI_KC1.folder" />
+        <Item Name="FLDR_AI_KC2.folder" />
+        <Item Name="FLDR_AI_KC1_STU3.folder" />
+        <Item Name="support_AI.type" />
+    </Items>
+</Folder>

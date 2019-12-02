@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="KC1_STU3_DO_DRV" Kind="Struct" UUID="0F6D678243CE8828D7655F9553C3A52B">
+    <Fields>
+        <Field Name="A3_6_1" Type="BOOL" UUID="18FD7E6549D9C7321BB52E8352035994" Comment="Включить вентилятор" />
+        <Field Name="A3_6_2" Type="BOOL" UUID="AEC9FE6349F5418AAA995A976CCA90A8" Comment="Включение наружного освещения" />
+        <Field Name="A3_6_3" Type="BOOL" UUID="86FBDFD1407FC6F1C8055F8A1ADC8F74" Comment="Общая неисправность САУ УПГСН" />
+        <Field Name="A3_6_4" Type="BOOL" UUID="268DC12B4148DCE9B1370C82486DBED0" Comment="Разрешена работа GB1.1" />
+        <Field Name="A3_6_5" Type="BOOL" UUID="2EB58238438F6D21E5B70B945B115B13" Comment="Разрешена работа GB1.2" />
+        <Field Name="A3_6_6" Type="BOOL" UUID="1469680946810104F72B9294291018B8" Comment="ЭО УПГСН" />
+        <Field Name="A3_6_7" Type="BOOL" UUID="171DDDD346BEF7B9609D14A455950266" Comment="Включить насос Р1.1" />
+        <Field Name="A3_6_8" Type="BOOL" UUID="5CF343544F853829C5619E9C5F66DC36" Comment="Включить насос Р1.2" />
+        <Field Name="A3_6_9" Type="BOOL" UUID="B194357A4F60535C115FC08BAB9AB3B4" Comment="Открыть входной кран" />
+        <Field Name="A3_6_10" Type="BOOL" UUID="39C2997C4C58517E07CB198CBE7E7B3C" Comment="Закрыть входной кран" />
+        <Field Name="A3_6_11" Type="BOOL" UUID="490A601C4FBA92122079FBB89092C093" Comment="Открыть свечной кран" />
+        <Field Name="A3_6_12" Type="BOOL" UUID="8A6750AC484D2B762D4AB1ACAE05C913" Comment="Закрыть свечной кран" />
+        <Field Name="A3_6_13" Type="BOOL" UUID="EB28445A491F7F0437F1A79BB8B4E83E" Comment="Открыть клапан SV1.1" />
+        <Field Name="A3_6_14" Type="BOOL" UUID="3BB42B60439BDD1466C5EC873C874D0F" Comment="Звуковой сигнал" />
+        <Field Name="A3_6_15" Type="BOOL" UUID="3BA014884F68E6292E1D15BFD17DDB4F" Comment="Открыть кран XV3.1" />
+        <Field Name="A3_6_16" Type="BOOL" UUID="8A039F1446849B801144CDACBF083EB8" Comment="Закрыть кран XV3.1" />
+        <Field Name="A3_7_1" Type="BOOL" UUID="5C2597214B7B6425D5DBD4A720C0DA90" Comment="Открыть кран XV3.2" />
+        <Field Name="A3_7_2" Type="BOOL" UUID="3969C68A475F4980772500A815324987" Comment="Закрыть кран XV3.2" />
+        <Field Name="A3_7_3" Type="BOOL" UUID="37B20B964E1B0758B4984099D40C1070" Comment="Резерв" />
+        <Field Name="A3_7_4" Type="BOOL" UUID="EFF4E2214FDAFBFA3473CFBA120832C9" Comment="Резерв" />
+        <Field Name="A3_7_5" Type="BOOL" UUID="9CFE4E624350D48CE0177194BB66C25F" Comment="Включить насос Р1.3" />
+        <Field Name="A3_7_6" Type="BOOL" UUID="EED3A5B1415BE365E327A09D31CE56E6" Comment="Включить насос Р1.4" />
+        <Field Name="A3_7_7" Type="BOOL" UUID="5416237549EAD9DAA532B6BD21EDF816" Comment="Включить насос Р1.5" />
+        <Field Name="A3_7_8" Type="BOOL" UUID="9C62FBCA4FCFFE88698EA19EDE31AB66" Comment="Включить насос Р1.6" />
+        <Field Name="A3_7_9" Type="BOOL" UUID="C2BA225F421D7AF0110D02ADFE1D1FF5" Comment="Лампа &quot;Неисправность&quot;" />
+        <Field Name="A3_7_10" Type="BOOL" UUID="9E516DE84C713BF890FB9BB27AC72AD3" Comment="Лампа &quot;ПС/АС&quot;" />
+        <Field Name="A3_7_11" Type="BOOL" UUID="4BD6DBA244C0FC53AD65D8B51F65ED7C" Comment="Звуковая сигнализация" />
+        <Field Name="A3_7_12" Type="BOOL" UUID="157251DB4B9095141BB400B02A2CC120" Comment="Звуковая сигнализация" />
+        <Field Name="A3_7_13" Type="BOOL" UUID="016575C24634178A9729BFA4EC717077" Comment="Не подключен" />
+        <Field Name="A3_7_14" Type="BOOL" UUID="6555913045D0BD8FDEF0F2A6F5149F1C" Comment="Не подключен" />
+        <Field Name="A3_7_15" Type="BOOL" UUID="ACD7517D4C8CB84B6D7E1E85D7D37628" Comment="Не подключен" />
+        <Field Name="A3_7_16" Type="BOOL" UUID="F092BB494652D54851A04783DF563130" Comment="Не подключен" />
+        <Field Name="A3_6_STATUS" Type="BOOL" UUID="257BBF5C4BD33BA39AC601A25B259666" />
+        <Field Name="A3_7_STATUS" Type="BOOL" UUID="98D0DE0E495212BED4BA87B3BEAEC8E3" />
+    </Fields>
+</Type>

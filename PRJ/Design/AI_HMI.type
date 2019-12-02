@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="AI_HMI" Kind="Struct" UUID="A66BBC2040DE5F1DB91157BC6ACE32E7">
+    <Fields>
+        <Field Name="PV" Type="REAL" UUID="08408FC645AB0FD2EA062CA5D201143C" Comment="Текущее значение" />
+        <Field Name="PV_HMI" Type="REAL" UUID="520A5B304B131668EFB5D8B05CAAE18A" Comment="Текущее значение (SCADA, разные единицы измерения)" />
+        <Field Name="Obriv" Type="BOOL" UUID="9504C96D4FF272FD3F031F9B595BB439" Comment="Обрыв" />
+        <Field Name="KZ" Type="BOOL" UUID="856E277D4984F981C300F2B85B6B114E" Comment="КЗ" />
+        <Field Name="Flt" Type="BOOL" UUID="0909CC6041726C87D90F43B5E85064CA" Comment="Обобщенная неисправность" />
+        <Field Name="Manual" Type="LREAL" UUID="192AF1D84663C4B865D35AB5CC916218" Comment="Ручное задание значения" />
+        <Field Name="Sim" Type="BOOL" UUID="7881E1C4450F4EB60D803CA5939E5F76" Comment="Симуляция (1-руч , 0 - автомат)" />
+        <Field Name="Ust" Type="CFCC3D61488D38C691B05DB3D2656918" UUID="F54C3A9E4EE2E38B407064BF86BC50BA" Comment="Уставки" />
+        <Field Name="Eu" Type="INT" UUID="0ABB4F4D43F72A156DDC4695BA1C01CD" Comment="Единицы измерения датчика (SCADA)" />
+        <Field Name="TM_Repair" Type="LREAL" UUID="4A2B83C3465B741587AB8FA7DAC3A48C" Comment="Время ремонта (уставка)" />
+        <Field Name="TM_Repair_Back" Type="LREAL" UUID="9ACC541441A99C61C2316F8D98AB14D6" Comment="Время до вывода из земонта (из С блока)" />
+        <Field Name="ROC" Type="LREAL" UUID="D56C399B482DA0C140C648AE1AF2E014" Comment="Ошибка скорости нарастания" />
+        <Field Name="Eu_PV" Type="INT" UUID="AF975E00464CA514BD5B598EDE3334CC" Comment="Единицы измерения датчика (Логика)" />
+        <Field Name="Max" Type="REAL" UUID="BC059D594E6CC59183062CBE8FE77DEE" Comment="Максимум диапазона измерения (Eu_PV)" />
+        <Field Name="Min" Type="REAL" UUID="F1B1E57C4C536A8265FC0EA0F87DCC5F" Comment="Минимум диапазона измерения (Eu_PV)" />
+        <Field Name="Sensor_Click" Type="BOOL" UUID="800764C84F392AD033B5FB867F0EB798" Comment="Переход в таблицу сигналов при нажатии на сенсор" />
+        <Field Name="AS" Type="BOOL" UUID="00EC37E34138F5D059BB8593AEA8FF01" Comment="Превышение аварийной уставки" />
+        <Field Name="PS" Type="BOOL" UUID="286C6E7940BC6CFD1C6045BB77A838E9" Comment="Превышение предупредительной" />
+        <Field Name="Descr" Type="STRING" UUID="11BE776C4EB8683E54CDD492708070DA" Comment="Название сигнала" />
+        <Field Name="Prec" Type="INT" UUID="44C9D9654D7EA62C1439DE8843072B58" Comment="Количество точек после запятой" />
+        <Field Name="Nedost" Type="BOOL" UUID="2C48C1EF44E3D8AE340BBE811253E528" Comment="Бит достоверности сигнала" />
+    </Fields>
+</Type>

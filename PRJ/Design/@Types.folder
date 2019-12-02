@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Folder config v. 1.0 >
+<Folder Name="Типы данных">
+    <Items>
+        <Item Name="FLDR_ACT.folder" />
+        <Item Name="FLDR_AI.folder" />
+        <Item Name="FLDR_AO.folder" />
+        <Item Name="FLDR_APS.folder" />
+        <Item Name="FLDR_DI.folder" />
+        <Item Name="FLDR_DO.folder" />
+        <Item Name="FLDR_DRUM.folder" />
+        <Item Name="FLDR_Protocols.folder" />
+        <Item Name="FLDR_TwV.folder" />
+        <Item Name="FLDR_VLV.folder" />
+        <Item Name="Type_TUnitState.type" />
+        <Item Name="Type_MSMBE46DY6DURAGHGLOQ5SYAJ4.type" />
+        <Item Name="Type_QABXX4VMFAQUVGBN53FQKX3IEA.type" />
+        <Item Name="Type_TLamp.type" />
+        <Item Name="Type_TStep.type" />
+        <Item Name="Type_T_UST.type" />
+    </Items>
+</Folder>

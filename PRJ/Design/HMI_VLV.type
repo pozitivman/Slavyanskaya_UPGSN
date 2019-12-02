@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="HMI_VLV" Kind="Struct" UUID="DD427EDC487A134997209A89F63E06E2">
+    <Fields>
+        <Field Name="RA" Type="BOOL" UUID="D50DC1AD43E17D8F3AB8BABAB1301B2E" Comment="Флаг дистанция/автомат" />
+        <Field Name="RA_on" Type="BOOL" UUID="09740A674B1B24438155E7A08BADDDE2" Comment="перевести в дистанционный режим управления" />
+        <Field Name="RA_off" Type="BOOL" UUID="A8EF1A7A49EEF777F0CD0C827FE44778" Comment="перевести в автоматический режим управления" />
+        <Field Name="rOn" Type="BOOL" UUID="07C3F72D4B27F2960F368697EBDAB643" Comment="команда &apos;включить&apos; (&apos;открыть&apos;) в дистанционном режиме" />
+        <Field Name="rOff" Type="BOOL" UUID="438891BD46654546637F9C96C4D436A3" Comment="команда &apos;выключить&apos; (&apos;закрыть&apos;) в дистанционном режиме" />
+        <Field Name="rep" Type="BOOL" UUID="6761C8CE4E11EC7DFEA0ACB61619548F" Comment="повторить последнюю команду" />
+        <Field Name="state" Type="WORD" UUID="5766722440B6C21EEA123F957318A53C" Comment="состояние" />
+        <Field Name="flt_all" Type="BOOL" UUID="751D2DD341B4AEFEF65FF4A8D4D9F4BB" Comment="Обобщенная неисправность" />
+        <Field Name="zapret_open" Type="BOOL" UUID="A120D0784BAEDB1C205415A37252D703" Comment="Запрет открытия крана" />
+    </Fields>
+</Type>

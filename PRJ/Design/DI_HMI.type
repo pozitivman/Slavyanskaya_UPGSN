@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="DI_HMI" Kind="Struct" UUID="24096E3F4C0C396B81199DA606D417FF">
+    <Fields>
+        <Field Name="PV" Type="BOOL" UUID="70988A694DD85D0E78079BBD6216FA79" Comment="Обработанное дискретное значение" />
+        <Field Name="Descr" Type="STRING" UUID="CF7E229443E1351DAA088F86810D2BC5" Comment="Название дискрета" />
+        <Field Name="Nedost" Type="BOOL" UUID="6A20C3BE40C40144566175922F96EEB6" />
+    </Fields>
+</Type>

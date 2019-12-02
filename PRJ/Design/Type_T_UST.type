@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="T_UST" Kind="Struct" Comment="Уставки" UUID="8AC4B7064D094F51D1DBDB94A7F593E1">
+    <Fields>
+        <Field Name="lightOn_h" Type="UINT" UUID="75AC8B6043B1B5D5E6ACCF9A4D69C480" Comment="Уставка времени включения освещения, час" />
+        <Field Name="lightOn_m" Type="UINT" UUID="FFA588F14B6C067ED41CA1A591573624" Comment="Уставка времени включения освещения, мин" />
+        <Field Name="lightOff_h" Type="UINT" UUID="FD81393E44FD37FBC709F28816E0DC6B" Comment="Уставка времени выключения освещения, час" />
+        <Field Name="lightOff_m" Type="UINT" UUID="A012563247840799A2B5C88393AAFA75" Comment="Уставка времени выключения освещения, мин" />
+    </Fields>
+</Type>

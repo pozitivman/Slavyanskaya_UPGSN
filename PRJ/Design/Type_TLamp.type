@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TLamp" Kind="Struct" UUID="46A7CE7548D9ED96353A17BB0D9B9432">
+    <Fields>
+        <Field Name="RA" Type="BOOL" UUID="ACFA927746A5D71DFE6BADB7F7E6EEA9" Comment="Флаг дистанция/автомат" />
+        <Field Name="RA_on" Type="BOOL" UUID="5167A36A4B81B71944BD3D846060C3C0" Comment="перевести в дистанционный режим управления" />
+        <Field Name="RA_off" Type="BOOL" UUID="23619AA545552CFA89168AA7B3CA4446" Comment="перевести в автоматический режим управления" />
+        <Field Name="rOn" Type="BOOL" UUID="B93A6E7342BB12A0A3F4278D885A25E9" Comment="команда &apos;включить&apos; (&apos;открыть&apos;) в дистанционном режиме" />
+        <Field Name="rOff" Type="BOOL" UUID="A1C765BB4588C9398E26BF884CFDFDEE" Comment="команда &apos;выключить&apos; (&apos;закрыть&apos;) в дистанционном режиме" />
+    </Fields>
+</Type>

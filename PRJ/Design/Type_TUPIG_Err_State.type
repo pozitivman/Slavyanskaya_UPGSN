@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TUPIG_Err_State" Kind="Struct" UUID="E2706EB549D7D96318952FA0B2D7F202">
+    <Fields>
+        <Field Name="w_err_state1" Type="WORD" UUID="61FEEAD844D95EEA68F357ACC7AE5B26" Comment="Слово неисправностей 1" />
+        <Field Name="w_err_state2" Type="WORD" UUID="F6F1975647289E0BB962FDAF550ECB50" Comment="Слово неисправностей 2" />
+        <Field Name="b0_w_err_state1_err_sen_AT" Type="BOOL" UUID="461B2AAD445517F0BC0597807E3DB953" Comment="Ошибка датчика AT (Тросы)" />
+        <Field Name="b1_w_err_state1_err_sen_PT1" Type="BOOL" UUID="29AD6ABF481A3644CC30A997F5177A91" Comment="Ошибка датчика РТ1 (Р имп. газа)" />
+        <Field Name="b2_w_err_state1_err_sen_PT2" Type="BOOL" UUID="6D11D8244BA87920258797A51301ED53" Comment="Ошибка датчика РТ2 (Р продувки)" />
+        <Field Name="b3_w_err_state1_err_sen_PDIT" Type="BOOL" UUID="AF9045A844811E07850891BCB8EF15CB" Comment="Ошибка датчика РDIТ (dР УПИГ)" />
+        <Field Name="b4_w_err_state1_err_sen_TT1" Type="BOOL" UUID="51FE5828437E3D93BB8D5580A8477B2C" Comment="Ошибка датчика ТТ1 (Т Адс.1)" />
+        <Field Name="b5_w_err_state1_err_sen_TT2" Type="BOOL" UUID="0A5C4EB1455AFD2BEA6F48996123706E" Comment="Ошибка датчика ТТ2 (Т Адс.2)" />
+        <Field Name="b6_w_err_state1_flt_XV1" Type="BOOL" UUID="8DAD4CA54B36151F56FF7BB16060D186" Comment="Неисправность XV1 (Байпас)" />
+        <Field Name="b7_w_err_state1_rez" Type="BOOL" UUID="DCA28C7E46C2C6F5E7F02BB6FA7D5E59" Comment="резерв" />
+        <Field Name="b8_w_err_state1_flt_XV4" Type="BOOL" UUID="9C81319043FA643C829687BA77A2222A" Comment="Неисправность XV4 (Регенерация)" />
+        <Field Name="b9_w_err_state1_flt_XV5" Type="BOOL" UUID="1D4E17654AF63D4DD1764999D0405DA9" Comment="Неисправность XV5 (Регенерация)" />
+        <Field Name="b10_w_err_state1_flt_pow_380" Type="BOOL" UUID="DC9E709A47C7C30A8BAA7E956A93E588" Comment="Неисправность питания ~380В" />
+        <Field Name="b11_w_err_state1_ovr_SHU" Type="BOOL" UUID="F5669DC8458E91B2FAD57990EB99EADE" Comment="Перегрузка ЩУ" />
+        <Field Name="b12_w_err_state1_regen_not_complete" Type="BOOL" UUID="3502EBF94FBFFDEC3FD3529DB9B0D95F" Comment="Регенерация не завершена" />
+        <Field Name="b13_w_err_state1_unload_UPIG" Type="BOOL" UUID="C59821D448D83F161A9C7290A48270E7" Comment="Разгрузка УПИГ" />
+        <Field Name="b14_w_err_state1_flt_ads1" Type="BOOL" UUID="2F75DA2A43262A34C2335D84CB904589" Comment="Неисправность Адс. 1" />
+        <Field Name="b15_w_err_state1_flt_ads2" Type="BOOL" UUID="3A22CD644A33CAFE293ECA850B0AE93A" Comment="Неисправность Адс. 2" />
+        <Field Name="b0_w_err_state2_Pig_lo" Type="BOOL" UUID="709D484E476ECD0A54276891A2D3CC81" Comment="P импульсного газа низкое" />
+        <Field Name="b1_w_err_state2_Pig_hi" Type="BOOL" UUID="6CC414FF4A98A14F4019AEB57AC2ADBE" Comment="P импульсного газа высокое" />
+        <Field Name="b2_w_err_state2_dP_UPIG_hi" Type="BOOL" UUID="6970B0AE4DE00D7056B27FA823C4EE44" Comment="dP УПИГ высокое" />
+        <Field Name="b3_w_err_state2_Tr_hi" Type="BOOL" UUID="98C1CA0F4CD85F42AAAADB81F6AF9426" Comment="Т росы высокая" />
+        <Field Name="b4_w_err_state2_no_heat_ads" Type="BOOL" UUID="4169F8CE4CF7B0FC92C2A4A78350AA27" Comment="Нет нагрева Адс" />
+        <Field Name="b5_w_err_state2_Ppur_lo" Type="BOOL" UUID="5170EB194DC03BDC501FA192BCD1FEF4" Comment="P продувки низкое" />
+        <Field Name="b6_w_err_state2_ESD" Type="BOOL" UUID="5A4262124A2FAFB9014440A4ED59C4FE" Comment="Экстренный останов" />
+        <Field Name="b7_w_err_state2_obj_accident" Type="BOOL" UUID="579665C147D918D93D0BEE86E5542DC8" Comment="Авария объекта" />
+        <Field Name="b8_w_err_state2_nolink_A3" Type="BOOL" UUID="AF76A90143524BB3ADE5A987BA3FA640" Comment="Нет связи с модулем А3" />
+        <Field Name="b9_w_err_state2_nolink_A4" Type="BOOL" UUID="E2E8DFCC435D596BA574298528024F22" Comment="Нет связи с модулем А4" />
+        <Field Name="b10_w_err_state2_nolink_A7" Type="BOOL" UUID="9D063EA54B2F76E5A88CD986C84DF4F0" Comment="Нет связи с модулем А7" />
+        <Field Name="b11_w_err_state2_rez" Type="BOOL" UUID="C3067313478892843A86EB8C1247C99E" Comment="резерв" />
+        <Field Name="b12_w_err_state2_rez" Type="BOOL" UUID="2EFF98444B8FC28ED4A42CBFABF04348" Comment="резерв" />
+        <Field Name="b13_w_err_state2_rez" Type="BOOL" UUID="B04369CB46F233D3216C68ADCE602F81" Comment="резерв" />
+        <Field Name="b14_w_err_state2_rez" Type="BOOL" UUID="9B9BDD7343AF117E17C5C3B0A9F18652" Comment="резерв" />
+        <Field Name="b15_w_err_state2_rez" Type="BOOL" UUID="F2642D3A4CF118887B969EA91A486E73" Comment="резерв" />
+    </Fields>
+</Type>

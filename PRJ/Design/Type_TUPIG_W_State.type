@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TUPIG_W_State" Kind="Struct" Comment="Слово состояния" UUID="30C0CC34457C1C02FFA05980FC0B32FE">
+    <Fields>
+        <Field Name="w_state1" Type="WORD" UUID="28467DFD400BDD13E97454B2386AC5A6" Comment="Слово состояния 1" />
+        <Field Name="w_state2" Type="WORD" UUID="DD65A57844462DC75DD1E995C228FCFD" Comment="Слово состояния 2" />
+        <Field Name="b0_w_state1_XV1_opened" Type="BOOL" UUID="9C79C36A414F9C73C0D9F5A19DF671B4" Comment="XV1 открыт" />
+        <Field Name="b1_w_state1_XV1_closed" Type="BOOL" UUID="D7BF903A40F0C3046496A3B8C6A5BE62" Comment="XV1 открыт" />
+        <Field Name="b2_w_state1_XV4_opened" Type="BOOL" UUID="56F16AFF47A30FA5A11AC3B2BFC0F77B" Comment="XV4 открыт" />
+        <Field Name="b3_w_state1_XV4_closed" Type="BOOL" UUID="B138858D4BD9DA9E92EFFAA9E38212A9" Comment="XV4 закрыт" />
+        <Field Name="b4_w_state1_XV5_opened" Type="BOOL" UUID="F3E796D04DFC21EF263A559F0083C6D5" Comment="XV5 открыт" />
+        <Field Name="b5_w_state1_XV5_closed" Type="BOOL" UUID="C859F74C4FFCF3FAD03188B055DD67D6" Comment="XV5 закрыт" />
+        <Field Name="b6_w_state1_rez" Type="BOOL" UUID="2F742E0F4D92BD5914E656A55F3FD444" Comment="резерв" />
+        <Field Name="b7_w_state1_rez" Type="BOOL" UUID="53673DD54C68DA2D89C3FB95467FC72A" Comment="резерв" />
+        <Field Name="b8_w_state1_SV_opened" Type="BOOL" UUID="AEA3911343029584B1A85AB2E8CA60EC" Comment="SV открыт" />
+        <Field Name="b9_w_state1_heater_ads1_on" Type="BOOL" UUID="39B5895A4FCCE32667E87D9161E4FC91" Comment="Нагреватель АДС.1 включен" />
+        <Field Name="b10_w_state1_heater_ads2_on" Type="BOOL" UUID="C029B3204A00C2F1F73276B3376FAEDF" Comment="Нагреватель АДС.2 включен" />
+        <Field Name="b11_w_state1_XV2_opened" Type="BOOL" UUID="EF09E6A548922134969D2C8FED3AE5A6" Comment="XV2 открыт" />
+        <Field Name="b12_w_state1_XV2_closed" Type="BOOL" UUID="A98BFAA842551EADABDC089BA682920F" Comment="XV2 открыт" />
+        <Field Name="b13_w_state1_XV3_opened" Type="BOOL" UUID="CA26533A478F5B85E909BA959DAD354B" Comment="XV3 открыт" />
+        <Field Name="b14_w_state1_XV3_closed" Type="BOOL" UUID="A1DE30F548C61AEC8D3A1EA141D8CDC0" Comment="XV3 открыт" />
+        <Field Name="b15_w_state1_rez" Type="BOOL" UUID="D67C565B405649E6711F87A17661F007" Comment="резерв" />
+        <Field Name="b0_w_state2_XV1_opened_1" Type="BOOL" UUID="074D7CF74C57CBA460505FACB6D8862C" Comment="XV1 открыт" />
+        <Field Name="b1_w_state2_XV1_closed_1" Type="BOOL" UUID="D59200A140CB0389517DA1AEC18A90A2" Comment="XV1 открыт" />
+        <Field Name="b2_w_state2_XV4_opened_1" Type="BOOL" UUID="6FA360DD47A23434E54A339843349D84" Comment="XV4 открыт" />
+        <Field Name="b3_w_state2_XV4_closed_1" Type="BOOL" UUID="66E7A1E04A1E063D15B7629297AF90F6" Comment="XV4 закрыт" />
+        <Field Name="b4_w_state2_XV5_opened_1" Type="BOOL" UUID="A025F704496B58B4D403F0973039410D" Comment="XV5 открыт" />
+        <Field Name="b5_w_state2_XV5_closed_1" Type="BOOL" UUID="5DAA2BB844F5C615989E279E64EE72C6" Comment="XV5 закрыт" />
+        <Field Name="b6_w_state2_rez" Type="BOOL" UUID="ABCF29734A925E50E5C7D0B5D402E728" Comment="резерв" />
+        <Field Name="b7_w_state2_rez" Type="BOOL" UUID="C570277B47637E8F7D65318E60B7E15A" Comment="резерв" />
+        <Field Name="b8_w_state2_rez" Type="BOOL" UUID="D6E414414C733489E0C06584425C6F89" Comment="резерв" />
+        <Field Name="b9_w_state2_rez" Type="BOOL" UUID="D3BDB73B427B265651CD4E8D9691FBFA" Comment="резерв" />
+        <Field Name="b10_w_state2_rez" Type="BOOL" UUID="C2301A14430AC5DBA7176097CC72C402" Comment="резерв" />
+        <Field Name="b11_w_state2_rez" Type="BOOL" UUID="CC4BBCC946206CE28CE2AA9D960A2BFE" Comment="резерв" />
+        <Field Name="b12_w_state2_rez" Type="BOOL" UUID="747DC6374A5C2CC85A0253A7560036ED" Comment="резерв" />
+        <Field Name="b13_w_state2_rez" Type="BOOL" UUID="3C8D928B4849EE4FE49A4BBB8278650C" Comment="резерв" />
+        <Field Name="b14_w_state2_rez" Type="BOOL" UUID="E6D0BD1F4066807CE7221BB495DF6CC2" Comment="резерв" />
+        <Field Name="b15_w_state2_rez" Type="BOOL" UUID="8A6418014374C4E2893E2EA9ECFC1411" Comment="резерв" />
+    </Fields>
+</Type>

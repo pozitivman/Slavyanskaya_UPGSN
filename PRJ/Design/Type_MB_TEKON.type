@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="MB_TEKON" Kind="Struct" UUID="1862C0B14AE8AFF90DC6C1A38527D1A8">
+    <Fields>
+        <Field Name="Lim_Tg" Type="REAL" UUID="3541BA454B204DEC337C92B43A8F6240" Comment="Ограничение температуры газа" />
+        <Field Name="Avg_Tg_pred_h" Type="REAL" UUID="392714A046EF34C7752C9DB3A4284CAB" Comment="Усреднение температуры газа за предыдущий час" />
+        <Field Name="Avg_Tg_pred_d" Type="REAL" UUID="C7DA9F094320FC44E48A5C8A904D0E72" Comment="Усреднение температуры газа за предыдущие сутки" />
+        <Field Name="Avg_Tg_pred_m" Type="REAL" UUID="1096EC3E4215CF7277BFE0963F11C2EB" Comment="Усреднение температуры газа за предыдущий месяц" />
+        <Field Name="Lim_Pg" Type="REAL" UUID="C720E589411F91A022E056969FE6D867" Comment="Ограничение давления газа" />
+        <Field Name="Avg_Pg_pred_h" Type="REAL" UUID="72C1375049F4B0BD3D98EA8CE684DCBF" Comment="Усреднение давления газа за предыдущий час" />
+        <Field Name="Avg_Pg_pred_d" Type="REAL" UUID="EF0EB37543BC69B9157DE38B48D769AC" Comment="Усреднение давления газа за предыдущие сутки" />
+        <Field Name="Avg_Pg_pred_m" Type="REAL" UUID="1159FC1B4EF847ECBEE6FAA25B56ED21" Comment="Усреднение давления газа за предыдущий месяц" />
+        <Field Name="X1_X2_Y1_Y2" Type="REAL" UUID="6B8DDA58404698579F1D73A3F4AECF51" Comment="Параметр" />
+        <Field Name="Sum_Gg_std_pred_h" Type="REAL" UUID="A265209F4F91F6C7354AE3879A86C540" Comment="Накопленный объем газа станд. за предыдущий час " />
+        <Field Name="Sum_Gg_std_pred_d" Type="REAL" UUID="AE8FAC0845A22F69509C9F95D45FB21A" Comment="Накопленный объем газа станд. за предыдущие сутки" />
+        <Field Name="Sum_Gg_std_pred_m" Type="REAL" UUID="7B81F9EC46093BDBFEB4D497AC6B06F4" Comment="Накопленный объем газа станд. за предыдущий месяц" />
+        <Field Name="Integr_1" Type="REAL" UUID="3A83D999464657FC01E6D79B6E7A1BAB" Comment="Интегральный параметр" />
+        <Field Name="Sum_Q_itime_pred_h" Type="REAL" UUID="9E246A474E9BB4EAE23A50A912B3448E" Comment="Накопленный расход на отрезке времени за предыдущий час" />
+        <Field Name="Sum_Q_itime_pred_d" Type="REAL" UUID="9F68501949A6E34A0051C2BE71266C71" Comment="Накопленный расход на отрезке времени за предыдущие сутки" />
+        <Field Name="Sum_Q_itime_pred_m" Type="REAL" UUID="94E6A6E946A09639B6F2539D2770E9C0" Comment="Накопленный расход на отрезке времени за предыдущий месяц" />
+        <Field Name="Integr_2" Type="REAL" UUID="383B9A894E19CFC6749447B49911E3A7" Comment="Интегральный параметр" />
+        <Field Name="Sum_Tg_ispr_work_pred_h" Type="REAL" UUID="5C3951AF4100F8A2C155F1BA3C3BF73E" Comment="Накопление Tгаза исправной работы за предыдущий час" />
+        <Field Name="Sum_Tg_ispr_work_pred_d" Type="REAL" UUID="9DED10B54FB0DB9673A23E9E4F34533A" Comment="Накопление Tгаза исправной работы за предыдущие сутки" />
+        <Field Name="Sum_Tg_ispr_work_pred_m" Type="REAL" UUID="6343E2BD4DCDBE22ABB3B7A0944376DC" Comment="Накопление Tгаза исправной работы за предыдущий месяц" />
+        <Field Name="Sum_Tg_neispr_work_pred_h" Type="REAL" UUID="52170A1B4CAE01A83621D3B49212DB1A" Comment="Накопление Tгаза неисправной работы за предыдущий час" />
+        <Field Name="Sum_Tg_neispr_work_pred_d" Type="REAL" UUID="F408A4EE4548FCE8FE5B02AB42B0817E" Comment="Накопление Tгаза неисправной работы за предыдущие сутки" />
+        <Field Name="Sum_Tg_neispr_work_pred_m" Type="REAL" UUID="B5657D1C4EB9B22FA2CC349459C2E381" Comment="Накопление Tгаза неисправной работы за предыдущий месяц" />
+    </Fields>
+</Type>

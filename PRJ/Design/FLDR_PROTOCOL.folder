@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Folder config v. 1.0 >
+<Folder Name="PROTOCOL">
+    <Items>
+        <Item Name="AT_MB_TEKON.int" />
+        <Item Name="AT_MB_UPIG.int" />
+        <Item Name="AT_OPC_UA_CLIENT_UPGSN.int" />
+    </Items>
+</Folder>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="AI_Ust" Kind="Struct" UUID="CFCC3D61488D38C691B05DB3D2656918">
+    <Fields>
+        <Field Name="AS_H" Type="LREAL" UUID="3E21C31046E4A64176F24097E929F4FC" Comment="Верхняя аварийная уставка" />
+        <Field Name="PS_H" Type="LREAL" UUID="99315D5443AC05C71740429116449777" Comment="Верхняя предупредительная уставка" />
+        <Field Name="AS_L" Type="LREAL" UUID="851DB9614F63C10AF7A77586E05F4FC3" Comment="Нижняя аварийная уставка" />
+        <Field Name="PS_L" Type="LREAL" UUID="4C682418472830EDFCBCE489F44AE048" Comment="Нижняя предупредительная уставка" />
+        <Field Name="AS_H_ctrl" Type="BOOL" UUID="F1592C324046059BC3F1AB9F714A86EB" Comment="1 - включить АС (верх), 0 - откл" />
+        <Field Name="PS_H_ctrl" Type="BOOL" UUID="065865884A270BA9D95DFABD6D83CB1E" Comment="1 - включить ПС (верх), 0 - откл" />
+        <Field Name="AS_L_ctrl" Type="BOOL" UUID="B5F6553C48496B2A255389B63119C675" Comment="1 - включить АС (низ), 0 - откл" />
+        <Field Name="PS_L_ctrl" Type="BOOL" UUID="824899DA41C976FD44416092993BEBCD" Comment="1 - включить ПС (низ), 0 - откл" />
+    </Fields>
+</Type>

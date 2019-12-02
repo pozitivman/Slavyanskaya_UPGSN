@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="LG_VLV" Kind="Struct" UUID="16A2F33644A4CEFFFE4735B7EE8049F4">
+    <Fields>
+        <Field Name="RA" Type="BOOL" UUID="B92DF8484565E67B7801ADB28E1202BA" Comment="дистанционный или автоматический режим управления" />
+        <Field Name="rOn" Type="BOOL" UUID="6B2036D04C20FDE44F7A46AE61944B70" Comment="команда &apos;включить&apos; (&apos;открыть&apos;) в дистанционном режиме" />
+        <Field Name="rOff" Type="BOOL" UUID="7E3BE15A448EDC2384B3918A05CAB7B7" Comment="команда &apos;выключить&apos; (&apos;закрыть&apos;) в дистанционном режиме" />
+        <Field Name="rOnOff" Type="BOOL" UUID="15A1A81541242899C8CCF680503AF43A" Comment="команда &apos;включить/выключить&apos; (&apos;открыть/закрыть&apos;) в дистанционном режиме" />
+        <Field Name="aOnOff" Type="BOOL" UUID="445F44234B54D661DD14ECB31FCBAAB2" Comment="команда &apos;включить/выключить&apos; (&apos;открыть/закрыть&apos;) в автоматич режиме" />
+        <Field Name="cwOn" Type="BOOL" UUID="936F381A471E9E0AF7F66D83990E032B" Comment="не учитывать контроль цепи управления команды &apos;открыть&apos;" />
+        <Field Name="cwOff" Type="BOOL" UUID="A09397FB4382760B23753793BBE53FB9" Comment="не учитывать контроль цепи управления команды &apos;закрыть&apos;" />
+        <Field Name="non" Type="BOOL" UUID="192BE64E4A27F20B13ED0EB45BC4C328" Comment="Не включен (не открыт)" />
+        <Field Name="noff" Type="BOOL" UUID="42AC8ADB4787BD66DDB594B31393F3ED" Comment="Не выключен (не закрыт)" />
+        <Field Name="nstart" Type="BOOL" UUID="F24ECA414F43C093F094CD8D1D8A046E" Comment="Не стронулся" />
+        <Field Name="selfon" Type="BOOL" UUID="971550B346F22B42C3E7CF819FAE3636" Comment="Самопроизвольное включение (открытие)" />
+        <Field Name="selfoff" Type="BOOL" UUID="31D72C9A4D40CB5EB7CF8C9CC173A8E0" Comment="Самопроизвольное закрытие (выключение)" />
+        <Field Name="flt" Type="BOOL" UUID="C5490C4142CC39FAB52F43AC280C2299" Comment="Неисправность концевых выключателей" />
+        <Field Name="flt_all" Type="BOOL" UUID="4C4ED2ED4A46D1F38395EE811F8AA4FC" Comment="Обобщенная неисправность" />
+        <Field Name="ncon" Type="BOOL" UUID="6F4A22924EB4AEE8227BA79D6B97F597" Comment="Нет контроля цепи включения (открытия)" />
+        <Field Name="ncoff" Type="BOOL" UUID="3FC415D940C62A8887C3F2B9CE7D5EC8" Comment="Нет контроля цепи выключения (закрытия)" />
+        <Field Name="extern" Type="BOOL" UUID="0944DFA5412913B7FE5A11933AC1798F" Comment="Внешняя неисправность" />
+        <Field Name="state" Type="WORD" UUID="ACDD86E14688B8EEB2BE959B3D05DAFF" Comment="состояние" />
+    </Fields>
+</Type>

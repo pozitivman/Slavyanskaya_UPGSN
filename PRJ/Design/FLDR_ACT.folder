@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Folder config v. 1.0 >
+<Folder Name="ACT">
+    <Items>
+        <Item Name="ACT_Cfg.type" />
+		<Item Name="ACT_Ctrl.type" />
+		<Item Name="ACT_Dbg.type" />
+		<Item Name="ACT_In.type" />
+		<Item Name="ACT_Oper.type" />
+		<Item Name="ACT_Out.type" />
+		<Item Name="support_ACT.type" />
+    </Items>
+</Folder>

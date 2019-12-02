@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TUPIG_Mes" Kind="Struct" Comment="Измерения" UUID="8698ED18453F52B20771E2BB82071AE0">
+    <Fields>
+        <Field Name="Rezerv_1" Type="INT" UUID="99053CA24BFDB2EE57F7E9B3861AC74E" Comment="Резерв" />
+        <Field Name="Pimp_gaza" Type="INT" UUID="925D17214057C435D0920A86CDFED763" Comment="Давление импульсного газа, х1000 МПа" />
+        <Field Name="Pproduvki" Type="INT" UUID="DD7EC7AA421F330E4E827F997B2246C0" Comment="Давление продувки, х1000 МПа" />
+        <Field Name="dP_UPIG" Type="INT" UUID="F9CF02174547BED495CF249EAF2CDDEA" Comment="Перепад давления на УПИГ, х1000 МПа" />
+        <Field Name="Tads_1" Type="INT" UUID="4F7B725842DC61C7BEE6F29F1F2BB1CD" Comment="Температура адсорбера 1, х10 С" />
+        <Field Name="Tads_2" Type="INT" UUID="CC5F513D470BAA1D26FB30837920A0A8" Comment="Температура адсорбера 2, х10 С" />
+        <Field Name="Tros" Type="INT" UUID="3072329D41135456C1F185B7B89D4654" Comment="Температура росы, х10 С" />
+        <Field Name="Rezerv_2" Type="INT" UUID="0C2D66A0434255E16905D1A54E802B42" Comment="Резерв" />
+        <Field Name="Time_drying_minor_word" Type="UINT" UUID="88CF901540655D2A32C7FEBECB6A77A5" Comment="Время осушки, младшее слово, сек" />
+        <Field Name="Time_drying_major_word" Type="UINT" UUID="DD03CA26487D1278BB8EF9A42F12536F" Comment="Время осушки, старшее слово, сек" />
+        <Field Name="Time_reg" Type="UINT" UUID="A8A832BC40659BA66C0D28ADFDD1259B" Comment="Время регенерации, сек" />
+        <Field Name="Rezerv_3" Type="INT" UUID="841123274AD17EA013E0F9B9A909F747" Comment="Резерв" />
+        <Field Name="oper_time_minor_word" Type="UINT" UUID="D6171A544D039F232EFAE4AD86019E6B" Comment="Наработка, младшее слово, сек" />
+        <Field Name="oper_time_major_word" Type="UINT" UUID="98961D5649F5B9D282E9E4AD80F0F49E" Comment="Наработка, старшее слово, сек" />
+        <Field Name="Rezerv_4" Type="INT" UUID="2E3C61ED45CA31144123688D4D9A5C06" Comment="Резерв" />
+        <Field Name="Rezerv_5" Type="INT" UUID="8BAB8BFF40E418A119CAEEBE8AF7E2E1" Comment="Резерв" />
+        <Field Name="Rezerv_6" Type="INT" UUID="C3D1C54C4F2B0CEB48FA56BA9769B503" Comment="Резерв" />
+        <Field Name="Rezerv_7" Type="INT" UUID="BB8F7A3C4F487A153F431F920BE722A7" Comment="Резерв" />
+        <Field Name="Rezerv_8" Type="INT" UUID="13DBE32E4BD2BA76F40A259268202A20" Comment="Резерв" />
+        <Field Name="Rezerv_9" Type="INT" UUID="CA855A264271AD77946DCF804582DD8B" Comment="Резерв" />
+        <Field Name="Rezerv_10" Type="INT" UUID="B90A2D814AE93164E686CEB1EC36D116" Comment="Резерв" />
+        <Field Name="Rezerv_11" Type="INT" UUID="3BBDC97E449D4D44BB4D819DA5CED5E4" Comment="Резерв" />
+        <Field Name="Rezerv_12" Type="INT" UUID="BB307B1748BA6FC069CEAF916E9FA259" Comment="Резерв" />
+        <Field Name="Rezerv_13" Type="INT" UUID="A46189184E5408E9113104B384484260" Comment="Резерв" />
+        <Field Name="Rezerv_14" Type="INT" UUID="25B71ECD4D9721FC7ACAD293034B0EC3" Comment="Резерв" />
+        <Field Name="Rezerv_15" Type="INT" UUID="A287A55B414D560A9845139328A50693" Comment="Резерв" />
+        <Field Name="Rezerv_16" Type="INT" UUID="C59B967349DD5053BC27DEA2772C0716" Comment="Резерв" />
+    </Fields>
+</Type>

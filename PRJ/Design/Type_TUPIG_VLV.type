@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TUPIG_VLV" Kind="Struct" UUID="55DAB48142013C23C01008A5B26B6D02">
+    <Fields>
+        <Field Name="state" Type="WORD" UUID="E1E27F74452BA2EBF60B34A83B38126C" Comment="Состояние крана К для HMI" />
+        <Field Name="flt" Type="BOOL" UUID="46989B824F65F9504BDAF88338AD1738" Comment="Ошибка открытия-закрытия крана" />
+    </Fields>
+</Type>

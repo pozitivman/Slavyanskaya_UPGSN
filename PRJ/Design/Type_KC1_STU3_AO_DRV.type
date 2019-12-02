@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="KC1_STU3_AO_DRV" Kind="Struct" UUID="7811C38640FA9428C2E7C591157859A9">
+    <Fields>
+        <Field Name="A2_4_1" Type="UINT" UUID="117F744A43687D092C2B73A4E39C983D" Comment="Управление регулирующим клапаном TwV1.1" />
+        <Field Name="A2_4_2" Type="UINT" UUID="05F3CE0B4F9F3E5259E7EA92B7BB72AD" Comment="Управление XV3.1" />
+        <Field Name="A2_4_3" Type="UINT" UUID="2C99A675485BFC9F0F585BB5D0B84FB9" Comment="Управление XV3.2" />
+        <Field Name="A2_4_4" Type="UINT" UUID="4036C2FA48FBFB7121B2BC822DA81C48" Comment="Резерв" />
+        <Field Name="A2_5_1" Type="UINT" UUID="04F6AC144C2955F46758BE95C2488AB9" Comment="Управление регулирующим клапаном TwV1.2" />
+        <Field Name="A2_5_2" Type="UINT" UUID="9FE336714F35E5A49149109FEF1B56C3" Comment="Резерв" />
+        <Field Name="A2_5_3" Type="UINT" UUID="3C2FFD664D79B76F59C3909FD2C6C368" Comment="Резерв" />
+        <Field Name="A2_5_4" Type="UINT" UUID="72272646451A51CB39A928BBF593292E" Comment="Резерв" />
+        <Field Name="A2_4_STATUS" Type="BOOL" UUID="F0ADD99A4FE3CA14D449FAB6A8106991" />
+        <Field Name="A2_5_STATUS" Type="BOOL" UUID="03BCC14D43C6E1C6A3B4FCBA1B35B2CF" />
+    </Fields>
+</Type>

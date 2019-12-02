@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="KC1_STU3_AI_DRV" Kind="Struct" UUID="37FF3ECA42D479BD2302648F8F459118">
+    <Fields>
+        <Field Name="A1_3_1" Type="UINT" UUID="FBDED54C40BFBAE3183E50A7C4329CDC" Comment="Давление газа на входе" />
+        <Field Name="A1_3_2" Type="UINT" UUID="B8EAAB5743E2141A8A8D9995567C5853" Comment="Температура газа на входе" />
+        <Field Name="A1_3_3" Type="UINT" UUID="BCCC671A4E1669714EEC6E9C3E7F770A" Comment="Влажность газа на входе" />
+        <Field Name="A1_3_4" Type="UINT" UUID="8683226C4E27151128F75FA4D83ACB9B" Comment="Перепад давления на  фильтрах 1 и 2" />
+        <Field Name="A1_4_1" Type="UINT" UUID="C0812FCF4541C605B1365E817B931EB2" Comment="Температура  теплоносителя после подогревателя Е2.1" />
+        <Field Name="A1_4_2" Type="UINT" UUID="38B536C74F47E99AE7C974938072DE71" Comment="Температура  теплоносителя после подогревателя Е2.2" />
+        <Field Name="A1_4_3" Type="UINT" UUID="0AA5A75F46DFA641764A0698ED02C5D8" Comment="Температура точки росы" />
+        <Field Name="A1_4_4" Type="UINT" UUID="2BCD83F2496BF50B0BA5E0AE3268E7A2" Comment="Температура  газа после подогревателей Е2.1 и E2.2" />
+        <Field Name="A1_5_1" Type="UINT" UUID="AAF9E4EF4B8971416BE124B808278076" Comment="Давление теплоносителя в подогревателе E2.1" />
+        <Field Name="A1_5_2" Type="UINT" UUID="ED6003194A763330D3D7A7B7CEF8E7AB" Comment="Давление теплоносителя в подогревателе E2.2" />
+        <Field Name="A1_5_3" Type="UINT" UUID="13EB6A914D6A1B6654451F963E61AA14" Comment="Температура газа после подогревателя Е2.1" />
+        <Field Name="A1_5_4" Type="UINT" UUID="FBC4CE624F37B8F111A7D38BA0BF59FE" Comment="Температура газа после подогревателя Е2.2" />
+        <Field Name="A1_6_1" Type="UINT" UUID="902AB74E493FBE2AF4FB21B4FBE450A9" Comment="Температура  теплоносителя перед подогревателем Е2.1" />
+        <Field Name="A1_6_2" Type="UINT" UUID="B57264BC42D32A53AF7941A0959245C6" Comment="Температура  теплоносителя перед подогревателя Е2.2" />
+        <Field Name="A1_6_3" Type="UINT" UUID="877AF4D04E0EC937AB36ADBBF36553F9" Comment="Давление газа на выходе 1" />
+        <Field Name="A1_6_4" Type="UINT" UUID="0C46A85A4EAD73CB1F9B4E82CB47A742" Comment="Уровень конденсата в емкости V2.1 низкий" />
+        <Field Name="A1_7_1" Type="UINT" UUID="9F6846AC43F262B0A4FF74A13AC3809C" Comment="Давление газа после регулятора PR3.1" />
+        <Field Name="A1_7_2" Type="UINT" UUID="D50E4278471CA7BD5C83878A0F1FA250" Comment="Давление газа после регулятора PR3.2" />
+        <Field Name="A1_7_3" Type="UINT" UUID="B465F64C4D3C65D28F8C7BA08266E7E8" Comment="Температура газа на выходе 1" />
+        <Field Name="A1_7_4" Type="UINT" UUID="66B0F95C4AB9CDE0FE8DB0A2D9DCB136" Comment="Давление газа на выходе 2" />
+        <Field Name="A1_8_1" Type="UINT" UUID="912BD0D3447171AC5D3114919B21B68D" Comment="Температура газа на выходе 2" />
+        <Field Name="A1_8_2" Type="UINT" UUID="880BE23A40B1E5D7F372098EA241B42A" Comment="Давление газа перед подогревателями GB1.1 и GB1.2" />
+        <Field Name="A1_8_3" Type="UINT" UUID="6800C020459F4B6B77D06193B75706D8" Comment="Температура теплоносителя после GB1.1 и GB1.2" />
+        <Field Name="A1_8_4" Type="UINT" UUID="24C804C348B1873E8DBB68BB8AF06C6B" Comment="Температура теплоносителя перед GB1.1 и GB1.2" />
+        <Field Name="A1_9_1" Type="UINT" UUID="B74BAD6F484B1146F5D112B7F1B4D457" Comment="Температура воздуха в технологическом отсеке" />
+        <Field Name="A1_9_2" Type="UINT" UUID="23F4426A47A83E3DDA481A973B9D4BAA" Comment="Температура воздха в отсеке управления" />
+        <Field Name="A1_9_3" Type="UINT" UUID="6BEB85524045EC678BE3AEBB3A9961C6" Comment="Положение клапана TwV1.1" />
+        <Field Name="A1_9_4" Type="UINT" UUID="A933233947C5C9769731439C03402701" Comment="Положение клапана TwV1.2" />
+        <Field Name="A1_10_1" Type="UINT" UUID="F130CAA545329473FF8FD99791068FB0" Comment="Перепад давления теплоносителя на насосах Р1.3 и Р1.4" />
+        <Field Name="A1_10_2" Type="UINT" UUID="C78B19FD4BC35B6232F13D8819569E02" Comment="Перепад давления теплоносителя на насосах Р1.5 и Р1.6" />
+        <Field Name="A1_10_3" Type="UINT" UUID="8ADB05584EF8E1A642B49882326B1720" Comment="Резерв" />
+        <Field Name="A1_10_4" Type="UINT" UUID="7C478B5E4D5E04F40B20D5B547369CBE" Comment="Уровень конденсата в емкости V2.1 высокий" />
+        <Field Name="A2_3_1" Type="UINT" UUID="87C0C45A4773A1C4A4E13C9CA2B96BF0" Comment="Напряжение основного питания СтУ-3" />
+        <Field Name="A2_3_2" Type="UINT" UUID="F5975F55473A40D8B20CDE8DB65A6082" Comment="Напряжение резервного питания СтУ-3" />
+        <Field Name="A2_3_3" Type="UINT" UUID="234E39C64AFEEA25BCA6EEB84F9F57D4" Comment="Резерв" />
+        <Field Name="A2_3_4" Type="UINT" UUID="37D2A3604E30E74F9EC0BAABE4F25CB0" Comment="Резерв" />
+        <Field Name="A3_8_1" Type="UINT" UUID="FF1D029A4F8F55462E686D844B93384B" Comment="Уровень конденсата в нижней емкости фильтра F2.1" />
+        <Field Name="A3_8_2" Type="UINT" UUID="2DB65D2E4A11510B6DF4F484B1AF0091" Comment="Уровень конденсата в верхней емкости фильтра F2.1" />
+        <Field Name="A3_8_3" Type="UINT" UUID="EB0B1B744BF5FCCE37F8BB99BA20BA5D" Comment="Уровень конденсата в нижней емкости фильтра F2.2" />
+        <Field Name="A3_8_4" Type="UINT" UUID="52D5689E40011A30066713B55C938694" Comment="Уровень конденсата в верхней емкости фильтра F2.2" />
+        <Field Name="A3_9_1" Type="UINT" UUID="AE4E5FA24DCCBDACF0BF3DB96E106AA7" Comment="Положение XV3.1" />
+        <Field Name="A3_9_2" Type="UINT" UUID="265BAFCD42D8A38A3183418361FDB6CB" Comment="Положение XV3.2" />
+        <Field Name="A3_9_3" Type="UINT" UUID="BCED0C6C4CB6E5D24C7ACDA71D469F7D" Comment="Резерв" />
+        <Field Name="A3_9_4" Type="UINT" UUID="23229F78453F267C2BC5CE986969A702" Comment="Резерв" />
+        <Field Name="A1_3_STATUS" Type="BOOL" UUID="482C658B47B9D15911FEBF8CA4CC474A" />
+        <Field Name="A1_4_STATUS" Type="BOOL" UUID="91F2EE574CE96E70146AF08867B18D7B" />
+        <Field Name="A1_5_STATUS" Type="BOOL" UUID="AEB520644FD8090F650D0CA35A2AD055" />
+        <Field Name="A1_6_STATUS" Type="BOOL" UUID="5C8031AB4D15A97636EEF5B30BE5F0A8" />
+        <Field Name="A1_7_STATUS" Type="BOOL" UUID="D5344BE2449BEC772FA2D5B2BD1A405F" />
+        <Field Name="A1_8_STATUS" Type="BOOL" UUID="BD85491245A33BFB3A85FAA8C72D0436" />
+        <Field Name="A1_9_STATUS" Type="BOOL" UUID="98A33C3F43F96D1AC33FC087F27950A1" />
+        <Field Name="A1_10_STATUS" Type="BOOL" UUID="0435C83847628C2C6CD8149091710171" />
+        <Field Name="A2_3_STATUS" Type="BOOL" UUID="8B42F37B42C75864BFBD0D9A3881F65F" />
+        <Field Name="A3_8_STATUS" Type="BOOL" UUID="226997EA40D8E2538E80929F3C88B8C1" />
+        <Field Name="A3_9_STATUS" Type="BOOL" UUID="88F444FA4E41B6129113359875A2EE1D" />
+    </Fields>
+</Type>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TUnitState" Kind="Struct" Comment="Состояние системы" UUID="2896AF7B46F5B8A34E5F69AB164F9875">
+    <Fields>
+        <Field Name="State" Type="INT" UUID="99BE19D44FBDF4A4C631B3802E4690A5" Comment="Текущий режим/статус" />
+    </Fields>
+</Type>
