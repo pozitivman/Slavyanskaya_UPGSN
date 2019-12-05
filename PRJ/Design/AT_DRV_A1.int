@@ -14,5 +14,6 @@
         <Signal Name="@LICENSE" UUID="B604D1A849DB8D37FAE43BA7D8A1D9E8" Type="STRING" Usage="output" />
         <Signal Name="@NODE_RUN" UUID="11CFC95F39784D0797BFCEAB0F98BF6A" Type="BOOL" />
         <Signal Name="KC1_STU3_AI_DRV" UUID="98D5FCD14222519A58A4988B6A655DDB" Type="37FF3ECA42D479BD2302648F8F459118" Usage="" Global="TRUE" />
+        <Signal Name="SHKU17_A1_status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC" Type="WORD" ArraySize="9" Usage="" Global="TRUE" Comment="Состояние корзины А1" />
     </InterfaceList>
 </SubAppType>

@@ -10,7 +10,5 @@
         <Field Name="A2_5_2" Type="UINT" UUID="9FE336714F35E5A49149109FEF1B56C3" Comment="Резерв" />
         <Field Name="A2_5_3" Type="UINT" UUID="3C2FFD664D79B76F59C3909FD2C6C368" Comment="Резерв" />
         <Field Name="A2_5_4" Type="UINT" UUID="72272646451A51CB39A928BBF593292E" Comment="Резерв" />
-        <Field Name="A2_4_STATUS" Type="BOOL" UUID="F0ADD99A4FE3CA14D449FAB6A8106991" />
-        <Field Name="A2_5_STATUS" Type="BOOL" UUID="03BCC14D43C6E1C6A3B4FCBA1B35B2CF" />
     </Fields>
 </Type>

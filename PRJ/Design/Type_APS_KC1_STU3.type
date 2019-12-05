@@ -113,6 +113,8 @@
         <Field Name="sonet_A3_7_flt" Type="BOOL" UUID="5B9DC22447EF49D46A6062806F15605D" Comment="Ошибка модуля Сонет: A3_7" />
         <Field Name="sonet_A3_8_flt" Type="BOOL" UUID="37D3B2CD4AABA2F087EDA1904A6DE144" Comment="Ошибка модуля Сонет: A3_8" />
         <Field Name="sonet_A3_9_flt" Type="BOOL" UUID="B62750CE48EBF53A149B4C85032107E5" Comment="Ошибка модуля Сонет: A3_9" />
+        <Field Name="sonet_A2_flt" Type="BOOL" UUID="629231EF4DEF3C93BC4D6490C6BBEE54" Comment="Ошибка модуля Сонет: A2 ПЛК" />
+        <Field Name="sonet_A3_flt" Type="BOOL" UUID="045F067E4E9E9FD495133FAD931A2E1E" Comment="Ошибка модуля Сонет: A3 ПЛК" />
         <Field Name="A2_6_1_GB1_1_ON" Type="BOOL" UUID="9440221A4A1E17AA6EA8D6BBF045C4BA" Comment="Подогреватель теплоносителя GB1.1 включен" />
         <Field Name="A2_6_2_GB1_2_ON" Type="BOOL" UUID="C0BDF983471D3C4BD3BC888288E7A08F" Comment="Подогреватель теплоносителя GB1.2 включен" />
         <Field Name="A2_6_3_V_TO_ON" Type="BOOL" UUID="135788B14614A8D96CE9BEB9B44CCBFE" Comment="Включить вентилятор ТО" />
@@ -134,8 +136,8 @@
         <Field Name="A2_7_3_V_XV3_1_OFF" Type="BOOL" UUID="4DE9177147E855D2A2BBC7853ADC435A" Comment="Кран XV3.1 закрыт" />
         <Field Name="A2_7_4_V_XV3_2_ON" Type="BOOL" UUID="DC2B8FCD46A7A167684F7E9A3CD91C64" Comment="Кран XV3.2 открыт" />
         <Field Name="A2_7_5_V_XV3_2_OFF" Type="BOOL" UUID="C3BF068643C4CB3AF982BAA450681CB9" Comment="Кран XV3.2 закрыт" />
-        <Field Name="A2_7_6_Rez" Type="BOOL" UUID="78AB96354E49EFC0BAC058AA4EA2D20B" Comment="Резерв" />
-        <Field Name="A2_7_7_Rez" Type="BOOL" UUID="64F8E372432F1E02A24546AAB89D19FC" Comment="Резерв" />
+        <Field Name="A2_7_6_V_CDL_SUPP_PIPE_ON" Type="BOOL" UUID="78AB96354E49EFC0BAC058AA4EA2D20B" Comment="Кран свечной подводящего трубопровода открыт" />
+        <Field Name="A2_7_7_V_CDL_SUPP_PIPE_OFF" Type="BOOL" UUID="64F8E372432F1E02A24546AAB89D19FC" Comment="Кран свечной подводящего трубопровода закрыт" />
         <Field Name="A2_7_8_ESD" Type="BOOL" UUID="0667B1A34BC8F4D2633FCCAA6DF4C111" Comment="Аварийный останов" />
         <Field Name="A2_7_9_V_IN_ON" Type="BOOL" UUID="0C2C63214F9D3DCB024404AFA943F24D" Comment="Входной кран открыт" />
         <Field Name="A2_7_10_V_IN_OFF" Type="BOOL" UUID="585A8AB64BA11A0ED229DDAC7B7F9294" Comment="Входной кран закрыт" />
@@ -211,13 +213,13 @@
         <Field Name="A3_3_16_CHECK_REZ_IP_BEAO_DC_220" Type="BOOL" UUID="7F39ED5A424C9B8EFA92C293FB849F03" Comment="Контроль основного резервного БЭАО =220 В" />
         <Field Name="A3_4_1_GC_OSN_IP_BEAO_DC_24" Type="BOOL" UUID="4CD31CA94BB126F434921393493BF1EC" Comment="Неисправность осн. ИП =24В БЭАО" />
         <Field Name="A3_4_2_GC_REZ_IP_BEAO_DC_24" Type="BOOL" UUID="CC76001442C665969B10399CEEEFFFD6" Comment="Неисправность рез. ИП =24В БЭАО" />
-        <Field Name="A3_4_3_Rez" Type="BOOL" UUID="AB602A744F1E062CE684578B7E311BAD" Comment="Резерв" />
-        <Field Name="A3_4_4_Rez" Type="BOOL" UUID="A0DDB4EA4CA1B0330CAA48BFAAB90295" Comment="Резерв" />
-        <Field Name="A3_4_5_Rez" Type="BOOL" UUID="764748CF43ED6C0D2B1EC1A1131C0657" Comment="Резерв" />
-        <Field Name="A3_4_6_NC" Type="BOOL" UUID="E7AA61074224A662C2710A8A9B41C558" Comment="Не подключен" />
-        <Field Name="A3_4_7_NC" Type="BOOL" UUID="15498D0F49A57D31F7EDA29F8A8218D3" Comment="Не подключен" />
-        <Field Name="A3_4_8_NC" Type="BOOL" UUID="5DAAA2254CBB03BCB53AA683DADEA449" Comment="Не подключен" />
-        <Field Name="A3_4_9_NC" Type="BOOL" UUID="559280E4407574DE1B8167A7E71D78C6" Comment="Не подключен" />
+        <Field Name="A3_4_3_Door_PK_open" Type="BOOL" UUID="AB602A744F1E062CE684578B7E311BAD" Comment="Дверь ПК открыта" />
+        <Field Name="A3_4_4_V_IN_DU_ON" Type="BOOL" UUID="A0DDB4EA4CA1B0330CAA48BFAAB90295" Comment="Входной кран дист. управление Включено" />
+        <Field Name="A3_4_5_V_IN_ALL_FTL" Type="BOOL" UUID="764748CF43ED6C0D2B1EC1A1131C0657" Comment="Входной кран. Общая неисправность привода" />
+        <Field Name="A3_4_6_V_CDL_DU_ON" Type="BOOL" UUID="E7AA61074224A662C2710A8A9B41C558" Comment="Свечной кран дист. управление Включено" />
+        <Field Name="A3_4_7_V_CDL_ALL_FLT" Type="BOOL" UUID="15498D0F49A57D31F7EDA29F8A8218D3" Comment="Свечной кран. Общая неисправность привода" />
+        <Field Name="A3_4_8_V_CDL_SUPP_PIPE_DU_ON" Type="BOOL" UUID="5DAAA2254CBB03BCB53AA683DADEA449" Comment="Кран свечной подводящего трубопровода дист. управление Включено" />
+        <Field Name="A3_4_9_V_CDL_SUPP_PIPE_ALL_FLT" Type="BOOL" UUID="559280E4407574DE1B8167A7E71D78C6" Comment="Кран свечной подводящего трубопровода. Общая неисправность привода" />
         <Field Name="A3_4_10_NC" Type="BOOL" UUID="15F585E94352D94D0039F2A17D390675" Comment="Не подключен" />
         <Field Name="A3_4_11_NC" Type="BOOL" UUID="6F8F9BB645611923420D74931988EE54" Comment="Не подключен" />
         <Field Name="A3_4_12_NC" Type="BOOL" UUID="F79E5D6A4D1E5C0623108BB30568E54E" Comment="Не подключен" />

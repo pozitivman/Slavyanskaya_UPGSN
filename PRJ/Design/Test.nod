@@ -5,7 +5,7 @@
         <SubApp Name="App_Drv_A1" Type="DC867C2F47BA800F00B402B7EE8D9ABF" Disabled="TRUE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="E94418F646BD862309EC0F8E26A697E3" />
         <SubApp Name="App_Drv_A2_A3" Type="4797D68248FDADA78927B1B4F1D3EE9E" Disabled="TRUE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="0AAF9BE54E9EB7F0B26DE790169F8C5A" />
         <SubApp Name="App_Logic" Type="35B0AEED49E76C9382BAB391E2DAC40C" Disabled="FALSE" Args="" ExecTimeout="100000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="126576E7487FCF18900E39A67884AC33" />
-        <SubApp Name="App_PRU" Type="2B168D9F474EB4325D4D0EAA9A3703CA" Disabled="FALSE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="5CB385EF44A29C91C42280BDB4B4CAD9" />
-        <SubApp Name="App_OPC_UA" Type="C8FEB3114AEB6867F321DDB695DCF43D" Disabled="TRUE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="6D01A3F34BA114CDB4F762BF253CD0BC" />
+        <SubApp Name="App_PRU" Type="BADDF20A404ECE6696BEED875FFA830D" Disabled="FALSE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="5CB385EF44A29C91C42280BDB4B4CAD9" />
+        <SubApp Name="App_OPC_UA" Type="C8FEB3114AEB6867F321DDB695DCF43D" Disabled="FALSE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="6D01A3F34BA114CDB4F762BF253CD0BC" />
     </InterfaceList>
 </Node>

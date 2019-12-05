@@ -44,13 +44,14 @@
         <Connection ItemName="KC1_STU3_AI_DRV.A1_10_2" Device="" Slot="8" Channel="2" UUID="98D5FCD14222519A58A4988B6A655DDB.C78B19FD4BC35B6232F13D8819569E02" />
         <Connection ItemName="KC1_STU3_AI_DRV.A1_10_3" Device="" Slot="8" Channel="3" UUID="98D5FCD14222519A58A4988B6A655DDB.8ADB05584EF8E1A642B49882326B1720" />
         <Connection ItemName="KC1_STU3_AI_DRV.A1_10_4" Device="" Slot="8" Channel="4" UUID="98D5FCD14222519A58A4988B6A655DDB.7C478B5E4D5E04F40B20D5B547369CBE" />
-        <Connection ItemName="KC1_STU3_AI_DRV.A1_3_STATUS" Device="" Slot="1" Channel="status" UUID="98D5FCD14222519A58A4988B6A655DDB.482C658B47B9D15911FEBF8CA4CC474A" />
-        <Connection ItemName="KC1_STU3_AI_DRV.A1_4_STATUS" Device="" Slot="2" Channel="status" UUID="98D5FCD14222519A58A4988B6A655DDB.91F2EE574CE96E70146AF08867B18D7B" />
-        <Connection ItemName="KC1_STU3_AI_DRV.A1_5_STATUS" Device="" Slot="3" Channel="status" UUID="98D5FCD14222519A58A4988B6A655DDB.AEB520644FD8090F650D0CA35A2AD055" />
-        <Connection ItemName="KC1_STU3_AI_DRV.A1_6_STATUS" Device="" Slot="4" Channel="status" UUID="98D5FCD14222519A58A4988B6A655DDB.5C8031AB4D15A97636EEF5B30BE5F0A8" />
-        <Connection ItemName="KC1_STU3_AI_DRV.A1_7_STATUS" Device="" Slot="5" Channel="status" UUID="98D5FCD14222519A58A4988B6A655DDB.D5344BE2449BEC772FA2D5B2BD1A405F" />
-        <Connection ItemName="KC1_STU3_AI_DRV.A1_8_STATUS" Device="" Slot="6" Channel="status" UUID="98D5FCD14222519A58A4988B6A655DDB.BD85491245A33BFB3A85FAA8C72D0436" />
-        <Connection ItemName="KC1_STU3_AI_DRV.A1_9_STATUS" Device="" Slot="7" Channel="status" UUID="98D5FCD14222519A58A4988B6A655DDB.98A33C3F43F96D1AC33FC087F27950A1" />
-        <Connection ItemName="KC1_STU3_AI_DRV.A1_10_STATUS" Device="" Slot="8" Channel="status" UUID="98D5FCD14222519A58A4988B6A655DDB.0435C83847628C2C6CD8149091710171" />
+        <Connection ItemName="SHKU17_A1_status[0]" Device="" Slot="info" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[0]" />
+        <Connection ItemName="SHKU17_A1_status[1]" Device="" Slot="1" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[1]" />
+        <Connection ItemName="SHKU17_A1_status[2]" Device="" Slot="2" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[2]" />
+        <Connection ItemName="SHKU17_A1_status[3]" Device="" Slot="3" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[3]" />
+        <Connection ItemName="SHKU17_A1_status[4]" Device="" Slot="4" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[4]" />
+        <Connection ItemName="SHKU17_A1_status[5]" Device="" Slot="5" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[5]" />
+        <Connection ItemName="SHKU17_A1_status[6]" Device="" Slot="6" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[6]" />
+        <Connection ItemName="SHKU17_A1_status[7]" Device="" Slot="7" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[7]" />
+        <Connection ItemName="SHKU17_A1_status[8]" Device="" Slot="8" Channel="status" UUID="70EDA8F34FE03A2BC141958B0D24B6DC[8]" />
     </Crossconnect>
 </Configuration>

@@ -3,6 +3,7 @@
 <Folder Name="Protocols">
     <Items>
         <Item Name="FLDR_UPIG.folder" />
+        <Item Name="Type_JBHWM7IL56TEBFCD563PTPXCSU.type" />
         <Item Name="Type_MB_TEKON.type" />
         <Item Name="Type_MB_UPIG.type" />
     </Items>
