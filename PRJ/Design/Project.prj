@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE Project v. 1.0 >
-<Project Name="Slavyanskaya_STU3" Comment="" Port="10000" EndPort="30000" UUID="66364E0F4330CD2E75FF039A6C152739" SignProject="FALSE" UsersUpdateMode="REPLACE">
+<Project Name="Slavyanskaya_STU3" Comment="" Port="10000" EndPort="30000" UUID="EC608A7541C44DBFBBE395A427013904" SignProject="FALSE" UsersUpdateMode="REPLACE">
     <Globals>
         <Signal Name="Global_PRU" UUID="D48E6274431C31473B814CB1BD6304D1" Type="C7B676B74C120888466E4D96C79601A4" Global="TRUE" Comment="Данные для ПРУ с ПЛК" />
         <Signal Name="Deblock" UUID="6BAECAA040B090C458A0259509A3725D" Type="BOOL" Global="TRUE" Comment="Кнопка &quot;Деблокировка&quot;" />
@@ -54,8 +54,10 @@
         <Signal Name="ADS1_heat_on" UUID="815020B6439DD4A9DE9E4D9CA7F8B779" Type="WORD" Global="TRUE" Comment="УПИГ. Адсорбер1. Нагреватель включен" />
         <Signal Name="ADS2_heat_on" UUID="D79E66384F250C138859A6800861B1B9" Type="WORD" Global="TRUE" Comment="УПИГ. Адсорбер1. Нагреватель включен" />
         <Signal Name="PRU_Link" UUID="C888A182437F421D6BE4FAA8BFA412B6" Type="WORD" Global="TRUE" Comment="Статус связи с ПРУ" />
-        <Signal Name="TEST" UUID="B7B5C8994ED4E063E4098885A7FF9B05" Type="WORD" Global="TRUE" />
-        <Signal Name="Global" UUID="B6A9597F4EAE0413B49F40A5E24EB3F5" Type="BOOL" Global="TRUE" />
+        <Signal Name="MM1" UUID="EB23ED2649F304F3720685973EF2EC25" Type="539C986C4E8D2EAF6AEB72B12CEAFFB3" Global="TRUE" Comment="Расходомер Micro Motion" />
+        <Signal Name="S_PAC3200_1" UUID="09F0DA63471A7E5985FAF483FD3EF7B1" Type="59EA1CD143458EED487F4FBACFCC6861" Global="TRUE" Comment="Анализатор сети SENTRON PAC3200" />
+        <Signal Name="S_PAC3200_2" UUID="7B9E7F9949D82B32D292E1BF1CEF9E5C" Type="59EA1CD143458EED487F4FBACFCC6861" Global="TRUE" Comment="Анализатор сети SENTRON PAC3200" />
+        <Signal Name="DM1" UUID="DD9953E54D4856430FD84694B5EF17ED" Type="66A83DEF41A3F19414A799B5D47C8CA9" Global="TRUE" Comment="Вычислитель DYMETIC-5123.2" />
     </Globals>
     <Connections />
 </Project>

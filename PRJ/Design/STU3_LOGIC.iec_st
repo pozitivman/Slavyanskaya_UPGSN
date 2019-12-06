@@ -1963,9 +1963,9 @@ AI_044(SEN_A3_9_4_HMI,	KC1_STU3_AI_DRV.A3_9_4,		cycleTime,		KC1_STU3_AI_HMI.A3_9
                 <Variable UUID="BEA20CA14FFD8F290D0293875E76CB26" Name="rstrigLamp" Type="RS" TypeUUID="53F400294BCD7C71EB041B90164F4F6F" Usage="internal" />
                 <Variable UUID="E6F50F874871AF304EAF2D9EC9A0B9BB" Name="proc_AOb" Type="FB_AOb" TypeUUID="2B81CBA042A176E3704178AD77DC9654" Usage="internal" />
                 <Variable UUID="4BC867454E0AF18224932F991181FD36" Name="proc_AOs" Type="FB_AOs" TypeUUID="93FE3F414C253931451739880AEDA7FA" Usage="internal" />
+                <Variable UUID="04C13F5F4D74E90B8E11ADB32525E4E4" Name="rstrigLampRA" Type="RS" TypeUUID="53F400294BCD7C71EB041B90164F4F6F" Usage="internal" />
             </Variables>
-            <ST><![CDATA[if not IMIT then
-//В.2.3 Включение/отключение наружного освещения
+            <ST><![CDATA[//В.2.3 Включение/отключение наружного освещения
 time_now	:= CURRENT_DATE_TIME();
 hour		:= GET_HOURS(time_now);
 min			:= GET_MINUTES(time_now);
@@ -1974,6 +1974,7 @@ year		:= GET_YEAR(time_now);
 month		:= GET_MONTH(time_now);
 day			:= GET_DAY(time_now);		
 
+//Автматическое управление наружным освещением по времени
 if hour = ust.lightOn_h and min = ust.lightOn_m then 
 	LIGHT_ON := true; 
 elsif hour = ust.lightOff_h and min = ust.lightOff_m then 
@@ -1985,9 +1986,11 @@ if not Lamp.RA then
 end_if;
 
 //Дистанционное управление наружным освещением
-rstrigLamp(S:= Lamp.rOn, R1:= Lamp.rOff, Q1=> KC1_STU3_DO_HMI.A3_6_2_EXT_LIGHT_ON.PV);
+rstrigLampRA(S:= Lamp.RA_on, R1:= Lamp.RA_off, Q1=> Lamp.RA);
+rstrigLamp(S:= Lamp.rOn and Lamp.RA, R1:= Lamp.rOff and Lamp.RA, Q1=> KC1_STU3_DO_HMI.A3_6_2_EXT_LIGHT_ON.PV);
 
 
+if not IMIT then
 //В.6 Управление работой котлов
 if not KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV then
 	KC1_STU3_VLV_LG.KR_SV1_1.RA			:= false;
@@ -2749,6 +2752,7 @@ end_if;]]></ST>
                 <Variable UUID="D1E7D5624B937D26C76143AF7DAE0F43" Name="imit_KC1_STU3_IM_N_P1_6" Type="VLV_imit" TypeUUID="A09AE2844B73351BF94B378381A47C0F" Usage="internal" />
                 <Variable UUID="295D3114411F35313DD318AF3F49B278" Name="imit_KC1_STU3_IM_H_GB1_1" Type="VLV_imit" TypeUUID="A09AE2844B73351BF94B378381A47C0F" Usage="internal" />
                 <Variable UUID="6513F04B4BC6810F0420F895E5586C52" Name="imit_KC1_STU3_IM_H_GB1_2" Type="VLV_imit" TypeUUID="A09AE2844B73351BF94B378381A47C0F" Usage="internal" />
+                <Variable UUID="1CD3FB504B5FB4A575CB4BA05F54CB2F" Name="imit_KC1_STU3_IM_Lamp" Type="VLV_imit" TypeUUID="A09AE2844B73351BF94B378381A47C0F" Usage="internal" />
                 <Variable UUID="59EE31694E91F9657687A198FD746080" Name="ctrl_KC1_STU3_KR_IN" Type="Ctrl_crane" TypeUUID="8241A1A94DC7CD2DAF4A08841D436394" Usage="internal" />
                 <Variable UUID="10C44A0E43EA5020072EBCB7EEA60E9E" Name="ctrl_KC1_STU3_KR_CDL" Type="Ctrl_crane" TypeUUID="8241A1A94DC7CD2DAF4A08841D436394" Usage="internal" />
                 <Variable UUID="25E037674982E4B95FE70992D29C743D" Name="ctrl_KC1_STU3_KR_XV3_1" Type="Ctrl_crane" TypeUUID="8241A1A94DC7CD2DAF4A08841D436394" Usage="internal" />
@@ -2774,6 +2778,7 @@ end_if;]]></ST>
                 <Variable UUID="3893C03247306D45614326A48787D639" Name="dummy_N_P1_6" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
                 <Variable UUID="3414B0804882532013B513BF7DD130B5" Name="dummy_H_GB1_1" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
                 <Variable UUID="A6232F534BAC95A83876518DF25DD577" Name="dummy_H_GB1_2" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
+                <Variable UUID="30FF95A946A3C7735E464AA1CDAB7737" Name="dummy_Lamp" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
                 <Variable UUID="2BA0920E4A99D1902D589FB54BB2B91C" Name="wState_tmp_state1" Type="WORD" TypeUUID="05CD1AAB4891B30C004C2799CA460884" Usage="internal" />
                 <Variable UUID="B74E34F84E3A2EA967BF1AABE100D9DB" Name="wState_tmp_state2" Type="WORD" TypeUUID="05CD1AAB4891B30C004C2799CA460884" Usage="internal" />
                 <Variable UUID="A6335B9D47C8AEF62E127AB719DCCA6E" Name="wState_tmp_err1" Type="WORD" TypeUUID="05CD1AAB4891B30C004C2799CA460884" Usage="internal" />
@@ -3057,15 +3062,16 @@ imit_KC1_STU3_KR_CDL(		KC1_STU3_DO_HMI.A3_6_11_V_CDL_ON.PV, 		KC1_STU3_DO_HMI.A3
 //imit_KC1_STU3_KR_XV3_1(		KC1_STU3_DO_HMI.A3_6_15_V_XV3_1_ON.PV, 		KC1_STU3_DO_HMI.A3_6_16_V_XV3_1_OFF.PV, 		KC1_STU3_DI_HMI.A2_7_2_V_XV3_1_ON.PV, 	KC1_STU3_DI_HMI.A2_7_3_V_XV3_1_OFF.PV);
 //imit_KC1_STU3_KR_XV3_2(		KC1_STU3_DO_HMI.A3_7_1_V_XV3_2_ON.PV, 		KC1_STU3_DO_HMI.A3_7_2_V_XV3_2_OFF.PV, 			KC1_STU3_DI_HMI.A2_7_4_V_XV3_2_ON.PV, 	KC1_STU3_DI_HMI.A2_7_5_V_XV3_2_OFF.PV);
 imit_KC1_STU3_KR_SV1_1(		KC1_STU3_DO_HMI.A3_6_13_V_SV1_1_ON.PV, 		dummy_SV1_1);
-imit_KC1_STU3_IM_V_TO(		KC1_STU3_DO_HMI.A3_6_1_V_TO_ON.PV, 			not KC1_STU3_DO_HMI.A3_6_1_V_TO_ON.PV,			KC1_STU3_DI_HMI.A2_8_4_V_TO_WORK.PV,	dummy_V_TO);
-//imit_KC1_STU3_IM_N_P1_1(	KC1_STU3_DO_HMI.A3_6_7_N_P1_1_ON.PV, 		not KC1_STU3_DO_HMI.A3_6_7_N_P1_1_ON.PV,		KC1_STU3_DI_HMI.A2_8_11_N_P1_1_WORK.PV, dummy_N_P1_1);
-//imit_KC1_STU3_IM_N_P1_2(	KC1_STU3_DO_HMI.A3_6_8_N_P1_2_ON.PV, 		not KC1_STU3_DO_HMI.A3_6_8_N_P1_2_ON.PV,		KC1_STU3_DI_HMI.A2_8_12_N_P1_2_WORK.PV, dummy_N_P1_2);
-imit_KC1_STU3_IM_N_P1_3(	KC1_STU3_DO_HMI.A3_7_5_N_P1_3_ON.PV, 		not KC1_STU3_DO_HMI.A3_7_5_N_P1_3_ON.PV,		KC1_STU3_DI_HMI.A2_8_13_N_P1_3_WORK.PV, dummy_N_P1_3);
-imit_KC1_STU3_IM_N_P1_4(	KC1_STU3_DO_HMI.A3_7_6_N_P1_4_ON.PV, 		not KC1_STU3_DO_HMI.A3_7_6_N_P1_4_ON.PV,		KC1_STU3_DI_HMI.A2_8_14_N_P1_4_WORK.PV, dummy_N_P1_4);
-imit_KC1_STU3_IM_N_P1_5(	KC1_STU3_DO_HMI.A3_7_7_N_P1_5_ON.PV, 		not KC1_STU3_DO_HMI.A3_7_7_N_P1_5_ON.PV,		KC1_STU3_DI_HMI.A2_8_15_N_P1_5_WORK.PV, dummy_N_P1_5);
-imit_KC1_STU3_IM_N_P1_6(	KC1_STU3_DO_HMI.A3_7_8_N_P1_6_ON.PV, 		not KC1_STU3_DO_HMI.A3_7_8_N_P1_6_ON.PV,		KC1_STU3_DI_HMI.A2_8_16_N_P1_6_WORK.PV, dummy_N_P1_6);
-imit_KC1_STU3_IM_H_GB1_1(	KC1_STU3_DO_HMI.A3_6_4_WORK_ALLOW_GB1_1.PV, not KC1_STU3_DO_HMI.A3_6_4_WORK_ALLOW_GB1_1.PV,	KC1_STU3_DI_HMI.A2_6_1_GB1_1_ON.PV,		dummy_H_GB1_1);
-imit_KC1_STU3_IM_H_GB1_2(	KC1_STU3_DO_HMI.A3_6_5_WORK_ALLOW_GB1_2.PV, not KC1_STU3_DO_HMI.A3_6_5_WORK_ALLOW_GB1_2.PV,	KC1_STU3_DI_HMI.A2_6_2_GB1_2_ON.PV,		dummy_H_GB1_2);
+imit_KC1_STU3_IM_V_TO(		KC1_STU3_DO_HMI.A3_6_1_V_TO_ON.PV, 			not KC1_STU3_DO_HMI.A3_6_1_V_TO_ON.PV,			KC1_STU3_DI_HMI.A2_8_4_V_TO_WORK.PV,			dummy_V_TO);
+//imit_KC1_STU3_IM_N_P1_1(	KC1_STU3_DO_HMI.A3_6_7_N_P1_1_ON.PV, 		not KC1_STU3_DO_HMI.A3_6_7_N_P1_1_ON.PV,		KC1_STU3_DI_HMI.A2_8_11_N_P1_1_WORK.PV,			dummy_N_P1_1);
+//imit_KC1_STU3_IM_N_P1_2(	KC1_STU3_DO_HMI.A3_6_8_N_P1_2_ON.PV, 		not KC1_STU3_DO_HMI.A3_6_8_N_P1_2_ON.PV,		KC1_STU3_DI_HMI.A2_8_12_N_P1_2_WORK.PV, 		dummy_N_P1_2);
+imit_KC1_STU3_IM_N_P1_3(	KC1_STU3_DO_HMI.A3_7_5_N_P1_3_ON.PV, 		not KC1_STU3_DO_HMI.A3_7_5_N_P1_3_ON.PV,		KC1_STU3_DI_HMI.A2_8_13_N_P1_3_WORK.PV, 		dummy_N_P1_3);
+imit_KC1_STU3_IM_N_P1_4(	KC1_STU3_DO_HMI.A3_7_6_N_P1_4_ON.PV, 		not KC1_STU3_DO_HMI.A3_7_6_N_P1_4_ON.PV,		KC1_STU3_DI_HMI.A2_8_14_N_P1_4_WORK.PV,			dummy_N_P1_4);
+imit_KC1_STU3_IM_N_P1_5(	KC1_STU3_DO_HMI.A3_7_7_N_P1_5_ON.PV, 		not KC1_STU3_DO_HMI.A3_7_7_N_P1_5_ON.PV,		KC1_STU3_DI_HMI.A2_8_15_N_P1_5_WORK.PV, 		dummy_N_P1_5);
+imit_KC1_STU3_IM_N_P1_6(	KC1_STU3_DO_HMI.A3_7_8_N_P1_6_ON.PV, 		not KC1_STU3_DO_HMI.A3_7_8_N_P1_6_ON.PV,		KC1_STU3_DI_HMI.A2_8_16_N_P1_6_WORK.PV, 		dummy_N_P1_6);
+imit_KC1_STU3_IM_H_GB1_1(	KC1_STU3_DO_HMI.A3_6_4_WORK_ALLOW_GB1_1.PV, not KC1_STU3_DO_HMI.A3_6_4_WORK_ALLOW_GB1_1.PV,	KC1_STU3_DI_HMI.A2_6_1_GB1_1_ON.PV,				dummy_H_GB1_1);
+imit_KC1_STU3_IM_H_GB1_2(	KC1_STU3_DO_HMI.A3_6_5_WORK_ALLOW_GB1_2.PV, not KC1_STU3_DO_HMI.A3_6_5_WORK_ALLOW_GB1_2.PV,	KC1_STU3_DI_HMI.A2_6_2_GB1_2_ON.PV,				dummy_H_GB1_2);
+imit_KC1_STU3_IM_Lamp(		KC1_STU3_DO_HMI.A3_6_2_EXT_LIGHT_ON.PV, 	not KC1_STU3_DO_HMI.A3_6_2_EXT_LIGHT_ON.PV,		KC1_STU3_DI_HMI.A2_8_1_EXT_LIGHT_READY.PV,		dummy_Lamp);
 
 //Имитация концевиков клапанов TwV1.1, TwV1.2, XV3.1, XV3.2  
 end_if;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE SubAppType v. 1.3 >
-<SubAppType Name="MB_UPIG" Kind="DRIVER.MODBUS" Args="" Comment="" UUID="A7A51A654125FA589BBA20AC66585F1F">
+<SubAppType Name="MB_MGATE_AU02" Kind="DRIVER.MODBUS" Args="" Comment="" UUID="A7A51A654125FA589BBA20AC66585F1F">
     <InterfaceList>
         <Signal Name="@PID" UUID="DB65A6D0437C00D0222520933DD2319E" Type="STRING" Usage="output" />
         <Signal Name="@STATE" UUID="17E7FE844BFB4F403A300E8706052EBC" Type="STRING" Usage="output" />

@@ -3,10 +3,10 @@
 <Folder Name="UPIG">
     <Items>
         <Item Name="TStruct_UPIG.type" />
-        <Item Name="Type_TUPIG_VLV.type" />
         <Item Name="Type_TUPIG_Control.type" />
         <Item Name="Type_TUPIG_Err_State.type" />
         <Item Name="Type_TUPIG_Mes.type" />
+        <Item Name="Type_TUPIG_VLV.type" />
         <Item Name="Type_TUPIG_W_State.type" />
     </Items>
 </Folder>

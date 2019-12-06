@@ -2,7 +2,6 @@
 <!DOCTYPE Folder config v. 1.0 >
 <Folder Name="PRU">
     <Items>
-        <Item Name="AT_7KY45KEVL7GENBELKI3ONBSDLM.int" />
-        <Item Name="AT_PRU.int" />
+        <Item Name="AT_DRV_PRU.int" />
     </Items>
 </Folder>
