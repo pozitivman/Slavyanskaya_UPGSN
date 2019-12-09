@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Driver.MODBUS v. 1.3 >
+<Configuration Slave="FALSE" TCP="TRUE">
+    <Devices CommConfig="">
+        <Device Address="192.168.1.1:502,1" RetryCount="3" RetryDelay="5000" SymbolTimeout="10000" ResponseTimeout="50000" InterpacketDelay="5000" MaxStatus="32" MaxRegs="32" DisconnectInReserve="FALSE">
+            <Group Name="Rd_MicroMotion_params" Function="READ_INPUT_REGISTERS" UpdatePeriod="0" />
+        </Device>
+        <Device Address="192.168.1.1:502,2" RetryCount="3" RetryDelay="5000" SymbolTimeout="10000" ResponseTimeout="50000" InterpacketDelay="5000" MaxStatus="32" MaxRegs="32" DisconnectInReserve="FALSE">
+            <Group Name="Rd_Dymetic_params" Function="READ_HOLDING_REGISTERS" UpdatePeriod="0" />
+        </Device>
+        <Device Address="192.168.1.1:502,3" RetryCount="3" RetryDelay="5000" SymbolTimeout="10000" ResponseTimeout="50000" InterpacketDelay="5000" MaxStatus="32" MaxRegs="32" DisconnectInReserve="FALSE" />
+        <Device Address="192.168.1.1:502,4" RetryCount="3" RetryDelay="5000" SymbolTimeout="10000" ResponseTimeout="50000" InterpacketDelay="5000" MaxStatus="32" MaxRegs="32" DisconnectInReserve="FALSE" />
+    </Devices>
+    <Crossconnect>
+        <Connection ItemName="MM1.Qm" Device="192.168.1.1:502,1" Channel="30247:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.340A67AD4AB3E5F01CBA23A9A28BE9A8" />
+        <Connection ItemName="MM1.q" Device="192.168.1.1:502,1" Channel="30249:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.1FB752CF471C5777BFA4FB92A546C476" />
+        <Connection ItemName="MM1.T" Device="192.168.1.1:502,1" Channel="30251:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.2C3B39D04138CFE80F9966BA7B04BE20" />
+        <Connection ItemName="MM1.Qv" Device="192.168.1.1:502,1" Channel="30253:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.CA194B3744149279B32E76B7465C7BD7" />
+        <Connection ItemName="Dummy1" Device="192.168.1.1:502,1" Channel="30255:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="A499737D4549DF4F847FD9B12CE1B098" />
+        <Connection ItemName="MM1.P" Device="192.168.1.1:502,1" Channel="30257:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.32C6643B4C72FDB84C3AFD87233FD81C" />
+        <Connection ItemName="MM1.Qsumm" Device="192.168.1.1:502,1" Channel="30259:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.95B57EF34446D8E31C898DB6F159AE6D" />
+        <Connection ItemName="MM1.Vsumm" Device="192.168.1.1:502,1" Channel="30261:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.2179829C4AFCC036FF70CD87353533DA" />
+        <Connection ItemName="MM1.m_calc" Device="192.168.1.1:502,1" Channel="30263:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.9A4B3E6D4350AD33AF5BCEA1EFC7756F" />
+        <Connection ItemName="MM1.V_calc" Device="192.168.1.1:502,1" Channel="30265:FLOAT_BADC" Group="Rd_MicroMotion_params" UUID="EB23ED2649F304F3720685973EF2EC25.58792E7F4FE2F0089CF034A1B87485CF" />
+        <Connection ItemName="DM1.Vacc_m" Device="192.168.1.1:502,2" Channel="100:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.7E8FF1314776287F07AF1EBD036799D7" />
+        <Connection ItemName="DM1.Vacc_l" Device="192.168.1.1:502,2" Channel="102:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.FDFDE4314F1030824B3C42921EB74ABA" />
+        <Connection ItemName="DM1.Vacc_L" Device="192.168.1.1:502,2" Channel="104:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.12DB4C734A127FC43B01AC9DBB1148F7" />
+        <Connection ItemName="DM1.V" Device="192.168.1.1:502,2" Channel="106:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.A782BEBC42695A6A12A3838F860ADAE6" />
+        <Connection ItemName="DM1.Q" Device="192.168.1.1:502,2" Channel="108:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.0DBEE0004A76828AFF12D887AB0D81FD" />
+        <Connection ItemName="DM1.Vn" Device="192.168.1.1:502,2" Channel="110:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.766CDCC14A515DC526DBEB9D9A727CCB" />
+        <Connection ItemName="DM1.Qn" Device="192.168.1.1:502,2" Channel="112:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.5BF409244DC40BC376ECC4AC5ABE6AD1" />
+        <Connection ItemName="DM1.P" Device="192.168.1.1:502,2" Channel="114:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.AA51FDFC43F04457739251AD8B78DF4E" />
+        <Connection ItemName="DM1.T" Device="192.168.1.1:502,2" Channel="116:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.67929496402427DA92BB8B9303597995" />
+        <Connection ItemName="DM1.qc" Device="192.168.1.1:502,2" Channel="118:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.979CA2944CEFB4AB887749B542406D0A" />
+        <Connection ItemName="DM1.MN2" Device="192.168.1.1:502,2" Channel="120:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.C77C4367492C9FAA5FDA078CDED2182A" />
+        <Connection ItemName="DM1.MCO2" Device="192.168.1.1:502,2" Channel="122:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.6AC3550F499793004E3308B7CD7CC9AE" />
+        <Connection ItemName="DM1.Pbar" Device="192.168.1.1:502,2" Channel="124:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.E310479D430B45D6E741A4A84FC3EA0C" />
+        <Connection ItemName="DM1.twork" Device="192.168.1.1:502,2" Channel="126:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.DA12F5CC4FCBEFCDD0FE9D83D34A5DAA" />
+        <Connection ItemName="DM1.tmode" Device="192.168.1.1:502,2" Channel="128:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.8840916F4F7F7CBE06A33B8B725E5373" />
+        <Connection ItemName="DM1.tdeal" Device="192.168.1.1:502,2" Channel="130:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.C7A3A330457F49578DFB6BA2A78C7C9A" />
+        <Connection ItemName="DM1.D_st" Device="192.168.1.1:502,2" Channel="132:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.A64DF73D400605F3A52E3DB1C58D6C44" />
+        <Connection ItemName="DM1.D_hour" Device="192.168.1.1:502,2" Channel="134:FLOAT_BADC" Group="Rd_Dymetic_params" UUID="DD9953E54D4856430FD84694B5EF17ED.3F284FCC4066A8DDE531279E8792E7AD" />
+    </Crossconnect>
+</Configuration>

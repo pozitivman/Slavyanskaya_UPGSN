@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TSentronPack3200" Kind="Struct" UUID="59EA1CD143458EED487F4FBACFCC6861">
+    <Fields>
+        <Field Name="U1" Type="REAL" UUID="EE3C1429495013A79A62CD880B4AC8EC" Comment="Напряжение фазы U1-L1N, В" />
+        <Field Name="U2" Type="REAL" UUID="A03F2C7C43502E1BB0F1978A2473350A" Comment="Напряжение фазы U1-L2N, В" />
+        <Field Name="U3" Type="REAL" UUID="0227A210493742DF21F812BDD5C5477A" Comment="Напряжение фазы U1-L3N, В" />
+        <Field Name="U1_2" Type="REAL" UUID="5D75F9754B5C6A20CB5E65AE2661E7BD" Comment="Напряжение межфазное L1-L2, В" />
+        <Field Name="U2_3" Type="REAL" UUID="04F4B427474E83D376A7AEA25E42EA65" Comment="Напряжение межфазное L2-L3, В" />
+        <Field Name="U3_1" Type="REAL" UUID="280ABAAE40EA05683CBF2899DFC4FE91" Comment="Напряжение межфазное L3-L1, А" />
+        <Field Name="I1" Type="REAL" UUID="8FA7DED84F278CCA1D6D4FBA8FED3A1C" Comment="Ток фазы I1-L1, А" />
+        <Field Name="I2" Type="REAL" UUID="46DF93EF49D4304393DB479A52C0620F" Comment="Ток фазы I1-L2, А" />
+        <Field Name="I3" Type="REAL" UUID="647F2EAF4F4DA8C01CB1FA8E64805E85" Comment="Ток фазы I1-L3, А" />
+        <Field Name="F" Type="REAL" UUID="15A40374401B13271B59B6B86620B9EC" Comment="Частота в сети F1, Гц" />
+        <Field Name="Esumm" Type="REAL" UUID="FA923BB644F2A4AC5DE5A795989C2688" Comment="Полная мощность по сумме фаз, ВА" />
+        <Field Name="Ea" Type="REAL" UUID="634F5C36421B319BB1CCB697E51C9AD5" Comment="Активная мощность по сумме фаз, Вт" />
+        <Field Name="Er" Type="REAL" UUID="6C806B8E4D1BFF05166FFC929E087E05" Comment="Реактивная мощность по сумме фаз, вар" />
+    </Fields>
+</Type>

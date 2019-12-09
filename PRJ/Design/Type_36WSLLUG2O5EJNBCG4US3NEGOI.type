@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TMicroMotion" Kind="Struct" UUID="539C986C4E8D2EAF6AEB72B12CEAFFB3">
+    <Fields>
+        <Field Name="Qm" Type="REAL" UUID="340A67AD4AB3E5F01CBA23A9A28BE9A8" Comment="Массовый расход, кг/час" />
+        <Field Name="q" Type="REAL" UUID="1FB752CF471C5777BFA4FB92A546C476" Comment="Плотность, кг/м3" />
+        <Field Name="T" Type="REAL" UUID="2C3B39D04138CFE80F9966BA7B04BE20" Comment="Температура, °С" />
+        <Field Name="Qv" Type="REAL" UUID="CA194B3744149279B32E76B7465C7BD7" Comment="Объемный расход, м3/час" />
+        <Field Name="P" Type="REAL" UUID="32C6643B4C72FDB84C3AFD87233FD81C" Comment="Давление, МПа" />
+        <Field Name="Qsumm" Type="REAL" UUID="95B57EF34446D8E31C898DB6F159AE6D" Comment="Суммарный расход, тонн" />
+        <Field Name="Vsumm" Type="REAL" UUID="2179829C4AFCC036FF70CD87353533DA" Comment="Суммарный объем, тыс. м3" />
+        <Field Name="m_calc" Type="REAL" UUID="9A4B3E6D4350AD33AF5BCEA1EFC7756F" Comment="Учетная масса, тонн" />
+        <Field Name="V_calc" Type="REAL" UUID="58792E7F4FE2F0089CF034A1B87485CF" Comment="Учетный объем, тыс.м3" />
+    </Fields>
+</Type>
