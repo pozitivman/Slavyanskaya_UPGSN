@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE Project v. 1.0 >
-<Project Name="Slavyanskaya_STU3" Comment="" Port="10000" EndPort="30000" UUID="EC608A7541C44DBFBBE395A427013904" SignProject="FALSE" UsersUpdateMode="REPLACE">
+<Project Name="Slavyanskaya_STU3" Comment="" Port="10000" EndPort="30000" UUID="A088DDE1480925A2036B04BE6E3843E2" SignProject="FALSE" UsersUpdateMode="REPLACE">
     <Globals>
         <Signal Name="Global_PRU" UUID="D48E6274431C31473B814CB1BD6304D1" Type="C7B676B74C120888466E4D96C79601A4" Global="TRUE" Comment="Данные для ПРУ с ПЛК" />
         <Signal Name="Deblock" UUID="6BAECAA040B090C458A0259509A3725D" Type="BOOL" Global="TRUE" Comment="Кнопка &quot;Деблокировка&quot;" />
@@ -58,6 +58,7 @@
         <Signal Name="S_PAC3200_1" UUID="09F0DA63471A7E5985FAF483FD3EF7B1" Type="59EA1CD143458EED487F4FBACFCC6861" Global="TRUE" Comment="Анализатор сети SENTRON PAC3200" />
         <Signal Name="S_PAC3200_2" UUID="7B9E7F9949D82B32D292E1BF1CEF9E5C" Type="59EA1CD143458EED487F4FBACFCC6861" Global="TRUE" Comment="Анализатор сети SENTRON PAC3200" />
         <Signal Name="DM1" UUID="DD9953E54D4856430FD84694B5EF17ED" Type="66A83DEF41A3F19414A799B5D47C8CA9" Global="TRUE" Comment="Вычислитель DYMETIC-5123.2" />
+        <Signal Name="DI_AS_AI" UUID="D7A8761142DA0FFF1ED6CF9F570EABAD" Type="885DC6C549E7A1A1131C5A956A99C209" Global="TRUE" Comment="Дискреты уровней конденсата" />
     </Globals>
     <Connections />
 </Project>

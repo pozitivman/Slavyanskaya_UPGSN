@@ -4,7 +4,7 @@
     <Fields>
         <Field Name="A1_3_1_Pg1_kz" Type="BOOL" UUID="35FBB5514D0869E7FE0A14A95E3DBA56" Comment="КЗ канал - Давление газа на входе" />
         <Field Name="A1_3_2_Tg1_kz" Type="BOOL" UUID="C4F312D143CCE21C97041AB5673D5C8F" Comment="КЗ канал - Температура газа на входе" />
-        <Field Name="A1_3_3_Hg1_kz" Type="BOOL" UUID="76EC0E484B48F3DA32E987B42EF35D06" Comment="КЗ канал - Влажность газа на входе" />
+        <Field Name="A1_3_3_Lk1_E4_kz" Type="BOOL" UUID="76EC0E484B48F3DA32E987B42EF35D06" Comment="КЗ канал - Уровень в емкости Е4" />
         <Field Name="A1_3_4_dP_F1_F2_kz" Type="BOOL" UUID="0086F8064453C1B1B246C691B23D3ECD" Comment="КЗ канал - Перепад давления на  фильтрах 1 и 2" />
         <Field Name="A1_4_1_Ttn2_E2_1_kz" Type="BOOL" UUID="373E9EBD4AC4DEEF485F87BB1786DCE1" Comment="КЗ канал - Температура  теплоносителя после подогревателя Е2.1" />
         <Field Name="A1_4_2_Ttn2_E2_2_kz" Type="BOOL" UUID="810B909145F55D0170406B80C4576F23" Comment="КЗ канал - Температура  теплоносителя после подогревателя Е2.2" />
@@ -48,7 +48,7 @@
         <Field Name="A3_9_4_Rez_kz" Type="BOOL" UUID="6F88DA294FDE566C2173018055B27A00" Comment="КЗ канал - Резерв" />
         <Field Name="A1_3_1_Pg1_obriv" Type="BOOL" UUID="24A9F9554DD6D24113AE0D9EF5207604" Comment="Обрыв канал - Давление газа на входе" />
         <Field Name="A1_3_2_Tg1_obriv" Type="BOOL" UUID="B76614E441AAB9B18C6B5585BD1F2187" Comment="Обрыв канал - Температура газа на входе" />
-        <Field Name="A1_3_3_Hg1_obriv" Type="BOOL" UUID="56AF61114A47158F448B67B0066DE03A" Comment="Обрыв канал - Влажность газа на входе" />
+        <Field Name="A1_3_3_Lk1_E4_obriv" Type="BOOL" UUID="56AF61114A47158F448B67B0066DE03A" Comment="Обрыв канал - Уровень в емкости Е4" />
         <Field Name="A1_3_4_dP_F1_F2_obriv" Type="BOOL" UUID="18C7846D4416365E5CFE32BD3306E99E" Comment="Обрыв канал - Перепад давления на  фильтрах 1 и 2" />
         <Field Name="A1_4_1_Ttn2_E2_1_obriv" Type="BOOL" UUID="46010E1D492908230D2143AFB0C23DE0" Comment="Обрыв канал - Температура  теплоносителя после подогревателя Е2.1" />
         <Field Name="A1_4_2_Ttn2_E2_2_obriv" Type="BOOL" UUID="8B1CF3EC4E167E8395E10AA108348C89" Comment="Обрыв канал - Температура  теплоносителя после подогревателя Е2.2" />
@@ -136,8 +136,8 @@
         <Field Name="A2_7_3_V_XV3_1_OFF" Type="BOOL" UUID="4DE9177147E855D2A2BBC7853ADC435A" Comment="Кран XV3.1 закрыт" />
         <Field Name="A2_7_4_V_XV3_2_ON" Type="BOOL" UUID="DC2B8FCD46A7A167684F7E9A3CD91C64" Comment="Кран XV3.2 открыт" />
         <Field Name="A2_7_5_V_XV3_2_OFF" Type="BOOL" UUID="C3BF068643C4CB3AF982BAA450681CB9" Comment="Кран XV3.2 закрыт" />
-        <Field Name="A2_7_6_V_CDL_SUPP_PIPE_ON" Type="BOOL" UUID="78AB96354E49EFC0BAC058AA4EA2D20B" Comment="Кран свечной подводящего трубопровода открыт" />
-        <Field Name="A2_7_7_V_CDL_SUPP_PIPE_OFF" Type="BOOL" UUID="64F8E372432F1E02A24546AAB89D19FC" Comment="Кран свечной подводящего трубопровода закрыт" />
+        <Field Name="A2_7_6_V_187c_ON" Type="BOOL" UUID="78AB96354E49EFC0BAC058AA4EA2D20B" Comment="Кран свечной подводящего трубопровода открыт" />
+        <Field Name="A2_7_7_V_187c_OFF" Type="BOOL" UUID="64F8E372432F1E02A24546AAB89D19FC" Comment="Кран свечной подводящего трубопровода закрыт" />
         <Field Name="A2_7_8_ESD" Type="BOOL" UUID="0667B1A34BC8F4D2633FCCAA6DF4C111" Comment="Аварийный останов" />
         <Field Name="A2_7_9_V_IN_ON" Type="BOOL" UUID="0C2C63214F9D3DCB024404AFA943F24D" Comment="Входной кран открыт" />
         <Field Name="A2_7_10_V_IN_OFF" Type="BOOL" UUID="585A8AB64BA11A0ED229DDAC7B7F9294" Comment="Входной кран закрыт" />
@@ -218,8 +218,8 @@
         <Field Name="A3_4_5_V_IN_ALL_FTL" Type="BOOL" UUID="764748CF43ED6C0D2B1EC1A1131C0657" Comment="Входной кран. Общая неисправность привода" />
         <Field Name="A3_4_6_V_CDL_DU_ON" Type="BOOL" UUID="E7AA61074224A662C2710A8A9B41C558" Comment="Свечной кран дист. управление Включено" />
         <Field Name="A3_4_7_V_CDL_ALL_FLT" Type="BOOL" UUID="15498D0F49A57D31F7EDA29F8A8218D3" Comment="Свечной кран. Общая неисправность привода" />
-        <Field Name="A3_4_8_V_CDL_SUPP_PIPE_DU_ON" Type="BOOL" UUID="5DAAA2254CBB03BCB53AA683DADEA449" Comment="Кран свечной подводящего трубопровода дист. управление Включено" />
-        <Field Name="A3_4_9_V_CDL_SUPP_PIPE_ALL_FLT" Type="BOOL" UUID="559280E4407574DE1B8167A7E71D78C6" Comment="Кран свечной подводящего трубопровода. Общая неисправность привода" />
+        <Field Name="A3_4_8_V_187c_DU_ON" Type="BOOL" UUID="5DAAA2254CBB03BCB53AA683DADEA449" Comment="Кран свечной подводящего трубопровода дист. управление Включено" />
+        <Field Name="A3_4_9_V_187c_ALL_FLT" Type="BOOL" UUID="559280E4407574DE1B8167A7E71D78C6" Comment="Кран свечной подводящего трубопровода. Общая неисправность привода" />
         <Field Name="A3_4_10_NC" Type="BOOL" UUID="15F585E94352D94D0039F2A17D390675" Comment="Не подключен" />
         <Field Name="A3_4_11_NC" Type="BOOL" UUID="6F8F9BB645611923420D74931988EE54" Comment="Не подключен" />
         <Field Name="A3_4_12_NC" Type="BOOL" UUID="F79E5D6A4D1E5C0623108BB30568E54E" Comment="Не подключен" />
@@ -300,6 +300,7 @@
         <Field Name="IM_N_P1_6_flt" Type="26ED6F9A456CCA1F8C0A089A735C9B30" UUID="54B9E58A4C75FD69506E38BC51FB1AE4" Comment="ИМ N_P1_6" />
         <Field Name="IM_H_GB1_1_flt" Type="26ED6F9A456CCA1F8C0A089A735C9B30" UUID="5E8BCE4847FBC3BA1B975AB3605BBA99" Comment="ИМ H_GB1_1" />
         <Field Name="IM_H_GB1_2_flt" Type="26ED6F9A456CCA1F8C0A089A735C9B30" UUID="424D14974824A42EF8E2D29372F2784F" Comment="ИМ H_GB1_2" />
+        <Field Name="KR_187c_flt" Type="26ED6F9A456CCA1F8C0A089A735C9B30" UUID="AB5AA3564AED5BBEB7A4BCB269483260" Comment="кран 187c" />
         <Field Name="msg_AOB_UPGSN" Type="BOOL" UUID="364D67854555088626D3C99F34F587FA" Comment="Начат АО без стравливания" />
         <Field Name="msg_AOB_UPGSN_DONE" Type="BOOL" UUID="301E88294BEF7AFECB3B03A0A24AE85A" Comment="АО без стравливания завершен" />
         <Field Name="msg_AOB_UPGSN_DONE_INCORRECT" Type="BOOL" UUID="2E1243B941800795B21F4992C8760814" Comment="АО без стравливания завершен некорректно" />
@@ -307,5 +308,19 @@
         <Field Name="msg_AOS_UPGSN_DONE" Type="BOOL" UUID="5ADE23D24E280AFF2E9378ADED84BD05" Comment="АО со стравливанием завершен" />
         <Field Name="msg_AOS_UPGSN_DONE_INCORRECT" Type="BOOL" UUID="60D53D5E419A3E62E8C895A9398D4B45" Comment="АО со стравливанием завершен некорректно" />
         <Field Name="msg_MD_PZ" Type="BOOL" UUID="2111EBD04E7927392F8C7E8BAAE40A80" Comment="Режим проверки защит" />
+        <Field Name="Lk1_V2_1_lo" Type="BOOL" UUID="E36768D546DD46C2E61651BDE92555D8" Comment="Уровень конденсата в емкости V2.1 низкий" />
+        <Field Name="Lk1_V2_1_hi" Type="BOOL" UUID="CE877DF945F62988D70E6BA676451F96" Comment="Уровень конденсата в емкости V2.1 высокий" />
+        <Field Name="Lk1_E_lo_F2_1" Type="BOOL" UUID="2210A4044AB940BBD5C977BA3093008B" Comment="Уровень конденсата в нижней емкости фильтра F2.1" />
+        <Field Name="Lk1_E_hi_F2_1" Type="BOOL" UUID="9F9BE87144DC16BE5F209FBF2B95019B" Comment="Уровень конденсата в верхней емкости фильтра F2.1" />
+        <Field Name="Lk1_E_lo_F2_2" Type="BOOL" UUID="A93740B64A6398A560DD859C5F7983C1" Comment="Уровень конденсата в нижней емкости фильтра F2.2" />
+        <Field Name="Lk1_E_hi_F2_2" Type="BOOL" UUID="1C5EC36D4128976F69EDC5A2DCFE4E75" Comment="Уровень конденсата в верхней емкости фильтра F2.2" />
+        <Field Name="Lk1_E4_hi" Type="BOOL" UUID="C8BB1B944F2621DFCAB4488C89C12CD2" Comment="Верхний аварийный уровень в резервуаре Е4" />
+        <Field Name="Lk1_E4_hi_flt" Type="BOOL" UUID="184A94D14671A4753CA701AB7C5E7822" Comment="Ошибка датчика - Верхний аварийный уровень в резервуаре Е4" />
+        <Field Name="Lk1_V2_1_lo_flt" Type="BOOL" UUID="A610F84C480AA786EA3501A736D6C7BA" Comment="Ошибка датчика - Уровень конденсата в емкости V2.1 низкий" />
+        <Field Name="Lk1_V2_1_hi_flt" Type="BOOL" UUID="8B2B93F54175147659E954A606D952F6" Comment="Ошибка датчика - Уровень конденсата в емкости V2.1 высокий" />
+        <Field Name="Lk1_E_lo_F2_1_flt" Type="BOOL" UUID="580479114FA1FB5FD418619A99742AF6" Comment="Ошибка датчика - Уровень конденсата в нижней емкости фильтра F2.1" />
+        <Field Name="Lk1_E_hi_F2_1_flt" Type="BOOL" UUID="02593C0344294AE5C816DDB5774E7A96" Comment="Ошибка датчика - Уровень конденсата в верхней емкости фильтра F2.1" />
+        <Field Name="Lk1_E_lo_F2_2_flt" Type="BOOL" UUID="79847E094FAC698810D71288B560E44E" Comment="Ошибка датчика - Уровень конденсата в нижней емкости фильтра F2.2" />
+        <Field Name="Lk1_E_hi_F2_2_flt" Type="BOOL" UUID="AF8D8E1849F9EC9C4FD4A58947082457" Comment="Ошибка датчика - Уровень конденсата в верхней емкости фильтра F2.2" />
     </Fields>
 </Type>

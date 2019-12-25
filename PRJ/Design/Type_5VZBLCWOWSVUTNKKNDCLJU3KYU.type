@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TAlg" Kind="Struct" Comment="Переменные алгоритмов" UUID="815A82684DEF78B432C4C8BBFDCD3E08">
+    <Fields>
+        <Field Name="V_TO_ON" Type="BOOL" UUID="198843684956945B034C78B598E45554" Comment="Включение вентилятора ТО" />
+        <Field Name="SV1_1_ON" Type="BOOL" UUID="935E29C04B3CA0E86AB1ED87D324191D" />
+        <Field Name="GB1_1" Type="BOOL" UUID="15EE40D14DE60B3E35E388B7DA2B6474" />
+    </Fields>
+</Type>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE Program >
-<Program UUID="35B0AEED49E76C9382BAB391E2DAC40C" Name="STU3_LOGIC" Period="100" PutDataAtEndOfCycle="false">
+<Program UUID="35B0AEED49E76C9382BAB391E2DAC40C" Name="STU3_LOGIC" Period="150" PutDataAtEndOfCycle="false">
     <Variables>
         <Variable UUID="5DE8CF4A44A4F827EF4AF2BB8A2B67F2" Name="proc_AI" Type="FB_AI" TypeUUID="8E13A588443D3D3C4FFE289D06A77D54" Usage="internal" />
         <Variable UUID="B85FD50D470D9C25332A6FB1F9E3E3B0" Name="proc_DI" Type="FB_DI" TypeUUID="9018116F43FC2E443834D486159520D8" Usage="internal" />
@@ -406,6 +406,42 @@ AI_HMI_str.PS := (SEN_AI.Oper.PV_calc_eu >= AI_HMI_str.Ust.PS_H AND AI_HMI_str.U
             </Variables>
             <ST><![CDATA[AI_Scale_func := (((uint_to_real(In) - K1) / (K2 - K1)) * (HI_LIM - LO_LIM)) + LO_LIM;]]></ST>
         </Function>
+        <FunctionBlock UUID="F29B0A244FCF53C51057D8A2000C32B0" Name="AI_TO_DI" Comment="Обработка аналога в дискрет">
+            <Variables>
+                <Variable UUID="5E2516F441C47CF487ACE48564237B73" Name="HI_LO" Comment="Тип датчика (HLFS или LLFS)" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="input" />
+                <Variable UUID="092E8B1142AA1D9513A45DAF7B31EA53" Name="AI_IN" Comment="Измеряемый ток датчика" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                <Variable UUID="69C101D84537FED61739ABB235826BD8" Name="DB" Comment="Зона нечувствительности" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                <Variable UUID="97C292264DEF626C2E785F89036270C0" Name="OUT_DI" Comment="Срабатывание датчика" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="inout" />
+                <Variable UUID="E8D3866C49DDFE30F47E2F9FE1C7CDFD" Name="DI_FLT" Comment="Ошибка датчика" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="inout" />
+                <Variable UUID="3B26939B4EFFBD1CC43C4CB436ABAB21" Name="rsDI" Type="RS" TypeUUID="53F400294BCD7C71EB041B90164F4F6F" Usage="internal" />
+                <Variable UUID="0D316DE644F0E427BAB8FB8DB5DD2544" Name="LVL_DRY" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                <Variable UUID="10E5612E44EF70DCB42655AFBEF23A25" Name="LVL_WET" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+            </Variables>
+            <ST><![CDATA[//Определяем границы измерений тока по типу датчика
+if HI_LO then
+	LVL_DRY := real#8.0;
+	LVL_WET := real#16.0;
+else
+	LVL_DRY := real#16.0;
+	LVL_WET := real#8.0;
+end_if;	
+
+
+//Определяем ошибку датчика
+DI_FLT := (AI_IN <= real#3.6) or (AI_IN >= real#22.0);
+
+
+if not DI_FLT then
+//Срабатывание датчика, установленного в нижней части емкости
+	if not HI_LO then
+		rsDI(S:= (AI_IN >= LVL_DRY - DB) and (AI_IN <= LVL_DRY + DB), R1:= (AI_IN >= LVL_WET - DB) and (AI_IN <= LVL_WET + DB), Q1 => OUT_DI);
+	end_if;
+//Срабатывание датчика, установленного в верхней части емкости
+	if HI_LO then
+		rsDI(S:= (AI_IN >= LVL_WET - DB) and (AI_IN <= LVL_WET + DB), R1:= (AI_IN >= LVL_DRY - DB) and (AI_IN <= LVL_DRY + DB), Q1 => OUT_DI);
+	end_if;
+end_if;]]></ST>
+        </FunctionBlock>
         <Function UUID="8D15F57049F5028192F2088F3E72CEF6" Name="AI_init" ResultTypeUUID="A32E304D43358DC1574ABBA8FDAFBC2D">
             <Variables>
                 <Variable UUID="CC94540247523423E3460AB137780F9C" Name="Span" Type="LREAL" TypeUUID="65F1DDD44EDA9C0776BB16BBDFE36B1F" Usage="input" />
@@ -513,7 +549,7 @@ if PRU_DA_off or HMI_DA_off then DA := BOOL#0; end_if;
 if DA then
 	DA_PRU := true;
 	DA_HMI := true;
-else
+elsif not DA then 
 	DA_PRU := false;
 	DA_HMI := false;
 end_if;
@@ -1190,7 +1226,7 @@ DO_raw := DO_in.PV;]]></ST>
 //КЗ аналоговых каналов
 APS_001(KC1_STU3_AI_HMI.A1_3_1_Pg1.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_1_Pg1_kz); //КЗ канал - Давление газа на входе
 APS_002(KC1_STU3_AI_HMI.A1_3_2_Tg1.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_2_Tg1_kz); //КЗ канал - Температура газа на входе
-APS_003(KC1_STU3_AI_HMI.A1_3_3_Hg1.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_3_Hg1_kz); //КЗ канал - Влажность газа на входе
+APS_003(KC1_STU3_AI_HMI.A1_3_3_Lk1_E4.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_3_Lk1_E4_kz); //КЗ канал - Уровень в емкости Е4
 APS_004(KC1_STU3_AI_HMI.A1_3_4_dP_F1_F2.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_4_dP_F1_F2_kz); //КЗ канал - Перепад давления на  фильтрах 1 и 2
 APS_005(KC1_STU3_AI_HMI.A1_4_1_Ttn2_E2_1.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_4_1_Ttn2_E2_1_kz); //КЗ канал - Температура  теплоносителя после подогревателя Е2.1
 APS_006(KC1_STU3_AI_HMI.A1_4_2_Ttn2_E2_2.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_4_2_Ttn2_E2_2_kz); //КЗ канал - Температура  теплоносителя после подогревателя Е2.2
@@ -1237,7 +1273,7 @@ APS_393(KC1_STU3_AI_HMI.A3_9_4_Rez.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, AP
 //Обрыв аналоговых каналов
 APS_037(KC1_STU3_AI_HMI.A1_3_1_Pg1.Obriv, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_1_Pg1_obriv); //Обрыв канал - Давление газа на входе
 APS_038(KC1_STU3_AI_HMI.A1_3_2_Tg1.Obriv, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_2_Tg1_obriv); //Обрыв канал - Температура газа на входе
-APS_039(KC1_STU3_AI_HMI.A1_3_3_Hg1.Obriv, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_3_Hg1_obriv); //Обрыв канал - Влажность газа на входе
+APS_039(KC1_STU3_AI_HMI.A1_3_3_Lk1_E4.Obriv, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_3_Lk1_E4_obriv); //Обрыв канал - Уровень в емкости Е4
 APS_040(KC1_STU3_AI_HMI.A1_3_4_dP_F1_F2.Obriv, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_4_dP_F1_F2_obriv); //Обрыв канал - Перепад давления на  фильтрах 1 и 2
 APS_041(KC1_STU3_AI_HMI.A1_4_1_Ttn2_E2_1.Obriv, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_4_1_Ttn2_E2_1_obriv); //Обрыв канал - Температура  теплоносителя после подогревателя Е2.1
 APS_042(KC1_STU3_AI_HMI.A1_4_2_Ttn2_E2_2.Obriv, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_4_2_Ttn2_E2_2_obriv); //Обрыв канал - Температура  теплоносителя после подогревателя Е2.2
@@ -1332,8 +1368,8 @@ APS_110(KC1_STU3_DI_HMI.A2_7_1_Pig_hi.PV, T#100ms, Deblock, Kvitir, DO_sound_AS,
 (*Резерв*)//APS_112(KC1_STU3_DI_HMI.A2_7_3_V_XV3_1_OFF.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_3_V_XV3_1_OFF);   // Кран XV3.1 закрыт
 (*Резерв*)//APS_113(KC1_STU3_DI_HMI.A2_7_4_V_XV3_2_ON.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_4_V_XV3_2_ON);   // Кран XV3.2 открыт
 (*Резерв*)//APS_114(KC1_STU3_DI_HMI.A2_7_5_V_XV3_2_OFF.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_5_V_XV3_2_OFF);   // Кран XV3.2 закрыт
-(**)APS_115(KC1_STU3_DI_HMI.A2_7_6_V_CDL_SUPP_PIPE_ON.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_6_V_CDL_SUPP_PIPE_ON);   // Кран свечной подводящего трубопровода открыт
-(**)APS_116(KC1_STU3_DI_HMI.A2_7_7_V_CDL_SUPP_PIPE_OFF.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_7_V_CDL_SUPP_PIPE_OFF);   // Кран свечной подводящего трубопровода закрыт
+(**)APS_115(KC1_STU3_DI_HMI.A2_7_6_V_187c_ON.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_6_V_187c_ON);   // Кран свечной подводящего трубопровода открыт
+(**)APS_116(KC1_STU3_DI_HMI.A2_7_7_V_187c_OFF.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_7_V_187c_OFF);   // Кран свечной подводящего трубопровода закрыт
 APS_117(KC1_STU3_DI_HMI.A2_7_8_ESD.PV, T#100ms, Deblock, Kvitir, DO_sound_AS,  APS_KC1_STU3.A2_7_8_ESD);   // Аварийный останов
 APS_118(KC1_STU3_DI_HMI.A2_7_9_V_IN_ON.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_9_V_IN_ON);   // Входной кран открыт
 APS_119(KC1_STU3_DI_HMI.A2_7_10_V_IN_OFF.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A2_7_10_V_IN_OFF);   // Входной кран закрыт
@@ -1414,8 +1450,8 @@ APS_191(KC1_STU3_DI_HMI.A3_4_2_GC_REZ_IP_BEAO_DC_24.PV, T#100ms, Deblock, Kvitir
 (**)APS_194(KC1_STU3_DI_HMI.A3_4_5_V_IN_ALL_FTL.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_5_V_IN_ALL_FTL);   // Входной кран. Общая неиспраность привода
 (**)APS_195(KC1_STU3_DI_HMI.A3_4_6_V_CDL_DU_ON.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_6_V_CDL_DU_ON);   // Свечной кран дист. Управление Включено
 (**)APS_196(KC1_STU3_DI_HMI.A3_4_7_V_CDL_ALL_FLT.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_7_V_CDL_ALL_FLT);   // Свечной кран. Общая неиспраность привода
-(**)APS_197(KC1_STU3_DI_HMI.A3_4_8_V_CDL_SUPP_PIPE_DU_ON.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_8_V_CDL_SUPP_PIPE_DU_ON);   // Кран свечной подводящего трубопровода дист. Управление Включено
-(**)APS_198(KC1_STU3_DI_HMI.A3_4_9_V_CDL_SUPP_PIPE_ALL_FLT.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_9_V_CDL_SUPP_PIPE_ALL_FLT);   // Кран свечной подводящего трубопровода. Общая неиспраность привода
+(**)APS_197(KC1_STU3_DI_HMI.A3_4_8_V_187c_DU_ON.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_8_V_187c_DU_ON);   // Кран свечной подводящего трубопровода дист. Управление Включено
+(**)APS_198(KC1_STU3_DI_HMI.A3_4_9_V_187c_ALL_FLT.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_9_V_187c_ALL_FLT);   // Кран свечной подводящего трубопровода. Общая неиспраность привода
 (*Резерв*)//APS_199(KC1_STU3_DI_HMI.A3_4_10_NC.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_10_NC);   // Не подключен
 (*Резерв*)//APS_200(KC1_STU3_DI_HMI.A3_4_11_NC.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_11_NC);   // Не подключен
 (*Резерв*)//APS_201(KC1_STU3_DI_HMI.A3_4_12_NC.PV, T#100ms, Deblock, Kvitir, DO_sound_PS,  APS_KC1_STU3.A3_4_12_NC);   // Не подключен
@@ -1867,20 +1903,20 @@ fault_code[7] – значение параметра min_fault_sensor_Eu бол
 IF FirstScan THEN	//		||			||			||			||			||			||			||			||			||			||		||		||												||											||			//Название сигнала															
 SEN_A1_3_1_HMI	:=	AI_init(LREAL#16, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#16, 	INT#16, 	INT#16, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_3_1_Pg1.Manual,				KC1_STU3_AI_HMI.A1_3_1_Pg1,					LREAL#200,	'Давление газа на входе');
 SEN_A1_3_2_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23, 	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_3_2_Tg1.Manual,				KC1_STU3_AI_HMI.A1_3_2_Tg1,					LREAL#200,	'Температура газа на входе');
-SEN_A1_3_3_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#85, 	INT#85, 	INT#85, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_3_3_Hg1.Manual,				KC1_STU3_AI_HMI.A1_3_3_Hg1,					LREAL#200,	'Влажность газа на входе');
+SEN_A1_3_3_HMI	:=	AI_init(LREAL#22.0, LREAL#3.5, 	LREAL#0.1,	LREAL#160,	DINT#10430,	DINT#65535,	INT#150, 	INT#150, 	INT#150, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_3_3_Lk1_E4.Manual,			KC1_STU3_AI_HMI.A1_3_3_Lk1_E4,				LREAL#200,	'Уровень в емкости Е4');
 SEN_A1_3_4_HMI	:=	AI_init(LREAL#630, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#1, 		INT#1,  	INT#1,	 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_3_4_dP_F1_F2.Manual,			KC1_STU3_AI_HMI.A1_3_4_dP_F1_F2,			LREAL#200,	'Перепад давления на  фильтрах 1 и 2');
 SEN_A1_4_1_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_4_1_Ttn2_E2_1.Manual,		KC1_STU3_AI_HMI.A1_4_1_Ttn2_E2_1,			LREAL#200,	'Температура  теплоносителя после подогревателя Е2.1');
 SEN_A1_4_2_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_4_2_Ttn2_E2_2.Manual,		KC1_STU3_AI_HMI.A1_4_2_Ttn2_E2_2,			LREAL#200,	'Температура  теплоносителя после подогревателя Е2.2');
 SEN_A1_4_3_HMI	:=	AI_init(LREAL#100, 	LREAL#-80, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_4_3_Ttr.Manual,				KC1_STU3_AI_HMI.A1_4_3_Ttr,					LREAL#200,	'Температура точки росы');
 SEN_A1_4_4_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_4_4_Tg2_E2_1_E2_2.Manual,	KC1_STU3_AI_HMI.A1_4_4_Tg2_E2_1_E2_2,		LREAL#200,	'Температура  газа после подогревателей Е2.1 и E2.2');
-SEN_A1_5_1_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23, 	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_5_1_Ttn1_E2_1.Manual,		KC1_STU3_AI_HMI.A1_5_1_Ttn1_E2_1,			LREAL#200,	'Давление теплоносителя в подогревателе E2.1');
-SEN_A1_5_2_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23, 	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_5_2_Ttn1_E2_2.Manual,		KC1_STU3_AI_HMI.A1_5_2_Ttn1_E2_2,			LREAL#200,	'Давление теплоносителя в подогревателе E2.2');
+SEN_A1_5_1_HMI	:=	AI_init(LREAL#16, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#16, 	INT#16, 	INT#16, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_5_1_Ttn1_E2_1.Manual,		KC1_STU3_AI_HMI.A1_5_1_Ttn1_E2_1,			LREAL#200,	'Давление теплоносителя в подогревателе E2.1');
+SEN_A1_5_2_HMI	:=	AI_init(LREAL#16, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#16, 	INT#16, 	INT#16, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_5_2_Ttn1_E2_2.Manual,		KC1_STU3_AI_HMI.A1_5_2_Ttn1_E2_2,			LREAL#200,	'Давление теплоносителя в подогревателе E2.2');
 SEN_A1_5_3_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23, 	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_5_3_Tg2_E2_1.Manual,			KC1_STU3_AI_HMI.A1_5_3_Tg2_E2_1,			LREAL#200,	'Температура газа после подогревателя Е2.1');
 SEN_A1_5_4_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23, 	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_5_4_Tg2_E2_2.Manual,			KC1_STU3_AI_HMI.A1_5_4_Tg2_E2_2,			LREAL#200,	'Температура газа после подогревателя Е2.2');
 SEN_A1_6_1_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23, 	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_6_1_Ttn1_E2_1.Manual,		KC1_STU3_AI_HMI.A1_6_1_Ttn1_E2_1,			LREAL#200,	'Температура  теплоносителя перед подогревателем Е2.1');
 SEN_A1_6_2_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23, 	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_6_2_Ttn1_E2_2.Manual,		KC1_STU3_AI_HMI.A1_6_2_Ttn1_E2_2,			LREAL#200,	'Температура  теплоносителя перед подогревателя Е2.2');
 SEN_A1_6_3_HMI	:=	AI_init(LREAL#16, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#16, 	INT#16,  	INT#16, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_6_3_Pg2_out1.Manual,			KC1_STU3_AI_HMI.A1_6_3_Pg2_out1,			LREAL#200,	'Давление газа на выходе 1');
-SEN_A1_6_4_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#16, 	INT#16, 	INT#16, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_6_4_Lk1_V2_1_lo.Manual,		KC1_STU3_AI_HMI.A1_6_4_Lk1_V2_1_lo,			LREAL#200,	'Уровень конденсата в емкости V2.1 низкий');
+SEN_A1_6_4_HMI	:=	AI_init(LREAL#22.0, LREAL#3.5, 	LREAL#0.1,	LREAL#160,	DINT#10430,	DINT#65535,	INT#150, 	INT#150, 	INT#150, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_6_4_Lk1_V2_1_lo.Manual,		KC1_STU3_AI_HMI.A1_6_4_Lk1_V2_1_lo,			LREAL#200,	'Уровень конденсата в емкости V2.1 низкий');
 SEN_A1_7_1_HMI	:=	AI_init(LREAL#1, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#16, 	INT#16, 	INT#16, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_7_1_Pg2_PR3_1.Manual,		KC1_STU3_AI_HMI.A1_7_1_Pg2_PR3_1,			LREAL#200,	'Давление газа после регулятора PR3.1');
 SEN_A1_7_2_HMI	:=	AI_init(LREAL#1, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#16, 	INT#16, 	INT#16, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_7_2_Pg2_PR3_2.Manual,		KC1_STU3_AI_HMI.A1_7_2_Pg2_PR3_2,			LREAL#200,	'Давление газа после регулятора PR3.2');
 SEN_A1_7_3_HMI	:=	AI_init(LREAL#150, 	LREAL#-50, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23, 	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_7_3_Tg2_out1.Manual,			KC1_STU3_AI_HMI.A1_7_3_Tg2_out1,			LREAL#200,	'Температура газа на выходе 1');
@@ -1896,15 +1932,15 @@ SEN_A1_9_4_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937
 SEN_A1_10_1_HMI	:=	AI_init(LREAL#250, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#1,	 	INT#1,  	INT#1,	 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_10_1_dPtn1_P1_3_P1_4.Manual,	KC1_STU3_AI_HMI.A1_10_1_dPtn1_P1_3_P1_4,	LREAL#200,	'Перепад давления теплоносителя на насосах Р1.3 и Р1.4');
 SEN_A1_10_2_HMI	:=	AI_init(LREAL#250, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#1,	 	INT#1,  	INT#1,	 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_10_2_dPtn1_P1_5_P1_6.Manual,	KC1_STU3_AI_HMI.A1_10_2_dPtn1_P1_5_P1_6,	LREAL#200,	'Перепад давления теплоносителя на насосах Р1.5 и Р1.6');
 SEN_A1_10_3_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_10_3_Rez.Manual,				KC1_STU3_AI_HMI.A1_10_3_Rez,				LREAL#200,	'Резерв');
-SEN_A1_10_4_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_10_4_Lk1_V2_1_hi.Manual,		KC1_STU3_AI_HMI.A1_10_4_Lk1_V2_1_hi,		LREAL#200,	'Уровень конденсата в емкости V2.1 высокий');
+SEN_A1_10_4_HMI	:=	AI_init(LREAL#22.0, LREAL#3.5, 	LREAL#0.1,	LREAL#160,	DINT#10430,	DINT#65535,	INT#150, 	INT#150, 	INT#150, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A1_10_4_Lk1_V2_1_hi.Manual,		KC1_STU3_AI_HMI.A1_10_4_Lk1_V2_1_hi,		LREAL#200,	'Уровень конденсата в емкости V2.1 высокий');
 SEN_A2_3_1_HMI	:=	AI_init(LREAL#370, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#169, 	INT#169,  	INT#169, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A2_3_1_Uop_STU3.Manual,			KC1_STU3_AI_HMI.A2_3_1_Uop_STU3,			LREAL#200,	'Напряжение основного питания СтУ-3');
 SEN_A2_3_2_HMI	:=	AI_init(LREAL#370, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#169, 	INT#169,  	INT#169, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A2_3_2_Urp_STU3.Manual,			KC1_STU3_AI_HMI.A2_3_2_Urp_STU3,			LREAL#200,	'Напряжение резервного питания СтУ-3');
 SEN_A2_3_3_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A2_3_3_Rez.Manual,				KC1_STU3_AI_HMI.A2_3_3_Rez,					LREAL#200,	'Резерв');
 SEN_A2_3_4_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A2_3_4_Rez.Manual,				KC1_STU3_AI_HMI.A2_3_4_Rez,					LREAL#200,	'Резерв');
-SEN_A3_8_1_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_8_1_Lk1_E_lo_F2_1.Manual,	KC1_STU3_AI_HMI.A3_8_1_Lk1_E_lo_F2_1,		LREAL#200,	'Уровень конденсата в нижней емкости фильтра F2.1');
-SEN_A3_8_2_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_8_2_Lk1_E_hi_F2_1.Manual,	KC1_STU3_AI_HMI.A3_8_2_Lk1_E_hi_F2_1,		LREAL#200,	'Уровень конденсата в верхней емкости фильтра F2.1');
-SEN_A3_8_3_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_8_3_Lk1_E_lo_F2_2.Manual,	KC1_STU3_AI_HMI.A3_8_3_Lk1_E_lo_F2_2,		LREAL#200,	'Уровень конденсата в нижней емкости фильтра F2.2');
-SEN_A3_8_4_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_8_4_Lk1_E_hi_F2_2.Manual,	KC1_STU3_AI_HMI.A3_8_4_Lk1_E_hi_F2_2,		LREAL#200,	'Уровень конденсата в верхней емкости фильтра F2.2');
+SEN_A3_8_1_HMI	:=	AI_init(LREAL#22.0, LREAL#3.5, 	LREAL#0.1,	LREAL#160,	DINT#10430,	DINT#65535,	INT#150, 	INT#150, 	INT#150, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_8_1_Lk1_E_lo_F2_1.Manual,	KC1_STU3_AI_HMI.A3_8_1_Lk1_E_lo_F2_1,		LREAL#200,	'Уровень конденсата в нижней емкости фильтра F2.1');
+SEN_A3_8_2_HMI	:=	AI_init(LREAL#22.0, LREAL#3.5, 	LREAL#0.1,	LREAL#160,	DINT#10430,	DINT#65535,	INT#150, 	INT#150, 	INT#150, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_8_2_Lk1_E_hi_F2_1.Manual,	KC1_STU3_AI_HMI.A3_8_2_Lk1_E_hi_F2_1,		LREAL#200,	'Уровень конденсата в верхней емкости фильтра F2.1');
+SEN_A3_8_3_HMI	:=	AI_init(LREAL#22.0, LREAL#3.5, 	LREAL#0.1,	LREAL#160,	DINT#10430,	DINT#65535,	INT#150, 	INT#150, 	INT#150, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_8_3_Lk1_E_lo_F2_2.Manual,	KC1_STU3_AI_HMI.A3_8_3_Lk1_E_lo_F2_2,		LREAL#200,	'Уровень конденсата в нижней емкости фильтра F2.2');
+SEN_A3_8_4_HMI	:=	AI_init(LREAL#22.0, LREAL#3.5, 	LREAL#0.1,	LREAL#160,	DINT#10430,	DINT#65535,	INT#150, 	INT#150, 	INT#150, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_8_4_Lk1_E_hi_F2_2.Manual,	KC1_STU3_AI_HMI.A3_8_4_Lk1_E_hi_F2_2,		LREAL#200,	'Уровень конденсата в верхней емкости фильтра F2.2');
 SEN_A3_9_1_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#211,  	INT#211, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.Manual,		KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1,			LREAL#200,	'Положение XV3.1');
 SEN_A3_9_2_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#211,  	INT#211, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.Manual,		KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2,			LREAL#200,	'Положение XV3.2');
 SEN_A3_9_3_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937,	DINT#59550,	INT#23, 	INT#23,  	INT#23, 	BYTE#0,	BYTE#0,	KC1_STU3_AI_HMI.A3_9_3_Rez.Manual,				KC1_STU3_AI_HMI.A3_9_3_Rez,					LREAL#200,	'Резерв');
@@ -1914,7 +1950,7 @@ END_IF;
 																
 AI_001(SEN_A1_3_1_HMI,	KC1_STU3_AI_DRV.A1_3_1,		cycleTime,		KC1_STU3_AI_HMI.A1_3_1_Pg1);												
 AI_002(SEN_A1_3_2_HMI,	KC1_STU3_AI_DRV.A1_3_2,		cycleTime,		KC1_STU3_AI_HMI.A1_3_2_Tg1);												
-AI_003(SEN_A1_3_3_HMI,	KC1_STU3_AI_DRV.A1_3_3,		cycleTime,		KC1_STU3_AI_HMI.A1_3_3_Hg1);												
+AI_003(SEN_A1_3_3_HMI,	KC1_STU3_AI_DRV.A1_3_3,		cycleTime,		KC1_STU3_AI_HMI.A1_3_3_Lk1_E4);												
 AI_004(SEN_A1_3_4_HMI,	KC1_STU3_AI_DRV.A1_3_4,		cycleTime,		KC1_STU3_AI_HMI.A1_3_4_dP_F1_F2);												
 AI_005(SEN_A1_4_1_HMI,	KC1_STU3_AI_DRV.A1_4_1,		cycleTime,		KC1_STU3_AI_HMI.A1_4_1_Ttn2_E2_1);												
 AI_006(SEN_A1_4_2_HMI,	KC1_STU3_AI_DRV.A1_4_2,		cycleTime,		KC1_STU3_AI_HMI.A1_4_2_Ttn2_E2_2);												
@@ -1964,6 +2000,9 @@ AI_044(SEN_A3_9_4_HMI,	KC1_STU3_AI_DRV.A3_9_4,		cycleTime,		KC1_STU3_AI_HMI.A3_9
                 <Variable UUID="E6F50F874871AF304EAF2D9EC9A0B9BB" Name="proc_AOb" Type="FB_AOb" TypeUUID="2B81CBA042A176E3704178AD77DC9654" Usage="internal" />
                 <Variable UUID="4BC867454E0AF18224932F991181FD36" Name="proc_AOs" Type="FB_AOs" TypeUUID="93FE3F414C253931451739880AEDA7FA" Usage="internal" />
                 <Variable UUID="04C13F5F4D74E90B8E11ADB32525E4E4" Name="rstrigLampRA" Type="RS" TypeUUID="53F400294BCD7C71EB041B90164F4F6F" Usage="internal" />
+                <Variable UUID="6AB1597D4F7DF2036058E48BCD2180A1" Name="rtrigV_TO_ON" Type="R_TRIG" TypeUUID="D90E3B974D4D8C72877123B1A897EB52" Usage="internal" />
+                <Variable UUID="3A7A374D4B6515F76ECD028976644FDE" Name="SV_GB_ON_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
+                <Variable UUID="9773124F4B1C5ECE19A6C08B2CBA9037" Name="V_TO_ON_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
             </Variables>
             <ST><![CDATA[//В.2.3 Включение/отключение наружного освещения
 time_now	:= CURRENT_DATE_TIME();
@@ -1974,7 +2013,7 @@ year		:= GET_YEAR(time_now);
 month		:= GET_MONTH(time_now);
 day			:= GET_DAY(time_now);		
 
-//Автматическое управление наружным освещением по времени
+//Автоматическое управление наружным освещением по времени
 if hour = ust.lightOn_h and min = ust.lightOn_m then 
 	LIGHT_ON := true; 
 elsif hour = ust.lightOff_h and min = ust.lightOff_m then 
@@ -1990,7 +2029,6 @@ rstrigLampRA(S:= Lamp.RA_on, R1:= Lamp.RA_off, Q1=> Lamp.RA);
 rstrigLamp(S:= Lamp.rOn and Lamp.RA, R1:= Lamp.rOff and Lamp.RA, Q1=> KC1_STU3_DO_HMI.A3_6_2_EXT_LIGHT_ON.PV);
 
 
-if not IMIT then
 //В.6 Управление работой котлов
 if not KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV then
 	KC1_STU3_VLV_LG.KR_SV1_1.RA			:= false;
@@ -2014,16 +2052,26 @@ elsif KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV then
 end_if;
 
 //В.7 Управление вентилятором ТО
+//Фиксируем нажатие кнопки включения вентилятора ТО
+rtrigV_TO_ON(CLK:= KC1_STU3_DI_HMI.A2_6_3_V_TO_ON.PV, Q => btn_V_TO_ON);
 if KC1_STU3_DI_HMI.A2_6_4_Fire1ot.PV then blc_V_TO_on := true; else blc_V_TO_on := false; end_if; // Блокировка работы вентилятора по сигналу Пожар в технологическом отсеке
 
-if (KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV or KC1_STU3_DI_HMI.A2_6_8_Zagaz_CH4_20p_ot.PV) and not blc_V_TO_on then
-	KC1_STU3_VLV_LG.IM_V_TO.RA			:= false;
-	KC1_STU3_VLV_LG.IM_V_TO.aOnOff		:= true; // Включаем вентилятор ТО
-else
-	KC1_STU3_VLV_LG.IM_V_TO.RA			:= false;
-	KC1_STU3_VLV_LG.IM_V_TO.aOnOff		:= false; // Отключаем вентилятор ТО по пропаданию причины. Возможно, добавить таймер на отключение 
-end_if;
+alg.V_TO_ON := (KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV or KC1_STU3_DI_HMI.A2_6_8_Zagaz_CH4_20p_ot.PV or btn_V_TO_ON) and not blc_V_TO_on and not V_TO_ON_prev;
+if alg.V_TO_ON then
+	KC1_STU3_VLV_LG.IM_V_TO.RA		:= false;
+	KC1_STU3_VLV_LG.IM_V_TO.aOnOff	:= true; // Включаем вентилятор ТО
+end_if; 
+V_TO_ON_prev := alg.V_TO_ON; 
 
+if not alg.V_TO_ON and KC1_STU3_VLV_LG.IM_V_TO.RA = false and KC1_STU3_VLV_LG.IM_V_TO.aOnOff = true then
+	TMR[2] := TMR[2] + cycleTime;
+else TMR[2] := lreal#0.0;
+end_if;
+if (TMR[2] >= lreal#300.0) or KC1_STU3_DI_HMI.A2_6_4_Fire1ot.PV then 
+	KC1_STU3_VLV_LG.IM_V_TO.RA		:= false;
+	KC1_STU3_VLV_LG.IM_V_TO.aOnOff	:= false; // Отключаем вентилятор ТО по пропаданию причины или по сигналу Пожар.
+end_if; 
+  
 
 //Взвод и снятие флага Проверка защит
 if MD_PZ_PRU_on or MD_PZ_HMI_on then MD_PZ := BOOL#1; end_if;
@@ -2093,14 +2141,12 @@ if ((UnitState.State = 2 and (Step.AOs = 3 or Step.AOs = 4)) and Reset_AO) or (a
 	UnitState.State := 0;
 	AOS_UPGSN_DONE := false;
 	AOS_UPGSN_DONE_INCORRECT := false;
-end_if;
-
 end_if;]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="C00E829141671F64BF18EEBD96433F95" Name="FB_AO">
             <Variables>
-                <Variable UUID="B87FB4864096B15E9846F39C9F228C6D" Name="AO_min" Type="LREAL" TypeUUID="65F1DDD44EDA9C0776BB16BBDFE36B1F" Usage="internal" />
-                <Variable UUID="978FC92F42B79417F1E8AAB166806DDC" Name="AO_max" Type="LREAL" TypeUUID="65F1DDD44EDA9C0776BB16BBDFE36B1F" Usage="internal" />
+                <Variable UUID="B87FB4864096B15E9846F39C9F228C6D" Name="AO_min" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                <Variable UUID="978FC92F42B79417F1E8AAB166806DDC" Name="AO_max" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
                 <Variable UUID="9782B33F4926A56F3131F4A4C62C8E1E" Name="proc_reg_twv1_1" Type="AO_Scale" TypeUUID="152DC66D472DA5BCE4BACEB7ACAF2FBC" Usage="internal" />
                 <Variable UUID="D044F1E444AFF6E41D15CA9D9D2055AC" Name="proc_reg_twv1_2" Type="AO_Scale" TypeUUID="152DC66D472DA5BCE4BACEB7ACAF2FBC" Usage="internal" />
                 <Variable UUID="CA7CEF874CFA7F656E1C2DB7F4300784" Name="rtrig_TwV1_1" Type="R_TRIG" TypeUUID="D90E3B974D4D8C72877123B1A897EB52" Usage="internal" />
@@ -2112,8 +2158,8 @@ end_if;]]></ST>
             </Variables>
             <ST><![CDATA[(*Аналоговые выходы*)
 //Масштабирование AO для выходного модуля
-AO_min := lreal#13100;
-AO_max := lreal#65535;
+AO_min := real#13100;
+AO_max := real#65535;
 
 
 //Регулятор TwV1_1
@@ -2133,22 +2179,22 @@ if KR_TwV.DA_1_1 then
 	if (KR_TwV.allow_bit_PRU_1_1 and not KR_TwV.allow_bit_HMI_1_1) then  //если есть бит разрешения записи уставки положения от панели, записываем новое значение позиции клапана
 		KR_TwV.Z_1_1			:= KR_TwV.Z_1_1_PRU;
 		KR_TwV.Z_1_1_HMI		:= KR_TwV.Z_1_1_PRU;
-		KR_TwV.UST_1_1_MIN		:= uint_to_lreal(KR_TwV.UST_1_1_MIN_PRU)/lreal#100.0;
+		KR_TwV.UST_1_1_MIN		:= uint_to_real(KR_TwV.UST_1_1_MIN_PRU)/real#100.0;
 		KR_TwV.UST_1_1_MIN_HMI	:= KR_TwV.UST_1_1_MIN_PRU;
-		KR_TwV.UST_1_1_MAX		:= uint_to_lreal(KR_TwV.UST_1_1_MAX_PRU)/lreal#100.0;
+		KR_TwV.UST_1_1_MAX		:= uint_to_real(KR_TwV.UST_1_1_MAX_PRU)/real#100.0;
 		KR_TwV.UST_1_1_MAX_HMI	:= KR_TwV.UST_1_1_MAX_PRU;
 	end_if;
 	if (KR_TwV.allow_bit_HMI_1_1 and not KR_TwV.allow_bit_PRU_1_1) then //если есть бит разрешения записи уставки положения от СКАДы, записываем новое значение позиции клапана
 		KR_TwV.Z_1_1		:= KR_TwV.Z_1_1_HMI;
 		KR_TwV.Z_1_1_PRU	:= KR_TwV.Z_1_1_HMI;
 	end_if;
-	KC1_STU3_AO_HMI.A2_4_1_Pos_TwV1_1 := uint_to_lreal(KR_TwV.Z_1_1);
-	KC1_STU3_AO_DRV.A2_4_1 := lreal_to_uint(AO_min + (AO_max - AO_min) * (KC1_STU3_AO_HMI.A2_4_1_Pos_TwV1_1) / lreal#100.0);
+	KC1_STU3_AO_HMI.A2_4_1_Pos_TwV1_1 := uint_to_real(KR_TwV.Z_1_1);
+	KC1_STU3_AO_DRV.A2_4_1 := real_to_uint(AO_min + (AO_max - AO_min) * (KC1_STU3_AO_HMI.A2_4_1_Pos_TwV1_1) / real#100.0);
 else
-	proc_reg_twv1_1(KC1_STU3_AI_HMI.A1_8_1_Tg2_out2.PV, KC1_STU3_AO_DRV.A2_4_1, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(KR_TwV.UST_1_1_MIN), lreal_to_real(KR_TwV.UST_1_1_MAX)); //Регулирование температуры газа на выходе 2 клапаном TwV1.1 по П-закону
-	KR_TwV.Z_1_1 := lreal_to_uint(real_to_lreal(AI_Scale_func(KC1_STU3_AO_DRV.A2_4_1, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(lreal#0.0), lreal_to_real(lreal#100.0))));
-	KR_TwV.UST_1_1_MIN_PRU := lreal_to_uint(KR_TwV.UST_1_1_MIN * lreal#100.0); 
-	KR_TwV.UST_1_1_MAX_PRU := lreal_to_uint(KR_TwV.UST_1_1_MAX * lreal#100.0); 
+	proc_reg_twv1_1(KC1_STU3_AI_HMI.A1_8_1_Tg2_out2.PV, KC1_STU3_AO_DRV.A2_4_1, AO_min, AO_max, KR_TwV.UST_1_1_MIN, KR_TwV.UST_1_1_MAX); //Регулирование температуры газа на выходе 2 клапаном TwV1.1 по П-закону
+	KR_TwV.Z_1_1 := real_to_uint(AI_Scale_func(KC1_STU3_AO_DRV.A2_4_1, AO_min, AO_max, real#0.0, real#100.0));
+	KR_TwV.UST_1_1_MIN_PRU := real_to_uint(KR_TwV.UST_1_1_MIN * real#100.0); 
+	KR_TwV.UST_1_1_MAX_PRU := real_to_uint(KR_TwV.UST_1_1_MAX * real#100.0); 
 end_if;
 
 
@@ -2165,27 +2211,26 @@ if rtrig_TwV1_2.Q then
 	KR_TwV.Z_1_2_PRU := KR_TwV.Z_1_2; 
 end_if;
 
-//if rtrig_TwV1_2.Q then KR_TwV.Z_1_2_HMI := real_to_lreal(AI_Scale_func(KC1_STU3_AO_DRV.A2_5_1, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(lreal#0.0), lreal_to_real(lreal#100.0))); end_if;
 if KR_TwV.DA_1_2 then
 	if (KR_TwV.allow_bit_PRU_1_2 and not KR_TwV.allow_bit_HMI_1_2) then  //если есть бит разрешения записи уставки положения от панели, записываем новое значение позиции клапана
 		KR_TwV.Z_1_2			:= KR_TwV.Z_1_2_PRU;
 		KR_TwV.Z_1_2_HMI		:= KR_TwV.Z_1_2_PRU;
-		KR_TwV.UST_1_2_MIN		:= uint_to_lreal(KR_TwV.UST_1_2_MIN_PRU)/lreal#100.0;
+		KR_TwV.UST_1_2_MIN		:= uint_to_real(KR_TwV.UST_1_2_MIN_PRU)/real#100.0;
 		KR_TwV.UST_1_2_MIN_HMI	:= KR_TwV.UST_1_2_MIN_PRU;
-		KR_TwV.UST_1_2_MAX		:= uint_to_lreal(KR_TwV.UST_1_2_MAX_PRU)/lreal#100.0;
+		KR_TwV.UST_1_2_MAX		:= uint_to_real(KR_TwV.UST_1_2_MAX_PRU)/real#100.0;
 		KR_TwV.UST_1_2_MAX_HMI	:= KR_TwV.UST_1_2_MAX_PRU;		
 	end_if;
 	if (KR_TwV.allow_bit_HMI_1_1 and not KR_TwV.allow_bit_PRU_1_1) then //если есть бит разрешения записи уставки положения от СКАДы, записываем новое значение позиции клапана
 		KR_TwV.Z_1_1		:= KR_TwV.Z_1_1_HMI;
 		KR_TwV.Z_1_1_PRU	:= KR_TwV.Z_1_1_HMI;
 	end_if;
-	KC1_STU3_AO_HMI.A2_5_1_Pos_TwV1_2 := uint_to_lreal(KR_TwV.Z_1_2);
-	KC1_STU3_AO_DRV.A2_5_1 := lreal_to_uint(AO_min + (AO_max - AO_min) * (KC1_STU3_AO_HMI.A2_5_1_Pos_TwV1_2) / lreal#100.0);
+	KC1_STU3_AO_HMI.A2_5_1_Pos_TwV1_2 := uint_to_real(KR_TwV.Z_1_2);
+	KC1_STU3_AO_DRV.A2_5_1 := real_to_uint(AO_min + (AO_max - AO_min) * (KC1_STU3_AO_HMI.A2_5_1_Pos_TwV1_2) / real#100.0);
 else
-	proc_reg_twv1_2(KC1_STU3_AI_HMI.A1_9_1_Tv1_ot.PV, KC1_STU3_AO_DRV.A2_5_1, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(KR_TwV.UST_1_2_MIN), lreal_to_real(KR_TwV.UST_1_2_MAX)); //Регулирование температуры воздуха в технол. отсеке клапаном TwV1.2 по П-закону
-	KR_TwV.Z_1_2 := lreal_to_uint(real_to_lreal(AI_Scale_func(KC1_STU3_AO_DRV.A2_5_1, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(lreal#0.0), lreal_to_real(lreal#100.0))));
-	KR_TwV.UST_1_2_MIN_PRU := lreal_to_uint(KR_TwV.UST_1_2_MIN * lreal#100.0); 
-	KR_TwV.UST_1_2_MAX_PRU := lreal_to_uint(KR_TwV.UST_1_2_MAX * lreal#100.0); 
+	proc_reg_twv1_2(KC1_STU3_AI_HMI.A1_9_1_Tv1_ot.PV, KC1_STU3_AO_DRV.A2_5_1, AO_min, AO_max, KR_TwV.UST_1_2_MIN, KR_TwV.UST_1_2_MAX); //Регулирование температуры воздуха в технол. отсеке клапаном TwV1.2 по П-закону
+	KR_TwV.Z_1_2 := real_to_uint(AI_Scale_func(KC1_STU3_AO_DRV.A2_5_1, AO_min, AO_max, real#0.0, real#100.0));
+	KR_TwV.UST_1_2_MIN_PRU := real_to_uint(KR_TwV.UST_1_2_MIN * real#100.0); 
+	KR_TwV.UST_1_2_MAX_PRU := real_to_uint(KR_TwV.UST_1_2_MAX * real#100.0); 
 end_if;
 
 
@@ -2206,22 +2251,22 @@ if KR_XV.DA_3_1 then
 	if (KR_XV.allow_bit_PRU_3_1 and not KR_XV.allow_bit_HMI_3_1) then  //если есть бит разрешения записи уставки положения от панели, записываем новое значение позиции клапана
 		KR_XV.Z_3_1			:= KR_XV.Z_3_1_PRU;
 		KR_XV.Z_3_1_HMI		:= KR_XV.Z_3_1_PRU;
-		KR_XV.UST_3_1_MIN		:= uint_to_lreal(KR_XV.UST_3_1_MIN_PRU)/lreal#100.0;
+		KR_XV.UST_3_1_MIN		:= uint_to_real(KR_XV.UST_3_1_MIN_PRU)/real#100.0;
 		KR_XV.UST_3_1_MIN_HMI	:= KR_XV.UST_3_1_MIN_PRU;
-		KR_XV.UST_3_1_MAX		:= uint_to_lreal(KR_XV.UST_3_1_MAX_PRU)/lreal#100.0;
+		KR_XV.UST_3_1_MAX		:= uint_to_real(KR_XV.UST_3_1_MAX_PRU)/real#100.0;
 		KR_XV.UST_3_1_MAX_HMI	:= KR_XV.UST_3_1_MAX_PRU;
 	end_if;
 	if (KR_XV.allow_bit_HMI_3_1 and not KR_XV.allow_bit_PRU_3_1) then //если есть бит разрешения записи уставки положения от СКАДы, записываем новое значение позиции клапана
 		KR_XV.Z_3_1		:= KR_XV.Z_3_1_HMI;
 		KR_XV.Z_3_1_PRU	:= KR_XV.Z_3_1_HMI;
 	end_if;
-	KC1_STU3_AO_HMI.A2_4_2_Pos_XV3_1 := uint_to_lreal(KR_XV.Z_3_1);
-	KC1_STU3_AO_DRV.A2_4_2 := lreal_to_uint(AO_min + (AO_max - AO_min) * (KC1_STU3_AO_HMI.A2_4_2_Pos_XV3_1) / lreal#100.0);
+	KC1_STU3_AO_HMI.A2_4_2_Pos_XV3_1 := uint_to_real(KR_XV.Z_3_1);
+	KC1_STU3_AO_DRV.A2_4_2 := real_to_uint(AO_min + (AO_max - AO_min) * (KC1_STU3_AO_HMI.A2_4_2_Pos_XV3_1) / real#100.0);
 else
-	proc_reg_xv3_1(real#0.0, KC1_STU3_AO_DRV.A2_4_2, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(KR_XV.UST_3_1_MIN), lreal_to_real(KR_XV.UST_3_1_MAX)); //Регулирование параметра клапаном XV3.1 по П-закону
-	KR_XV.Z_3_1 := lreal_to_uint(real_to_lreal(AI_Scale_func(KC1_STU3_AO_DRV.A2_4_2, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(lreal#0.0), lreal_to_real(lreal#100.0))));
-	KR_XV.UST_3_1_MIN_PRU := lreal_to_uint(KR_XV.UST_3_1_MIN * lreal#100.0); 
-	KR_XV.UST_3_1_MAX_PRU := lreal_to_uint(KR_XV.UST_3_1_MAX * lreal#100.0); 
+	proc_reg_xv3_1(real#0.0, KC1_STU3_AO_DRV.A2_4_2, AO_min, AO_max, KR_XV.UST_3_1_MIN, KR_XV.UST_3_1_MAX); //Регулирование параметра клапаном XV3.1 по П-закону
+	KR_XV.Z_3_1 := real_to_uint(AI_Scale_func(KC1_STU3_AO_DRV.A2_4_2, AO_min, AO_max, real#0.0, real#100.0));
+	KR_XV.UST_3_1_MIN_PRU := real_to_uint(KR_XV.UST_3_1_MIN * real#100.0); 
+	KR_XV.UST_3_1_MAX_PRU := real_to_uint(KR_XV.UST_3_1_MAX * real#100.0); 
 end_if;
 
 
@@ -2242,22 +2287,22 @@ if KR_XV.DA_3_2 then
 	if (KR_XV.allow_bit_PRU_3_2 and not KR_XV.allow_bit_HMI_3_2) then  //если есть бит разрешения записи уставки положения от панели, записываем новое значение позиции клапана
 		KR_XV.Z_3_2			:= KR_XV.Z_3_2_PRU;
 		KR_XV.Z_3_2_HMI		:= KR_XV.Z_3_2_PRU;
-		KR_XV.UST_3_2_MIN		:= uint_to_lreal(KR_XV.UST_3_2_MIN_PRU)/lreal#100.0;
+		KR_XV.UST_3_2_MIN		:= uint_to_real(KR_XV.UST_3_2_MIN_PRU)/real#100.0;
 		KR_XV.UST_3_2_MIN_HMI	:= KR_XV.UST_3_2_MIN_PRU;
-		KR_XV.UST_3_2_MAX		:= uint_to_lreal(KR_XV.UST_3_2_MAX_PRU)/lreal#100.0;
+		KR_XV.UST_3_2_MAX		:= uint_to_real(KR_XV.UST_3_2_MAX_PRU)/real#100.0;
 		KR_XV.UST_3_2_MAX_HMI	:= KR_XV.UST_3_2_MAX_PRU;
 	end_if;
 	if (KR_XV.allow_bit_HMI_3_2 and not KR_XV.allow_bit_PRU_3_2) then //если есть бит разрешения записи уставки положения от СКАДы, записываем новое значение позиции клапана
 		KR_XV.Z_3_2		:= KR_XV.Z_3_2_HMI;
 		KR_XV.Z_3_2_PRU	:= KR_XV.Z_3_2_HMI;
 	end_if;
-	KC1_STU3_AO_HMI.A2_4_3_Pos_XV3_2 := uint_to_lreal(KR_XV.Z_3_2);
-	KC1_STU3_AO_DRV.A2_4_3 := lreal_to_uint(AO_min + (AO_max - AO_min) * (KC1_STU3_AO_HMI.A2_4_3_Pos_XV3_2) / lreal#100.0);
+	KC1_STU3_AO_HMI.A2_4_3_Pos_XV3_2 := uint_to_real(KR_XV.Z_3_2);
+	KC1_STU3_AO_DRV.A2_4_3 := real_to_uint(AO_min + (AO_max - AO_min) * (KC1_STU3_AO_HMI.A2_4_3_Pos_XV3_2) / real#100.0);
 else
-	proc_reg_xv3_2(real#0.0, KC1_STU3_AO_DRV.A2_4_3, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(KR_XV.UST_3_2_MIN), lreal_to_real(KR_XV.UST_3_2_MAX)); //Регулирование параметра клапаном XV3.1 по П-закону
-	KR_XV.Z_3_2 := lreal_to_uint(real_to_lreal(AI_Scale_func(KC1_STU3_AO_DRV.A2_4_3, lreal_to_real(AO_min), lreal_to_real(AO_max), lreal_to_real(lreal#0.0), lreal_to_real(lreal#100.0))));
-	KR_XV.UST_3_2_MIN_PRU := lreal_to_uint(KR_XV.UST_3_2_MIN * lreal#100.0); 
-	KR_XV.UST_3_2_MAX_PRU := lreal_to_uint(KR_XV.UST_3_2_MAX * lreal#100.0); 
+	proc_reg_xv3_2(real#0.0, KC1_STU3_AO_DRV.A2_4_3, AO_min, AO_max, KR_XV.UST_3_2_MIN, KR_XV.UST_3_2_MAX); //Регулирование параметра клапаном XV3.1 по П-закону
+	KR_XV.Z_3_2 := real_to_uint(AI_Scale_func(KC1_STU3_AO_DRV.A2_4_3, AO_min, AO_max, real#0.0, real#100.0));
+	KR_XV.UST_3_2_MIN_PRU := real_to_uint(KR_XV.UST_3_2_MIN * real#100.0); 
+	KR_XV.UST_3_2_MAX_PRU := real_to_uint(KR_XV.UST_3_2_MAX * real#100.0); 
 end_if;
 
 
@@ -2492,6 +2537,12 @@ end_case;]]></ST>
                 <Variable UUID="7ACE42664558DA688FAAB785D02C1126" Name="DI_126" Type="DI_Proc" TypeUUID="90D0C5D044939603D0BD418B90A10328" Usage="internal" />
                 <Variable UUID="7ACE42664558DA688FAAB785D02C1127" Name="DI_127" Type="DI_Proc" TypeUUID="90D0C5D044939603D0BD418B90A10328" Usage="internal" />
                 <Variable UUID="7ACE42664558DA688FAAB785D02C1128" Name="DI_128" Type="DI_Proc" TypeUUID="90D0C5D044939603D0BD418B90A10328" Usage="internal" />
+                <Variable UUID="4441896B4C9CDF0819B64AB0A1E4E4BC" Name="AI_AS_DI_001" Type="AI_TO_DI" TypeUUID="F29B0A244FCF53C51057D8A2000C32B0" Usage="internal" />
+                <Variable UUID="7B393FFE42F6C062C880FCBB5008F919" Name="AI_AS_DI_002" Type="AI_TO_DI" TypeUUID="F29B0A244FCF53C51057D8A2000C32B0" Usage="internal" />
+                <Variable UUID="FFF6FAF74C61FD97FD328B95306B73D0" Name="AI_AS_DI_003" Type="AI_TO_DI" TypeUUID="F29B0A244FCF53C51057D8A2000C32B0" Usage="internal" />
+                <Variable UUID="4B56763A49D56FF8DB2691966EDF3C5A" Name="AI_AS_DI_004" Type="AI_TO_DI" TypeUUID="F29B0A244FCF53C51057D8A2000C32B0" Usage="internal" />
+                <Variable UUID="C78B981544A4E502441A8C8ACAC4F45B" Name="AI_AS_DI_005" Type="AI_TO_DI" TypeUUID="F29B0A244FCF53C51057D8A2000C32B0" Usage="internal" />
+                <Variable UUID="FDFD356D4DDFD60F3E3B75A29B84128B" Name="AI_AS_DI_006" Type="AI_TO_DI" TypeUUID="F29B0A244FCF53C51057D8A2000C32B0" Usage="internal" />
             </Variables>
             <ST><![CDATA[if not IMIT then
 DI_001(KC1_STU3_DI_DRV.A2_6_1,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_6_1_GB1_1_ON,					'Подогреватель теплоносителя GB1.1 включен');
@@ -2515,8 +2566,8 @@ DI_018(KC1_STU3_DI_DRV.A2_7_2,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_2_V_XV3_1_O
 DI_019(KC1_STU3_DI_DRV.A2_7_3,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_3_V_XV3_1_OFF,					'Кран XV3.1 закрыт');
 DI_020(KC1_STU3_DI_DRV.A2_7_4,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_4_V_XV3_2_ON,					'Кран XV3.2 открыт');
 DI_021(KC1_STU3_DI_DRV.A2_7_5,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_5_V_XV3_2_OFF,					'Кран XV3.2 закрыт');
-DI_022(KC1_STU3_DI_DRV.A2_7_6,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_6_V_CDL_SUPP_PIPE_ON,			'Кран свечной подводящего трубопровода открыт');
-DI_023(KC1_STU3_DI_DRV.A2_7_7,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_7_V_CDL_SUPP_PIPE_OFF,			'Кран свечной подводящего трубопровода закрыт');
+DI_022(KC1_STU3_DI_DRV.A2_7_6,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_6_V_187c_ON,					'Кран свечной подводящего трубопровода открыт');
+DI_023(KC1_STU3_DI_DRV.A2_7_7,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_7_V_187c_OFF,					'Кран свечной подводящего трубопровода закрыт');
 DI_024(KC1_STU3_DI_DRV.A2_7_8,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_8_ESD,							'Аварийный останов');
 DI_025(KC1_STU3_DI_DRV.A2_7_9,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_9_V_IN_ON,						'Входной кран открыт');
 DI_026(KC1_STU3_DI_DRV.A2_7_10,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A2_7_10_V_IN_OFF,					'Входной кран закрыт');
@@ -2593,12 +2644,12 @@ DI_096(KC1_STU3_DI_DRV.A3_3_16,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_3_16_CHECK_R
 DI_097(KC1_STU3_DI_DRV.A3_4_1,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_1_GC_OSN_IP_BEAO_DC_24,		'Исправность осн. ИП =24В БЭАО');
 DI_098(KC1_STU3_DI_DRV.A3_4_2,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_2_GC_REZ_IP_BEAO_DC_24,		'Исправность рез. ИП =24В БЭАО');
 DI_099(KC1_STU3_DI_DRV.A3_4_3,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_3_Door_PK_open,				'Дверь ПК открыта');
-DI_100(KC1_STU3_DI_DRV.A3_4_4,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_4_V_IN_DU_ON,					'Входной кран дист. управление Включено');
+DI_100(KC1_STU3_DI_DRV.A3_4_4,		INT#3,	BOOL#1,		KC1_STU3_DI_HMI.A3_4_4_V_IN_DU_ON,					'Входной кран дист. управление Включено');
 DI_101(KC1_STU3_DI_DRV.A3_4_5,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_5_V_IN_ALL_FTL,				'Входной кран. Общая неисправность привода');
-DI_102(KC1_STU3_DI_DRV.A3_4_6,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_6_V_CDL_DU_ON,					'Свечной кран дист. управление Включено');
+DI_102(KC1_STU3_DI_DRV.A3_4_6,		INT#3,	BOOL#1,		KC1_STU3_DI_HMI.A3_4_6_V_CDL_DU_ON,					'Свечной кран дист. управление Включено');
 DI_103(KC1_STU3_DI_DRV.A3_4_7,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_7_V_CDL_ALL_FLT,				'Свечной кран. Общая неисправность привода');
-DI_104(KC1_STU3_DI_DRV.A3_4_8,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_8_V_CDL_SUPP_PIPE_DU_ON,		'Кран свечной подводящего трубопровода дист. управление Включено');
-DI_105(KC1_STU3_DI_DRV.A3_4_9,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_9_V_CDL_SUPP_PIPE_ALL_FLT,		'Кран свечной подводящего трубопровода. Общая неисправность привода');
+DI_104(KC1_STU3_DI_DRV.A3_4_8,		INT#3,	BOOL#1,		KC1_STU3_DI_HMI.A3_4_8_V_187c_DU_ON,				'Кран свечной подводящего трубопровода дист. управление Включено');
+DI_105(KC1_STU3_DI_DRV.A3_4_9,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_9_V_187c_ALL_FLT,				'Кран свечной подводящего трубопровода. Общая неисправность привода');
 DI_106(KC1_STU3_DI_DRV.A3_4_10,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_10_NC,							'Не подключен');
 DI_107(KC1_STU3_DI_DRV.A3_4_11,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_11_NC,							'Не подключен');
 DI_108(KC1_STU3_DI_DRV.A3_4_12,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_12_NC,							'Не подключен');
@@ -2622,7 +2673,10 @@ DI_125(KC1_STU3_DI_DRV.A3_5_13,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_5_13_V_SV1_1
 DI_126(KC1_STU3_DI_DRV.A3_5_14,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_5_14_SOUND_ON_KCU,				'Звуковой сигнал. КЦУ');
 DI_127(KC1_STU3_DI_DRV.A3_5_15,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_5_15_V_XV3_1_ON_KCU,				'Открыть кран XV3.1. КЦУ');
 DI_128(KC1_STU3_DI_DRV.A3_5_16,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_5_16_V_XV3_1_OFF_KCU,			'Закрыть кран XV3.1. КЦУ');
-end_if;]]></ST>
+end_if;
+
+//Преобразование аналогов в дискреты
+AI_AS_DI_001(bool#1, KC1_STU3_AI_HMI.A1_3_3_Lk1_E4.PV, real#1.0,DI_AS_AI.Lk1_E4_hi, DI_AS_AI.Lk1_E4_hi_flt);]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="BBCB778D49A7D5C4203B66B139CF5C01" Name="FB_DO">
             <Variables>
@@ -2678,8 +2732,8 @@ DO_013(KC1_STU3_DO_HMI.A3_6_13_V_SV1_1_ON,		KC1_STU3_DO_DRV.A3_6_13,	'Откры
 //DO_016(KC1_STU3_DO_HMI.A3_6_16_V_XV3_1_OFF,		KC1_STU3_DO_DRV.A3_6_16,'Закрыть кран XV3.1');
 DO_017(KC1_STU3_DO_HMI.A3_7_1_V_XV3_2_ON,		KC1_STU3_DO_DRV.A3_7_1,		'Открыть кран XV3.2');
 DO_018(KC1_STU3_DO_HMI.A3_7_2_V_XV3_2_OFF,		KC1_STU3_DO_DRV.A3_7_2,		'Закрыть кран XV3.2');
-DO_019(KC1_STU3_DO_HMI.A3_7_3_V_CDL_SUPP_PIPE_ON,KC1_STU3_DO_DRV.A3_7_3,	'Кран свечной подводящего трубопровода Открыть');
-DO_020(KC1_STU3_DO_HMI.A3_7_4_V_CDL_SUPP_PIPE_OFF,KC1_STU3_DO_DRV.A3_7_4,	'Кран свечной подводящего трубопровода Закрыть');
+DO_019(KC1_STU3_DO_HMI.A3_7_3_V_187c_ON,		KC1_STU3_DO_DRV.A3_7_3,	'Кран свечной подводящего трубопровода Открыть');
+DO_020(KC1_STU3_DO_HMI.A3_7_4_V_187c_OFF,		KC1_STU3_DO_DRV.A3_7_4,	'Кран свечной подводящего трубопровода Закрыть');
 DO_021(KC1_STU3_DO_HMI.A3_7_5_N_P1_3_ON,		KC1_STU3_DO_DRV.A3_7_5,		'Включить насос Р1.3');
 DO_022(KC1_STU3_DO_HMI.A3_7_6_N_P1_4_ON,		KC1_STU3_DO_DRV.A3_7_6,		'Включить насос Р1.4');
 DO_023(KC1_STU3_DO_HMI.A3_7_7_N_P1_5_ON,		KC1_STU3_DO_DRV.A3_7_7,		'Включить насос Р1.5');
@@ -2783,6 +2837,11 @@ end_if;]]></ST>
                 <Variable UUID="B74E34F84E3A2EA967BF1AABE100D9DB" Name="wState_tmp_state2" Type="WORD" TypeUUID="05CD1AAB4891B30C004C2799CA460884" Usage="internal" />
                 <Variable UUID="A6335B9D47C8AEF62E127AB719DCCA6E" Name="wState_tmp_err1" Type="WORD" TypeUUID="05CD1AAB4891B30C004C2799CA460884" Usage="internal" />
                 <Variable UUID="978BBE494176EC1005DC4B923D165046" Name="wState_tmp_err2" Type="WORD" TypeUUID="05CD1AAB4891B30C004C2799CA460884" Usage="internal" />
+                <Variable UUID="2792F8B7409FD61250F9A88CBBC258F5" Name="SEN_KC1_STU3_KR_187c" Type="support_ACT" TypeUUID="E2F512E0418E53D1482E2F9E54A664A9" Usage="internal" />
+                <Variable UUID="FE1255364D85FE36CA2629B389A54D8B" Name="cfg_KC1_STU3_KR_187c" Type="VLV_cfg" TypeUUID="03FC474C44065334B97FF8985FD8215B" Usage="internal" />
+                <Variable UUID="8124B4B342F0546624B2CF9953505360" Name="vlv_KC1_STU3_KR_187c" Type="proc_VLV22" TypeUUID="D462FA7146F4E9F333226CA88FF08990" Usage="internal" />
+                <Variable UUID="6FF96819497E23F92D5120BCCDD35F84" Name="imit_KC1_STU3_KR_187c" Type="VLV_imit" TypeUUID="A09AE2844B73351BF94B378381A47C0F" Usage="internal" />
+                <Variable UUID="F4F7CF84480EA00509ECA1B346CD5B50" Name="ctrl_KC1_STU3_KR_187c" Type="Ctrl_crane" TypeUUID="8241A1A94DC7CD2DAF4A08841D436394" Usage="internal" />
             </Variables>
             <ST><![CDATA[if Firstscan then		                                         //таймер команды	//таймер дожима		//цепи "откр"	//цепи "закр"	//Дист/Авто
 SEN_KC1_STU3_KR_IN		 := VLV_init(	SEN_KC1_STU3_KR_IN,		 LREAL#6, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
@@ -2790,6 +2849,7 @@ SEN_KC1_STU3_KR_CDL		 := VLV_init(	SEN_KC1_STU3_KR_CDL, 	 LREAL#6, LREAL#1, BYTE
 //SEN_KC1_STU3_KR_XV3_1	 := VLV_init(	SEN_KC1_STU3_KR_XV3_1,	 LREAL#6, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
 //SEN_KC1_STU3_KR_XV3_2	 := VLV_init(	SEN_KC1_STU3_KR_XV3_2,	 LREAL#6, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
 SEN_KC1_STU3_KR_SV1_1	 := VLV_init(	SEN_KC1_STU3_KR_SV1_1,   LREAL#6, LREAL#1, BYTE#0, BYTE#1, BOOL#1);
+SEN_KC1_STU3_KR_187c	 := VLV_init(	SEN_KC1_STU3_KR_187c,	 LREAL#6, LREAL#1, BYTE#1, BYTE#1, BOOL#1);
 
 SEN_KC1_STU3_IM_V_TO	 := VLV_init(	SEN_KC1_STU3_IM_V_TO,    LREAL#5, LREAL#1, BYTE#0, BYTE#1, BOOL#1);
 //SEN_KC1_STU3_IM_N_P1_1	 := VLV_init(	SEN_KC1_STU3_IM_N_P1_1,  LREAL#5, LREAL#1, BYTE#0, BYTE#1, BOOL#1);
@@ -2810,6 +2870,7 @@ ctrl_KC1_STU3_KR_CDL(KC1_STU3_VLV_PRU.KR_CDL.RA_on,     	KC1_STU3_VLV_PRU.KR_CDL
 //ctrl_KC1_STU3_KR_XV3_1(KC1_STU3_VLV_PRU.KR_XV3_1.RA_on, 	KC1_STU3_VLV_PRU.KR_XV3_1.RA_off,   	KC1_STU3_VLV_HMI.KR_XV3_1.RA_on, 	KC1_STU3_VLV_HMI.KR_XV3_1.RA_off, 	KC1_STU3_VLV_PRU.KR_XV3_1.rOn, 		KC1_STU3_VLV_PRU.KR_XV3_1.rOff, 	KC1_STU3_VLV_HMI.KR_XV3_1.rOn, 		KC1_STU3_VLV_HMI.KR_XV3_1.rOff, 	KC1_STU3_VLV_LG.KR_XV3_1.state,	 KC1_STU3_VLV_LG.KR_XV3_1.flt_all, 	 KC1_STU3_VLV_PRU.KR_XV3_1.state, 	KC1_STU3_VLV_HMI.KR_XV3_1.state,	KC1_STU3_VLV_PRU.KR_XV3_1.flt_all,		KC1_STU3_VLV_HMI.KR_XV3_1.flt_all, 			KC1_STU3_VLV_LG.KR_XV3_1.RA, 	KC1_STU3_VLV_PRU.KR_XV3_1.RA, 	KC1_STU3_VLV_HMI.KR_XV3_1.RA, 	KC1_STU3_VLV_LG.KR_XV3_1.rOn, 	KC1_STU3_VLV_LG.KR_XV3_1.rOff);
 //ctrl_KC1_STU3_KR_XV3_2(KC1_STU3_VLV_PRU.KR_XV3_2.RA_on, 	KC1_STU3_VLV_PRU.KR_XV3_2.RA_off,   	KC1_STU3_VLV_HMI.KR_XV3_2.RA_on, 	KC1_STU3_VLV_HMI.KR_XV3_2.RA_off, 	KC1_STU3_VLV_PRU.KR_XV3_2.rOn, 		KC1_STU3_VLV_PRU.KR_XV3_2.rOff, 	KC1_STU3_VLV_HMI.KR_XV3_2.rOn, 		KC1_STU3_VLV_HMI.KR_XV3_2.rOff, 	KC1_STU3_VLV_LG.KR_XV3_2.state,	 KC1_STU3_VLV_LG.KR_XV3_2.flt_all, 	 KC1_STU3_VLV_PRU.KR_XV3_2.state, 	KC1_STU3_VLV_HMI.KR_XV3_2.state,	KC1_STU3_VLV_PRU.KR_XV3_2.flt_all,		KC1_STU3_VLV_HMI.KR_XV3_2.flt_all, 			KC1_STU3_VLV_LG.KR_XV3_2.RA, 	KC1_STU3_VLV_PRU.KR_XV3_2.RA, 	KC1_STU3_VLV_HMI.KR_XV3_2.RA, 	KC1_STU3_VLV_LG.KR_XV3_2.rOn, 	KC1_STU3_VLV_LG.KR_XV3_2.rOff);
 ctrl_KC1_STU3_KR_SV1_1(KC1_STU3_VLV_PRU.KR_SV1_1.RA_on, 	KC1_STU3_VLV_PRU.KR_SV1_1.RA_off,   	KC1_STU3_VLV_HMI.KR_SV1_1.RA_on, 	KC1_STU3_VLV_HMI.KR_SV1_1.RA_off, 	KC1_STU3_VLV_PRU.KR_SV1_1.rOn, 		KC1_STU3_VLV_PRU.KR_SV1_1.rOff, 	KC1_STU3_VLV_HMI.KR_SV1_1.rOn, 		KC1_STU3_VLV_HMI.KR_SV1_1.rOff, 	KC1_STU3_VLV_LG.KR_SV1_1.state,  KC1_STU3_VLV_LG.KR_SV1_1.flt_all,	 KC1_STU3_VLV_PRU.KR_SV1_1.state, 	KC1_STU3_VLV_HMI.KR_SV1_1.state,	KC1_STU3_VLV_PRU.KR_SV1_1.flt_all,		KC1_STU3_VLV_HMI.KR_SV1_1.flt_all, 			KC1_STU3_VLV_LG.KR_SV1_1.RA, 	KC1_STU3_VLV_PRU.KR_SV1_1.RA, 	KC1_STU3_VLV_HMI.KR_SV1_1.RA, 	KC1_STU3_VLV_LG.KR_SV1_1.rOn, 	KC1_STU3_VLV_LG.KR_SV1_1.rOff);
+ctrl_KC1_STU3_KR_187c(KC1_STU3_VLV_PRU.KR_187c.RA_on, 		KC1_STU3_VLV_PRU.KR_187c.RA_off,   		KC1_STU3_VLV_HMI.KR_187c.RA_on, 	KC1_STU3_VLV_HMI.KR_187c.RA_off, 	KC1_STU3_VLV_PRU.KR_187c.rOn, 		KC1_STU3_VLV_PRU.KR_187c.rOff, 		KC1_STU3_VLV_HMI.KR_187c.rOn, 		KC1_STU3_VLV_HMI.KR_187c.rOff, 		KC1_STU3_VLV_LG.KR_187c.state,   KC1_STU3_VLV_LG.KR_187c.flt_all,	 KC1_STU3_VLV_PRU.KR_187c.state, 	KC1_STU3_VLV_HMI.KR_187c.state,		KC1_STU3_VLV_PRU.KR_187c.flt_all,		KC1_STU3_VLV_HMI.KR_187c.flt_all, 			KC1_STU3_VLV_LG.KR_187c.RA, 	KC1_STU3_VLV_PRU.KR_187c.RA, 	KC1_STU3_VLV_HMI.KR_187c.RA, 	KC1_STU3_VLV_LG.KR_187c.rOn, 	KC1_STU3_VLV_LG.KR_187c.rOff);
 ctrl_KC1_STU3_IM_V_TO(KC1_STU3_VLV_PRU.IM_V_TO.RA_on, 		KC1_STU3_VLV_PRU.IM_V_TO.RA_off,    	KC1_STU3_VLV_HMI.IM_V_TO.RA_on,  	KC1_STU3_VLV_HMI.IM_V_TO.RA_off,  	KC1_STU3_VLV_PRU.IM_V_TO.rOn,  		KC1_STU3_VLV_PRU.IM_V_TO.rOff,  	KC1_STU3_VLV_HMI.IM_V_TO.rOn,  		KC1_STU3_VLV_HMI.IM_V_TO.rOff,  	KC1_STU3_VLV_LG.IM_V_TO.state,	 KC1_STU3_VLV_LG.IM_V_TO.flt_all,  	 KC1_STU3_VLV_PRU.IM_V_TO.state,  	KC1_STU3_VLV_HMI.IM_V_TO.state,		KC1_STU3_VLV_PRU.IM_V_TO.flt_all,		KC1_STU3_VLV_HMI.IM_V_TO.flt_all,  			KC1_STU3_VLV_LG.IM_V_TO.RA,  	KC1_STU3_VLV_PRU.IM_V_TO.RA,  	KC1_STU3_VLV_HMI.IM_V_TO.RA,  	KC1_STU3_VLV_LG.IM_V_TO.rOn,  	KC1_STU3_VLV_LG.IM_V_TO.rOff);
 //ctrl_KC1_STU3_IM_N_P1_1(KC1_STU3_VLV_PRU.IM_N_P1_1.RA_on, 	KC1_STU3_VLV_PRU.IM_N_P1_1.RA_off,    	KC1_STU3_VLV_HMI.IM_N_P1_1.RA_on,  	KC1_STU3_VLV_HMI.IM_N_P1_1.RA_off,  KC1_STU3_VLV_PRU.IM_N_P1_1.rOn,  	KC1_STU3_VLV_PRU.IM_N_P1_1.rOff,  	KC1_STU3_VLV_HMI.IM_N_P1_1.rOn,  	KC1_STU3_VLV_HMI.IM_N_P1_1.rOff, 	KC1_STU3_VLV_LG.IM_N_P1_1.state, KC1_STU3_VLV_LG.IM_N_P1_1.flt_all,  KC1_STU3_VLV_PRU.IM_N_P1_1.state,  KC1_STU3_VLV_HMI.IM_N_P1_1.state,	KC1_STU3_VLV_PRU.IM_N_P1_1.flt_all,		KC1_STU3_VLV_HMI.IM_N_P1_1.flt_all,  		KC1_STU3_VLV_LG.IM_N_P1_1.RA,  	KC1_STU3_VLV_PRU.IM_N_P1_1.RA,  KC1_STU3_VLV_HMI.IM_N_P1_1.RA,  KC1_STU3_VLV_LG.IM_N_P1_1.rOn,  KC1_STU3_VLV_LG.IM_N_P1_1.rOff);
 //ctrl_KC1_STU3_IM_N_P1_2(KC1_STU3_VLV_PRU.IM_N_P1_2.RA_on, 	KC1_STU3_VLV_PRU.IM_N_P1_2.RA_off,    	KC1_STU3_VLV_HMI.IM_N_P1_2.RA_on,  	KC1_STU3_VLV_HMI.IM_N_P1_2.RA_off,  KC1_STU3_VLV_PRU.IM_N_P1_2.rOn,  	KC1_STU3_VLV_PRU.IM_N_P1_2.rOff,  	KC1_STU3_VLV_HMI.IM_N_P1_2.rOn,  	KC1_STU3_VLV_HMI.IM_N_P1_2.rOff, 	KC1_STU3_VLV_LG.IM_N_P1_2.state, KC1_STU3_VLV_LG.IM_N_P1_2.flt_all,  KC1_STU3_VLV_PRU.IM_N_P1_2.state,  KC1_STU3_VLV_HMI.IM_N_P1_2.state,	KC1_STU3_VLV_PRU.IM_N_P1_2.flt_all,		KC1_STU3_VLV_HMI.IM_N_P1_2.flt_all,  		KC1_STU3_VLV_LG.IM_N_P1_2.RA,  	KC1_STU3_VLV_PRU.IM_N_P1_2.RA,  KC1_STU3_VLV_HMI.IM_N_P1_2.RA,  KC1_STU3_VLV_LG.IM_N_P1_2.rOn,  KC1_STU3_VLV_LG.IM_N_P1_2.rOff);
@@ -2822,28 +2883,29 @@ ctrl_KC1_STU3_IM_H_GB1_2(KC1_STU3_VLV_PRU.IM_H_GB1_2.RA_on, KC1_STU3_VLV_PRU.IM_
 
 
 //Формирование входных сигналов и АПС для ИМ	ручн/автомат					включить в ручном				откл в ручном					CMD включить в ручном				CMD вкл в автомате					команда повторить				контроль КЦУ откр				контроль КЦУ закр					состояние открыт						состояние закрыт							КЦУ открытия									КЦУ закрытия
-cfg_KC1_STU3_KR_IN(SEN_KC1_STU3_KR_IN,			KC1_STU3_VLV_LG.KR_IN.RA,		KC1_STU3_VLV_LG.KR_IN.rOn,		KC1_STU3_VLV_LG.KR_IN.rOff,		KC1_STU3_VLV_LG.KR_IN.rOnOff,		KC1_STU3_VLV_LG.KR_IN.aOnOff,		KC1_STU3_VLV_HMI.KR_IN.rep,		KC1_STU3_VLV_LG.KR_IN.cwOn,		KC1_STU3_VLV_LG.KR_IN.cwOff,		KC1_STU3_DI_HMI.A2_7_9_V_IN_ON.PV,		KC1_STU3_DI_HMI.A2_7_10_V_IN_OFF.PV,		KC1_STU3_DI_HMI.A3_5_9_V_IN_ON_KCU.PV,			KC1_STU3_DI_HMI.A3_5_10_V_IN_OFF_KCU.PV,	KC1_STU3_VLV_LG.KR_IN.non,		KC1_STU3_VLV_LG.KR_IN.noff,		KC1_STU3_VLV_LG.KR_IN.nstart,		KC1_STU3_VLV_LG.KR_IN.selfon,		KC1_STU3_VLV_LG.KR_IN.selfoff,		KC1_STU3_VLV_LG.KR_IN.flt,		KC1_STU3_VLV_LG.KR_IN.ncon,		KC1_STU3_VLV_LG.KR_IN.ncoff,		KC1_STU3_VLV_LG.KR_IN.flt_all,		KC1_STU3_VLV_LG.KR_IN.state,		KC1_STU3_VLV_LG.KR_IN.extern);
-cfg_KC1_STU3_KR_CDL(SEN_KC1_STU3_KR_CDL,		KC1_STU3_VLV_LG.KR_CDL.RA,		KC1_STU3_VLV_LG.KR_CDL.rOn,		KC1_STU3_VLV_LG.KR_CDL.rOff,	KC1_STU3_VLV_LG.KR_CDL.rOnOff,		KC1_STU3_VLV_LG.KR_CDL.aOnOff,		KC1_STU3_VLV_HMI.KR_CDL.rep,	KC1_STU3_VLV_LG.KR_CDL.cwOn,	KC1_STU3_VLV_LG.KR_CDL.cwOff,		KC1_STU3_DI_HMI.A2_7_11_V_CDL_ON.PV,	KC1_STU3_DI_HMI.A2_7_12_V_CDL_OFF.PV,		KC1_STU3_DI_HMI.A3_5_11_V_CDL_ON_KCU.PV,		KC1_STU3_DI_HMI.A3_5_12_V_CDL_OFF_KCU.PV,	KC1_STU3_VLV_LG.KR_CDL.non,		KC1_STU3_VLV_LG.KR_CDL.noff,	KC1_STU3_VLV_LG.KR_CDL.nstart,		KC1_STU3_VLV_LG.KR_CDL.selfon,		KC1_STU3_VLV_LG.KR_CDL.selfoff,		KC1_STU3_VLV_LG.KR_CDL.flt,		KC1_STU3_VLV_LG.KR_CDL.ncon,	KC1_STU3_VLV_LG.KR_CDL.ncoff,		KC1_STU3_VLV_LG.KR_CDL.flt_all,		KC1_STU3_VLV_LG.KR_CDL.state,		KC1_STU3_VLV_LG.KR_CDL.extern);
-//cfg_KC1_STU3_KR_XV3_1(SEN_KC1_STU3_KR_XV3_1,	KC1_STU3_VLV_LG.KR_XV3_1.RA,	KC1_STU3_VLV_LG.KR_XV3_1.rOn,	KC1_STU3_VLV_LG.KR_XV3_1.rOff,	KC1_STU3_VLV_LG.KR_XV3_1.rOnOff,	KC1_STU3_VLV_LG.KR_XV3_1.aOnOff,	KC1_STU3_VLV_HMI.KR_XV3_1.rep,	KC1_STU3_VLV_LG.KR_XV3_1.cwOn,	KC1_STU3_VLV_LG.KR_XV3_1.cwOff,		KC1_STU3_DI_HMI.A2_7_2_V_XV3_1_ON.PV,	KC1_STU3_DI_HMI.A2_7_3_V_XV3_1_OFF.PV,		KC1_STU3_DI_HMI.A3_5_15_V_XV3_1_ON_KCU.PV,		KC1_STU3_DI_HMI.A3_5_16_V_XV3_1_OFF_KCU.PV,	KC1_STU3_VLV_LG.KR_XV3_1.non,	KC1_STU3_VLV_LG.KR_XV3_1.noff,	KC1_STU3_VLV_LG.KR_XV3_1.nstart,	KC1_STU3_VLV_LG.KR_XV3_1.selfon,	KC1_STU3_VLV_LG.KR_XV3_1.selfoff,	KC1_STU3_VLV_LG.KR_XV3_1.flt,	KC1_STU3_VLV_LG.KR_XV3_1.ncon,	KC1_STU3_VLV_LG.KR_XV3_1.ncoff,		KC1_STU3_VLV_LG.KR_XV3_1.flt_all,	KC1_STU3_VLV_LG.KR_XV3_1.state,		KC1_STU3_VLV_LG.KR_XV3_1.extern);
-//cfg_KC1_STU3_KR_XV3_2(SEN_KC1_STU3_KR_XV3_2,	KC1_STU3_VLV_LG.KR_XV3_2.RA,	KC1_STU3_VLV_LG.KR_XV3_2.rOn,	KC1_STU3_VLV_LG.KR_XV3_2.rOff,	KC1_STU3_VLV_LG.KR_XV3_2.rOnOff,	KC1_STU3_VLV_LG.KR_XV3_2.aOnOff,	KC1_STU3_VLV_HMI.KR_XV3_2.rep,	KC1_STU3_VLV_LG.KR_XV3_2.cwOn,	KC1_STU3_VLV_LG.KR_XV3_2.cwOff,		KC1_STU3_DI_HMI.A2_7_4_V_XV3_2_ON.PV,	KC1_STU3_DI_HMI.A2_7_5_V_XV3_2_OFF.PV,		KC1_STU3_DI_HMI.A2_9_1_V_XV3_2_ON_KCU.PV,		KC1_STU3_DI_HMI.A2_9_2_V_XV3_2_OFF_KCU.PV,	KC1_STU3_VLV_LG.KR_XV3_2.non,	KC1_STU3_VLV_LG.KR_XV3_2.noff,	KC1_STU3_VLV_LG.KR_XV3_2.nstart,	KC1_STU3_VLV_LG.KR_XV3_2.selfon,	KC1_STU3_VLV_LG.KR_XV3_2.selfoff,	KC1_STU3_VLV_LG.KR_XV3_2.flt,	KC1_STU3_VLV_LG.KR_XV3_2.ncon,	KC1_STU3_VLV_LG.KR_XV3_2.ncoff,		KC1_STU3_VLV_LG.KR_XV3_2.flt_all,	KC1_STU3_VLV_LG.KR_XV3_2.state,		KC1_STU3_VLV_LG.KR_XV3_2.extern);
-cfg_KC1_STU3_KR_SV1_1(SEN_KC1_STU3_KR_SV1_1,    KC1_STU3_VLV_LG.KR_SV1_1.RA,   	KC1_STU3_VLV_LG.KR_SV1_1.rOn,  	KC1_STU3_VLV_LG.KR_SV1_1.rOff, 	KC1_STU3_VLV_LG.KR_SV1_1.rOnOff,	KC1_STU3_VLV_LG.KR_SV1_1.aOnOff,	KC1_STU3_VLV_HMI.KR_SV1_1.rep,	KC1_STU3_VLV_LG.KR_SV1_1.cwOn,	KC1_STU3_VLV_LG.KR_SV1_1.cwOff,		KC1_STU3_DI_HMI.dummy.PV,				KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_DI_HMI.A3_5_13_V_SV1_1_ON_KCU.PV,		KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.KR_SV1_1.non,	KC1_STU3_VLV_LG.KR_SV1_1.noff,	KC1_STU3_VLV_LG.KR_SV1_1.nstart,	KC1_STU3_VLV_LG.KR_SV1_1.selfon,	KC1_STU3_VLV_LG.KR_SV1_1.selfoff,	KC1_STU3_VLV_LG.KR_SV1_1.flt,	KC1_STU3_VLV_LG.KR_SV1_1.ncon,	KC1_STU3_VLV_LG.KR_SV1_1.ncoff,		KC1_STU3_VLV_LG.KR_SV1_1.flt_all,	KC1_STU3_VLV_LG.KR_SV1_1.state,		KC1_STU3_VLV_LG.KR_SV1_1.extern);
-cfg_KC1_STU3_IM_V_TO(SEN_KC1_STU3_IM_V_TO,		KC1_STU3_VLV_LG.IM_V_TO.RA,		KC1_STU3_VLV_LG.IM_V_TO.rOn,	KC1_STU3_VLV_LG.IM_V_TO.rOff,	KC1_STU3_VLV_LG.IM_V_TO.rOnOff,		KC1_STU3_VLV_LG.IM_V_TO.aOnOff,		KC1_STU3_VLV_HMI.IM_V_TO.rep,	KC1_STU3_VLV_LG.IM_V_TO.cwOn,	KC1_STU3_VLV_LG.IM_V_TO.cwOff,		KC1_STU3_DI_HMI.A2_8_4_V_TO_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_4_V_TO_WORK.PV,	KC1_STU3_DI_HMI.A3_5_1_V_TO_ON_KCU.PV,			KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_V_TO.non,	KC1_STU3_VLV_LG.IM_V_TO.noff,	KC1_STU3_VLV_LG.IM_V_TO.nstart,		KC1_STU3_VLV_LG.IM_V_TO.selfon,		KC1_STU3_VLV_LG.IM_V_TO.selfoff,	KC1_STU3_VLV_LG.IM_V_TO.flt,	KC1_STU3_VLV_LG.IM_V_TO.ncon,	KC1_STU3_VLV_LG.IM_V_TO.ncoff,		KC1_STU3_VLV_LG.IM_V_TO.flt_all,	KC1_STU3_VLV_LG.IM_V_TO.state,		KC1_STU3_VLV_LG.IM_V_TO.extern);
-//cfg_KC1_STU3_IM_N_P1_1(SEN_KC1_STU3_IM_N_P1_1,	KC1_STU3_VLV_LG.IM_N_P1_1.RA,	KC1_STU3_VLV_LG.IM_N_P1_1.rOn,	KC1_STU3_VLV_LG.IM_N_P1_1.rOff,	KC1_STU3_VLV_LG.IM_N_P1_1.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_1.aOnOff,	KC1_STU3_VLV_HMI.IM_N_P1_1.rep,	KC1_STU3_VLV_LG.IM_N_P1_1.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_1.cwOff,	KC1_STU3_DI_HMI.A2_8_11_N_P1_1_WORK.PV, not KC1_STU3_DI_HMI.A2_8_11_N_P1_1_WORK.PV,	KC1_STU3_DI_HMI.A3_5_7_N_P1_1_ON_KCU.PV,		KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_1.non,	KC1_STU3_VLV_LG.IM_N_P1_1.noff,	KC1_STU3_VLV_LG.IM_N_P1_1.nstart,	KC1_STU3_VLV_LG.IM_N_P1_1.selfon,	KC1_STU3_VLV_LG.IM_N_P1_1.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_1.flt,	KC1_STU3_VLV_LG.IM_N_P1_1.ncon,	KC1_STU3_VLV_LG.IM_N_P1_1.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_1.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_1.state,	KC1_STU3_VLV_LG.IM_N_P1_1.extern);
-//cfg_KC1_STU3_IM_N_P1_2(SEN_KC1_STU3_IM_N_P1_2,	KC1_STU3_VLV_LG.IM_N_P1_2.RA,	KC1_STU3_VLV_LG.IM_N_P1_2.rOn,	KC1_STU3_VLV_LG.IM_N_P1_2.rOff,	KC1_STU3_VLV_LG.IM_N_P1_2.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_2.aOnOff,	KC1_STU3_VLV_HMI.IM_N_P1_2.rep,	KC1_STU3_VLV_LG.IM_N_P1_2.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_2.cwOff,	KC1_STU3_DI_HMI.A2_8_12_N_P1_2_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_12_N_P1_2_WORK.PV,	KC1_STU3_DI_HMI.A3_5_8_N_P1_2_ON_KCU.PV,		KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_2.non,	KC1_STU3_VLV_LG.IM_N_P1_2.noff,	KC1_STU3_VLV_LG.IM_N_P1_2.nstart,	KC1_STU3_VLV_LG.IM_N_P1_2.selfon,	KC1_STU3_VLV_LG.IM_N_P1_2.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_2.flt,	KC1_STU3_VLV_LG.IM_N_P1_2.ncon,	KC1_STU3_VLV_LG.IM_N_P1_2.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_2.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_2.state,	KC1_STU3_VLV_LG.IM_N_P1_2.extern);
-cfg_KC1_STU3_IM_N_P1_3(SEN_KC1_STU3_IM_N_P1_3,	KC1_STU3_VLV_LG.IM_N_P1_3.RA,	KC1_STU3_VLV_LG.IM_N_P1_3.rOn,	KC1_STU3_VLV_LG.IM_N_P1_3.rOff,	KC1_STU3_VLV_LG.IM_N_P1_3.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_3.aOnOff,	KC1_STU3_VLV_HMI.IM_N_P1_3.rep,	KC1_STU3_VLV_LG.IM_N_P1_3.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_3.cwOff,	KC1_STU3_DI_HMI.A2_8_13_N_P1_3_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_13_N_P1_3_WORK.PV,	KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_3.non,	KC1_STU3_VLV_LG.IM_N_P1_3.noff,	KC1_STU3_VLV_LG.IM_N_P1_3.nstart,	KC1_STU3_VLV_LG.IM_N_P1_3.selfon,	KC1_STU3_VLV_LG.IM_N_P1_3.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_3.flt,	KC1_STU3_VLV_LG.IM_N_P1_3.ncon,	KC1_STU3_VLV_LG.IM_N_P1_3.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_3.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_3.state,	KC1_STU3_VLV_LG.IM_N_P1_3.extern);
-cfg_KC1_STU3_IM_N_P1_4(SEN_KC1_STU3_IM_N_P1_4,	KC1_STU3_VLV_LG.IM_N_P1_4.RA,	KC1_STU3_VLV_LG.IM_N_P1_4.rOn,	KC1_STU3_VLV_LG.IM_N_P1_4.rOff,	KC1_STU3_VLV_LG.IM_N_P1_4.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_4.aOnOff,	KC1_STU3_VLV_HMI.IM_N_P1_4.rep,	KC1_STU3_VLV_LG.IM_N_P1_4.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_4.cwOff,	KC1_STU3_DI_HMI.A2_8_14_N_P1_4_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_14_N_P1_4_WORK.PV,	KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_4.non,	KC1_STU3_VLV_LG.IM_N_P1_4.noff,	KC1_STU3_VLV_LG.IM_N_P1_4.nstart,	KC1_STU3_VLV_LG.IM_N_P1_4.selfon,	KC1_STU3_VLV_LG.IM_N_P1_4.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_4.flt,	KC1_STU3_VLV_LG.IM_N_P1_4.ncon,	KC1_STU3_VLV_LG.IM_N_P1_4.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_4.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_4.state,	KC1_STU3_VLV_LG.IM_N_P1_4.extern);
-cfg_KC1_STU3_IM_N_P1_5(SEN_KC1_STU3_IM_N_P1_5,	KC1_STU3_VLV_LG.IM_N_P1_5.RA,	KC1_STU3_VLV_LG.IM_N_P1_5.rOn,	KC1_STU3_VLV_LG.IM_N_P1_5.rOff,	KC1_STU3_VLV_LG.IM_N_P1_5.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_5.aOnOff,	KC1_STU3_VLV_HMI.IM_N_P1_5.rep,	KC1_STU3_VLV_LG.IM_N_P1_5.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_5.cwOff,	KC1_STU3_DI_HMI.A2_8_15_N_P1_5_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_15_N_P1_5_WORK.PV,	KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_5.non,	KC1_STU3_VLV_LG.IM_N_P1_5.noff,	KC1_STU3_VLV_LG.IM_N_P1_5.nstart,	KC1_STU3_VLV_LG.IM_N_P1_5.selfon,	KC1_STU3_VLV_LG.IM_N_P1_5.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_5.flt,	KC1_STU3_VLV_LG.IM_N_P1_5.ncon,	KC1_STU3_VLV_LG.IM_N_P1_5.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_5.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_5.state,	KC1_STU3_VLV_LG.IM_N_P1_5.extern);
-cfg_KC1_STU3_IM_N_P1_6(SEN_KC1_STU3_IM_N_P1_6,	KC1_STU3_VLV_LG.IM_N_P1_6.RA,	KC1_STU3_VLV_LG.IM_N_P1_6.rOn,	KC1_STU3_VLV_LG.IM_N_P1_6.rOff,	KC1_STU3_VLV_LG.IM_N_P1_6.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_6.aOnOff,	KC1_STU3_VLV_HMI.IM_N_P1_6.rep,	KC1_STU3_VLV_LG.IM_N_P1_6.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_6.cwOff,	KC1_STU3_DI_HMI.A2_8_16_N_P1_6_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_16_N_P1_6_WORK.PV,	KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_6.non,	KC1_STU3_VLV_LG.IM_N_P1_6.noff,	KC1_STU3_VLV_LG.IM_N_P1_6.nstart,	KC1_STU3_VLV_LG.IM_N_P1_6.selfon,	KC1_STU3_VLV_LG.IM_N_P1_6.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_6.flt,	KC1_STU3_VLV_LG.IM_N_P1_6.ncon,	KC1_STU3_VLV_LG.IM_N_P1_6.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_6.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_6.state,	KC1_STU3_VLV_LG.IM_N_P1_6.extern);
-cfg_KC1_STU3_IM_H_GB1_1(SEN_KC1_STU3_IM_H_GB1_1,KC1_STU3_VLV_LG.IM_H_GB1_1.RA,	KC1_STU3_VLV_LG.IM_H_GB1_1.rOn,	KC1_STU3_VLV_LG.IM_H_GB1_1.rOff,KC1_STU3_VLV_LG.IM_H_GB1_1.rOnOff,	KC1_STU3_VLV_LG.IM_H_GB1_1.aOnOff,	KC1_STU3_VLV_HMI.IM_H_GB1_1.rep,KC1_STU3_VLV_LG.IM_H_GB1_1.cwOn,KC1_STU3_VLV_LG.IM_H_GB1_1.cwOff,	KC1_STU3_DI_HMI.A2_6_1_GB1_1_ON.PV,		not KC1_STU3_DI_HMI.A2_6_1_GB1_1_ON.PV,		KC1_STU3_DI_HMI.A3_5_4_WORK_ALLOW_GB1_1_KCU.PV,	KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_H_GB1_1.non,	KC1_STU3_VLV_LG.IM_H_GB1_1.noff,KC1_STU3_VLV_LG.IM_H_GB1_1.nstart,	KC1_STU3_VLV_LG.IM_H_GB1_1.selfon,	KC1_STU3_VLV_LG.IM_H_GB1_1.selfoff,	KC1_STU3_VLV_LG.IM_H_GB1_1.flt,	KC1_STU3_VLV_LG.IM_H_GB1_1.ncon,KC1_STU3_VLV_LG.IM_H_GB1_1.ncoff,	KC1_STU3_VLV_LG.IM_H_GB1_1.flt_all,	KC1_STU3_VLV_LG.IM_H_GB1_1.state,	KC1_STU3_VLV_LG.IM_H_GB1_1.extern);
-cfg_KC1_STU3_IM_H_GB1_2(SEN_KC1_STU3_IM_H_GB1_2,KC1_STU3_VLV_LG.IM_H_GB1_2.RA,	KC1_STU3_VLV_LG.IM_H_GB1_2.rOn,	KC1_STU3_VLV_LG.IM_H_GB1_2.rOff,KC1_STU3_VLV_LG.IM_H_GB1_2.rOnOff,	KC1_STU3_VLV_LG.IM_H_GB1_2.aOnOff,	KC1_STU3_VLV_HMI.IM_H_GB1_2.rep,KC1_STU3_VLV_LG.IM_H_GB1_2.cwOn,KC1_STU3_VLV_LG.IM_H_GB1_2.cwOff,	KC1_STU3_DI_HMI.A2_6_2_GB1_2_ON.PV,		not KC1_STU3_DI_HMI.A2_6_2_GB1_2_ON.PV,		KC1_STU3_DI_HMI.A3_5_5_WORK_ALLOW_GB1_2_KCU.PV,	KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_H_GB1_2.non,	KC1_STU3_VLV_LG.IM_H_GB1_2.noff,KC1_STU3_VLV_LG.IM_H_GB1_2.nstart,	KC1_STU3_VLV_LG.IM_H_GB1_2.selfon,	KC1_STU3_VLV_LG.IM_H_GB1_2.selfoff,	KC1_STU3_VLV_LG.IM_H_GB1_2.flt,	KC1_STU3_VLV_LG.IM_H_GB1_2.ncon,KC1_STU3_VLV_LG.IM_H_GB1_2.ncoff,	KC1_STU3_VLV_LG.IM_H_GB1_2.flt_all,	KC1_STU3_VLV_LG.IM_H_GB1_2.state,	KC1_STU3_VLV_LG.IM_H_GB1_2.extern);
+cfg_KC1_STU3_KR_IN(SEN_KC1_STU3_KR_IN,			KC1_STU3_VLV_LG.KR_IN.RA,		KC1_STU3_VLV_LG.KR_IN.rOn,		KC1_STU3_VLV_LG.KR_IN.rOff,		KC1_STU3_VLV_LG.KR_IN.rOnOff,		KC1_STU3_VLV_LG.KR_IN.aOnOff,		KC1_STU3_VLV_LG.KR_IN.rep,		KC1_STU3_VLV_LG.KR_IN.cwOn,		KC1_STU3_VLV_LG.KR_IN.cwOff,		KC1_STU3_DI_HMI.A2_7_9_V_IN_ON.PV,		KC1_STU3_DI_HMI.A2_7_10_V_IN_OFF.PV,		KC1_STU3_DI_HMI.A3_5_9_V_IN_ON_KCU.PV,			KC1_STU3_DI_HMI.A3_5_10_V_IN_OFF_KCU.PV,	KC1_STU3_VLV_LG.KR_IN.non,		KC1_STU3_VLV_LG.KR_IN.noff,		KC1_STU3_VLV_LG.KR_IN.nstart,		KC1_STU3_VLV_LG.KR_IN.selfon,		KC1_STU3_VLV_LG.KR_IN.selfoff,		KC1_STU3_VLV_LG.KR_IN.flt,		KC1_STU3_VLV_LG.KR_IN.ncon,		KC1_STU3_VLV_LG.KR_IN.ncoff,		KC1_STU3_VLV_LG.KR_IN.flt_all,		KC1_STU3_VLV_LG.KR_IN.state,		KC1_STU3_DI_HMI.A3_4_5_V_IN_ALL_FTL.PV);
+cfg_KC1_STU3_KR_CDL(SEN_KC1_STU3_KR_CDL,		KC1_STU3_VLV_LG.KR_CDL.RA,		KC1_STU3_VLV_LG.KR_CDL.rOn,		KC1_STU3_VLV_LG.KR_CDL.rOff,	KC1_STU3_VLV_LG.KR_CDL.rOnOff,		KC1_STU3_VLV_LG.KR_CDL.aOnOff,		KC1_STU3_VLV_LG.KR_CDL.rep,		KC1_STU3_VLV_LG.KR_CDL.cwOn,	KC1_STU3_VLV_LG.KR_CDL.cwOff,		KC1_STU3_DI_HMI.A2_7_11_V_CDL_ON.PV,	KC1_STU3_DI_HMI.A2_7_12_V_CDL_OFF.PV,		KC1_STU3_DI_HMI.A3_5_11_V_CDL_ON_KCU.PV,		KC1_STU3_DI_HMI.A3_5_12_V_CDL_OFF_KCU.PV,	KC1_STU3_VLV_LG.KR_CDL.non,		KC1_STU3_VLV_LG.KR_CDL.noff,	KC1_STU3_VLV_LG.KR_CDL.nstart,		KC1_STU3_VLV_LG.KR_CDL.selfon,		KC1_STU3_VLV_LG.KR_CDL.selfoff,		KC1_STU3_VLV_LG.KR_CDL.flt,		KC1_STU3_VLV_LG.KR_CDL.ncon,	KC1_STU3_VLV_LG.KR_CDL.ncoff,		KC1_STU3_VLV_LG.KR_CDL.flt_all,		KC1_STU3_VLV_LG.KR_CDL.state,		KC1_STU3_DI_HMI.A3_4_7_V_CDL_ALL_FLT.PV);
+//cfg_KC1_STU3_KR_XV3_1(SEN_KC1_STU3_KR_XV3_1,	KC1_STU3_VLV_LG.KR_XV3_1.RA,	KC1_STU3_VLV_LG.KR_XV3_1.rOn,	KC1_STU3_VLV_LG.KR_XV3_1.rOff,	KC1_STU3_VLV_LG.KR_XV3_1.rOnOff,	KC1_STU3_VLV_LG.KR_XV3_1.aOnOff,	KC1_STU3_VLV_LG.KR_XV3_1.rep,	KC1_STU3_VLV_LG.KR_XV3_1.cwOn,	KC1_STU3_VLV_LG.KR_XV3_1.cwOff,		KC1_STU3_DI_HMI.A2_7_2_V_XV3_1_ON.PV,	KC1_STU3_DI_HMI.A2_7_3_V_XV3_1_OFF.PV,		KC1_STU3_DI_HMI.A3_5_15_V_XV3_1_ON_KCU.PV,		KC1_STU3_DI_HMI.A3_5_16_V_XV3_1_OFF_KCU.PV,	KC1_STU3_VLV_LG.KR_XV3_1.non,	KC1_STU3_VLV_LG.KR_XV3_1.noff,	KC1_STU3_VLV_LG.KR_XV3_1.nstart,	KC1_STU3_VLV_LG.KR_XV3_1.selfon,	KC1_STU3_VLV_LG.KR_XV3_1.selfoff,	KC1_STU3_VLV_LG.KR_XV3_1.flt,	KC1_STU3_VLV_LG.KR_XV3_1.ncon,	KC1_STU3_VLV_LG.KR_XV3_1.ncoff,		KC1_STU3_VLV_LG.KR_XV3_1.flt_all,	KC1_STU3_VLV_LG.KR_XV3_1.state,		KC1_STU3_VLV_LG.KR_XV3_1.extern);
+//cfg_KC1_STU3_KR_XV3_2(SEN_KC1_STU3_KR_XV3_2,	KC1_STU3_VLV_LG.KR_XV3_2.RA,	KC1_STU3_VLV_LG.KR_XV3_2.rOn,	KC1_STU3_VLV_LG.KR_XV3_2.rOff,	KC1_STU3_VLV_LG.KR_XV3_2.rOnOff,	KC1_STU3_VLV_LG.KR_XV3_2.aOnOff,	KC1_STU3_VLV_LG.KR_XV3_2.rep,	KC1_STU3_VLV_LG.KR_XV3_2.cwOn,	KC1_STU3_VLV_LG.KR_XV3_2.cwOff,		KC1_STU3_DI_HMI.A2_7_4_V_XV3_2_ON.PV,	KC1_STU3_DI_HMI.A2_7_5_V_XV3_2_OFF.PV,		KC1_STU3_DI_HMI.A2_9_1_V_XV3_2_ON_KCU.PV,		KC1_STU3_DI_HMI.A2_9_2_V_XV3_2_OFF_KCU.PV,	KC1_STU3_VLV_LG.KR_XV3_2.non,	KC1_STU3_VLV_LG.KR_XV3_2.noff,	KC1_STU3_VLV_LG.KR_XV3_2.nstart,	KC1_STU3_VLV_LG.KR_XV3_2.selfon,	KC1_STU3_VLV_LG.KR_XV3_2.selfoff,	KC1_STU3_VLV_LG.KR_XV3_2.flt,	KC1_STU3_VLV_LG.KR_XV3_2.ncon,	KC1_STU3_VLV_LG.KR_XV3_2.ncoff,		KC1_STU3_VLV_LG.KR_XV3_2.flt_all,	KC1_STU3_VLV_LG.KR_XV3_2.state,		KC1_STU3_VLV_LG.KR_XV3_2.extern);
+cfg_KC1_STU3_KR_SV1_1(SEN_KC1_STU3_KR_SV1_1,    KC1_STU3_VLV_LG.KR_SV1_1.RA,   	KC1_STU3_VLV_LG.KR_SV1_1.rOn,  	KC1_STU3_VLV_LG.KR_SV1_1.rOff, 	KC1_STU3_VLV_LG.KR_SV1_1.rOnOff,	KC1_STU3_VLV_LG.KR_SV1_1.aOnOff,	KC1_STU3_VLV_LG.KR_SV1_1.rep,	KC1_STU3_VLV_LG.KR_SV1_1.cwOn,	KC1_STU3_VLV_LG.KR_SV1_1.cwOff,		KC1_STU3_DI_HMI.dummy.PV,				KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_DI_HMI.A3_5_13_V_SV1_1_ON_KCU.PV,		KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.KR_SV1_1.non,	KC1_STU3_VLV_LG.KR_SV1_1.noff,	KC1_STU3_VLV_LG.KR_SV1_1.nstart,	KC1_STU3_VLV_LG.KR_SV1_1.selfon,	KC1_STU3_VLV_LG.KR_SV1_1.selfoff,	KC1_STU3_VLV_LG.KR_SV1_1.flt,	KC1_STU3_VLV_LG.KR_SV1_1.ncon,	KC1_STU3_VLV_LG.KR_SV1_1.ncoff,		KC1_STU3_VLV_LG.KR_SV1_1.flt_all,	KC1_STU3_VLV_LG.KR_SV1_1.state,		KC1_STU3_VLV_LG.KR_SV1_1.extern);
+cfg_KC1_STU3_KR_187c(SEN_KC1_STU3_KR_187c,		KC1_STU3_VLV_LG.KR_187c.RA,		KC1_STU3_VLV_LG.KR_187c.rOn,	KC1_STU3_VLV_LG.KR_187c.rOff,	KC1_STU3_VLV_LG.KR_187c.rOnOff,		KC1_STU3_VLV_LG.KR_187c.aOnOff,		KC1_STU3_VLV_LG.KR_187c.rep,	KC1_STU3_VLV_LG.KR_187c.cwOn,	KC1_STU3_VLV_LG.KR_187c.cwOff,		KC1_STU3_DI_HMI.A2_7_6_V_187c_ON.PV,	KC1_STU3_DI_HMI.A2_7_7_V_187c_OFF.PV,		KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.KR_187c.non,	KC1_STU3_VLV_LG.KR_187c.noff,	KC1_STU3_VLV_LG.KR_187c.nstart,		KC1_STU3_VLV_LG.KR_187c.selfon,		KC1_STU3_VLV_LG.KR_187c.selfoff,	KC1_STU3_VLV_LG.KR_187c.flt,	KC1_STU3_VLV_LG.KR_187c.ncon,	KC1_STU3_VLV_LG.KR_187c.ncoff,		KC1_STU3_VLV_LG.KR_187c.flt_all,	KC1_STU3_VLV_LG.KR_187c.state,		KC1_STU3_DI_HMI.A3_4_9_V_187c_ALL_FLT.PV);
+cfg_KC1_STU3_IM_V_TO(SEN_KC1_STU3_IM_V_TO,		KC1_STU3_VLV_LG.IM_V_TO.RA,		KC1_STU3_VLV_LG.IM_V_TO.rOn,	KC1_STU3_VLV_LG.IM_V_TO.rOff,	KC1_STU3_VLV_LG.IM_V_TO.rOnOff,		KC1_STU3_VLV_LG.IM_V_TO.aOnOff,		KC1_STU3_VLV_LG.IM_V_TO.rep,	KC1_STU3_VLV_LG.IM_V_TO.cwOn,	KC1_STU3_VLV_LG.IM_V_TO.cwOff,		KC1_STU3_DI_HMI.A2_8_4_V_TO_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_4_V_TO_WORK.PV,	KC1_STU3_DI_HMI.A3_5_1_V_TO_ON_KCU.PV,			KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_V_TO.non,	KC1_STU3_VLV_LG.IM_V_TO.noff,	KC1_STU3_VLV_LG.IM_V_TO.nstart,		KC1_STU3_VLV_LG.IM_V_TO.selfon,		KC1_STU3_VLV_LG.IM_V_TO.selfoff,	KC1_STU3_VLV_LG.IM_V_TO.flt,	KC1_STU3_VLV_LG.IM_V_TO.ncon,	KC1_STU3_VLV_LG.IM_V_TO.ncoff,		KC1_STU3_VLV_LG.IM_V_TO.flt_all,	KC1_STU3_VLV_LG.IM_V_TO.state,		KC1_STU3_VLV_LG.IM_V_TO.extern);
+//cfg_KC1_STU3_IM_N_P1_1(SEN_KC1_STU3_IM_N_P1_1,	KC1_STU3_VLV_LG.IM_N_P1_1.RA,	KC1_STU3_VLV_LG.IM_N_P1_1.rOn,	KC1_STU3_VLV_LG.IM_N_P1_1.rOff,	KC1_STU3_VLV_LG.IM_N_P1_1.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_1.aOnOff,	KC1_STU3_VLV_LG.IM_N_P1_1.rep,	KC1_STU3_VLV_LG.IM_N_P1_1.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_1.cwOff,	KC1_STU3_DI_HMI.A2_8_11_N_P1_1_WORK.PV, not KC1_STU3_DI_HMI.A2_8_11_N_P1_1_WORK.PV,	KC1_STU3_DI_HMI.A3_5_7_N_P1_1_ON_KCU.PV,		KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_1.non,	KC1_STU3_VLV_LG.IM_N_P1_1.noff,	KC1_STU3_VLV_LG.IM_N_P1_1.nstart,	KC1_STU3_VLV_LG.IM_N_P1_1.selfon,	KC1_STU3_VLV_LG.IM_N_P1_1.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_1.flt,	KC1_STU3_VLV_LG.IM_N_P1_1.ncon,	KC1_STU3_VLV_LG.IM_N_P1_1.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_1.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_1.state,	KC1_STU3_VLV_LG.IM_N_P1_1.extern);
+//cfg_KC1_STU3_IM_N_P1_2(SEN_KC1_STU3_IM_N_P1_2,	KC1_STU3_VLV_LG.IM_N_P1_2.RA,	KC1_STU3_VLV_LG.IM_N_P1_2.rOn,	KC1_STU3_VLV_LG.IM_N_P1_2.rOff,	KC1_STU3_VLV_LG.IM_N_P1_2.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_2.aOnOff,	KC1_STU3_VLV_LG.IM_N_P1_2.rep,	KC1_STU3_VLV_LG.IM_N_P1_2.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_2.cwOff,	KC1_STU3_DI_HMI.A2_8_12_N_P1_2_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_12_N_P1_2_WORK.PV,	KC1_STU3_DI_HMI.A3_5_8_N_P1_2_ON_KCU.PV,		KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_2.non,	KC1_STU3_VLV_LG.IM_N_P1_2.noff,	KC1_STU3_VLV_LG.IM_N_P1_2.nstart,	KC1_STU3_VLV_LG.IM_N_P1_2.selfon,	KC1_STU3_VLV_LG.IM_N_P1_2.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_2.flt,	KC1_STU3_VLV_LG.IM_N_P1_2.ncon,	KC1_STU3_VLV_LG.IM_N_P1_2.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_2.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_2.state,	KC1_STU3_VLV_LG.IM_N_P1_2.extern);
+cfg_KC1_STU3_IM_N_P1_3(SEN_KC1_STU3_IM_N_P1_3,	KC1_STU3_VLV_LG.IM_N_P1_3.RA,	KC1_STU3_VLV_LG.IM_N_P1_3.rOn,	KC1_STU3_VLV_LG.IM_N_P1_3.rOff,	KC1_STU3_VLV_LG.IM_N_P1_3.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_3.aOnOff,	KC1_STU3_VLV_LG.IM_N_P1_3.rep,	KC1_STU3_VLV_LG.IM_N_P1_3.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_3.cwOff,	KC1_STU3_DI_HMI.A2_8_13_N_P1_3_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_13_N_P1_3_WORK.PV,	KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_3.non,	KC1_STU3_VLV_LG.IM_N_P1_3.noff,	KC1_STU3_VLV_LG.IM_N_P1_3.nstart,	KC1_STU3_VLV_LG.IM_N_P1_3.selfon,	KC1_STU3_VLV_LG.IM_N_P1_3.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_3.flt,	KC1_STU3_VLV_LG.IM_N_P1_3.ncon,	KC1_STU3_VLV_LG.IM_N_P1_3.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_3.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_3.state,	KC1_STU3_VLV_LG.IM_N_P1_3.extern);
+cfg_KC1_STU3_IM_N_P1_4(SEN_KC1_STU3_IM_N_P1_4,	KC1_STU3_VLV_LG.IM_N_P1_4.RA,	KC1_STU3_VLV_LG.IM_N_P1_4.rOn,	KC1_STU3_VLV_LG.IM_N_P1_4.rOff,	KC1_STU3_VLV_LG.IM_N_P1_4.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_4.aOnOff,	KC1_STU3_VLV_LG.IM_N_P1_4.rep,	KC1_STU3_VLV_LG.IM_N_P1_4.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_4.cwOff,	KC1_STU3_DI_HMI.A2_8_14_N_P1_4_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_14_N_P1_4_WORK.PV,	KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_4.non,	KC1_STU3_VLV_LG.IM_N_P1_4.noff,	KC1_STU3_VLV_LG.IM_N_P1_4.nstart,	KC1_STU3_VLV_LG.IM_N_P1_4.selfon,	KC1_STU3_VLV_LG.IM_N_P1_4.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_4.flt,	KC1_STU3_VLV_LG.IM_N_P1_4.ncon,	KC1_STU3_VLV_LG.IM_N_P1_4.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_4.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_4.state,	KC1_STU3_VLV_LG.IM_N_P1_4.extern);
+cfg_KC1_STU3_IM_N_P1_5(SEN_KC1_STU3_IM_N_P1_5,	KC1_STU3_VLV_LG.IM_N_P1_5.RA,	KC1_STU3_VLV_LG.IM_N_P1_5.rOn,	KC1_STU3_VLV_LG.IM_N_P1_5.rOff,	KC1_STU3_VLV_LG.IM_N_P1_5.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_5.aOnOff,	KC1_STU3_VLV_LG.IM_N_P1_5.rep,	KC1_STU3_VLV_LG.IM_N_P1_5.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_5.cwOff,	KC1_STU3_DI_HMI.A2_8_15_N_P1_5_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_15_N_P1_5_WORK.PV,	KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_5.non,	KC1_STU3_VLV_LG.IM_N_P1_5.noff,	KC1_STU3_VLV_LG.IM_N_P1_5.nstart,	KC1_STU3_VLV_LG.IM_N_P1_5.selfon,	KC1_STU3_VLV_LG.IM_N_P1_5.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_5.flt,	KC1_STU3_VLV_LG.IM_N_P1_5.ncon,	KC1_STU3_VLV_LG.IM_N_P1_5.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_5.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_5.state,	KC1_STU3_VLV_LG.IM_N_P1_5.extern);
+cfg_KC1_STU3_IM_N_P1_6(SEN_KC1_STU3_IM_N_P1_6,	KC1_STU3_VLV_LG.IM_N_P1_6.RA,	KC1_STU3_VLV_LG.IM_N_P1_6.rOn,	KC1_STU3_VLV_LG.IM_N_P1_6.rOff,	KC1_STU3_VLV_LG.IM_N_P1_6.rOnOff,	KC1_STU3_VLV_LG.IM_N_P1_6.aOnOff,	KC1_STU3_VLV_LG.IM_N_P1_6.rep,	KC1_STU3_VLV_LG.IM_N_P1_6.cwOn,	KC1_STU3_VLV_LG.IM_N_P1_6.cwOff,	KC1_STU3_DI_HMI.A2_8_16_N_P1_6_WORK.PV,	not KC1_STU3_DI_HMI.A2_8_16_N_P1_6_WORK.PV,	KC1_STU3_DI_HMI.dummy.PV,						KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_N_P1_6.non,	KC1_STU3_VLV_LG.IM_N_P1_6.noff,	KC1_STU3_VLV_LG.IM_N_P1_6.nstart,	KC1_STU3_VLV_LG.IM_N_P1_6.selfon,	KC1_STU3_VLV_LG.IM_N_P1_6.selfoff,	KC1_STU3_VLV_LG.IM_N_P1_6.flt,	KC1_STU3_VLV_LG.IM_N_P1_6.ncon,	KC1_STU3_VLV_LG.IM_N_P1_6.ncoff,	KC1_STU3_VLV_LG.IM_N_P1_6.flt_all,	KC1_STU3_VLV_LG.IM_N_P1_6.state,	KC1_STU3_VLV_LG.IM_N_P1_6.extern);
+cfg_KC1_STU3_IM_H_GB1_1(SEN_KC1_STU3_IM_H_GB1_1,KC1_STU3_VLV_LG.IM_H_GB1_1.RA,	KC1_STU3_VLV_LG.IM_H_GB1_1.rOn,	KC1_STU3_VLV_LG.IM_H_GB1_1.rOff,KC1_STU3_VLV_LG.IM_H_GB1_1.rOnOff,	KC1_STU3_VLV_LG.IM_H_GB1_1.aOnOff,	KC1_STU3_VLV_LG.IM_H_GB1_1.rep,KC1_STU3_VLV_LG.IM_H_GB1_1.cwOn,KC1_STU3_VLV_LG.IM_H_GB1_1.cwOff,	KC1_STU3_DI_HMI.A2_6_1_GB1_1_ON.PV,		not KC1_STU3_DI_HMI.A2_6_1_GB1_1_ON.PV,		KC1_STU3_DI_HMI.A3_5_4_WORK_ALLOW_GB1_1_KCU.PV,	KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_H_GB1_1.non,	KC1_STU3_VLV_LG.IM_H_GB1_1.noff,KC1_STU3_VLV_LG.IM_H_GB1_1.nstart,	KC1_STU3_VLV_LG.IM_H_GB1_1.selfon,	KC1_STU3_VLV_LG.IM_H_GB1_1.selfoff,	KC1_STU3_VLV_LG.IM_H_GB1_1.flt,	KC1_STU3_VLV_LG.IM_H_GB1_1.ncon,KC1_STU3_VLV_LG.IM_H_GB1_1.ncoff,	KC1_STU3_VLV_LG.IM_H_GB1_1.flt_all,	KC1_STU3_VLV_LG.IM_H_GB1_1.state,	KC1_STU3_VLV_LG.IM_H_GB1_1.extern);
+cfg_KC1_STU3_IM_H_GB1_2(SEN_KC1_STU3_IM_H_GB1_2,KC1_STU3_VLV_LG.IM_H_GB1_2.RA,	KC1_STU3_VLV_LG.IM_H_GB1_2.rOn,	KC1_STU3_VLV_LG.IM_H_GB1_2.rOff,KC1_STU3_VLV_LG.IM_H_GB1_2.rOnOff,	KC1_STU3_VLV_LG.IM_H_GB1_2.aOnOff,	KC1_STU3_VLV_LG.IM_H_GB1_2.rep,KC1_STU3_VLV_LG.IM_H_GB1_2.cwOn,KC1_STU3_VLV_LG.IM_H_GB1_2.cwOff,	KC1_STU3_DI_HMI.A2_6_2_GB1_2_ON.PV,		not KC1_STU3_DI_HMI.A2_6_2_GB1_2_ON.PV,		KC1_STU3_DI_HMI.A3_5_5_WORK_ALLOW_GB1_2_KCU.PV,	KC1_STU3_DI_HMI.dummy.PV,					KC1_STU3_VLV_LG.IM_H_GB1_2.non,	KC1_STU3_VLV_LG.IM_H_GB1_2.noff,KC1_STU3_VLV_LG.IM_H_GB1_2.nstart,	KC1_STU3_VLV_LG.IM_H_GB1_2.selfon,	KC1_STU3_VLV_LG.IM_H_GB1_2.selfoff,	KC1_STU3_VLV_LG.IM_H_GB1_2.flt,	KC1_STU3_VLV_LG.IM_H_GB1_2.ncon,KC1_STU3_VLV_LG.IM_H_GB1_2.ncoff,	KC1_STU3_VLV_LG.IM_H_GB1_2.flt_all,	KC1_STU3_VLV_LG.IM_H_GB1_2.state,	KC1_STU3_VLV_LG.IM_H_GB1_2.extern);
 	
-
 //ВЫЗОВ С-блоков
 vlv_KC1_STU3_KR_IN(		SEN_KC1_STU3_KR_IN,		cycleTime);
 vlv_KC1_STU3_KR_CDL(	SEN_KC1_STU3_KR_CDL,	cycleTime);
 //vlv_KC1_STU3_KR_XV3_1(	SEN_KC1_STU3_KR_XV3_1,	cycleTime);
 //vlv_KC1_STU3_KR_XV3_2(	SEN_KC1_STU3_KR_XV3_1,	cycleTime);
 vlv_KC1_STU3_KR_SV1_1(	SEN_KC1_STU3_KR_SV1_1,	cycleTime);
+vlv_KC1_STU3_KR_187c(	SEN_KC1_STU3_KR_187c,	cycleTime);
 im_KC1_STU3_IM_V_TO(	SEN_KC1_STU3_IM_V_TO,	cycleTime);
 //im_KC1_STU3_IM_N_P1_1(	SEN_KC1_STU3_IM_N_P1_1, cycleTime);
 //im_KC1_STU3_IM_N_P1_2(	SEN_KC1_STU3_IM_N_P1_2, cycleTime);
@@ -3033,6 +3095,7 @@ KC1_STU3_DO_HMI.A3_6_13_V_SV1_1_ON.PV		:= SEN_KC1_STU3_KR_SV1_1.Outs.outon.0;
 KC1_STU3_DO_HMI.A3_6_1_V_TO_ON.PV			:= SEN_KC1_STU3_IM_V_TO.Outs.outon.0;
 //KC1_STU3_DO_HMI.A3_6_7_N_P1_1_ON.PV			:= SEN_KC1_STU3_IM_N_P1_1.Outs.outon.0;
 //KC1_STU3_DO_HMI.A3_6_8_N_P1_2_ON.PV			:= SEN_KC1_STU3_IM_N_P1_2.Outs.outon.0;
+KC1_STU3_DO_HMI.A3_7_3_V_187c_ON.PV			:= SEN_KC1_STU3_KR_187c.Outs.outon.0;
 KC1_STU3_DO_HMI.A3_7_5_N_P1_3_ON.PV			:= SEN_KC1_STU3_IM_N_P1_3.Outs.outon.0;
 KC1_STU3_DO_HMI.A3_7_6_N_P1_4_ON.PV			:= SEN_KC1_STU3_IM_N_P1_4.Outs.outon.0;
 KC1_STU3_DO_HMI.A3_7_7_N_P1_5_ON.PV			:= SEN_KC1_STU3_IM_N_P1_5.Outs.outon.0;
@@ -3044,6 +3107,7 @@ KC1_STU3_DO_HMI.A3_6_10_V_IN_OFF.PV			:= SEN_KC1_STU3_KR_IN.Outs.outoff.0;
 KC1_STU3_DO_HMI.A3_6_12_V_CDL_OFF.PV		:= SEN_KC1_STU3_KR_CDL.Outs.outoff.0;
 //KC1_STU3_DO_HMI.A3_6_16_V_XV3_1_OFF.PV		:= SEN_KC1_STU3_KR_XV3_1.Outs.outoff.0;
 //KC1_STU3_DO_HMI.A3_7_2_V_XV3_2_OFF.PV		:= SEN_KC1_STU3_KR_XV3_2.Outs.outoff.0;
+KC1_STU3_DO_HMI.A3_7_4_V_187c_OFF.PV		:= SEN_KC1_STU3_KR_187c.Outs.outoff.0;
 KC1_STU3_DO_HMI.dummy.PV					:= SEN_KC1_STU3_KR_SV1_1.Outs.outoff.0;
 KC1_STU3_DO_HMI.dummy.PV					:= SEN_KC1_STU3_IM_V_TO.Outs.outoff.0;
 //KC1_STU3_DO_HMI.dummy.PV					:= SEN_KC1_STU3_IM_N_P1_1.Outs.outoff.0;
@@ -3062,6 +3126,7 @@ imit_KC1_STU3_KR_CDL(		KC1_STU3_DO_HMI.A3_6_11_V_CDL_ON.PV, 		KC1_STU3_DO_HMI.A3
 //imit_KC1_STU3_KR_XV3_1(		KC1_STU3_DO_HMI.A3_6_15_V_XV3_1_ON.PV, 		KC1_STU3_DO_HMI.A3_6_16_V_XV3_1_OFF.PV, 		KC1_STU3_DI_HMI.A2_7_2_V_XV3_1_ON.PV, 	KC1_STU3_DI_HMI.A2_7_3_V_XV3_1_OFF.PV);
 //imit_KC1_STU3_KR_XV3_2(		KC1_STU3_DO_HMI.A3_7_1_V_XV3_2_ON.PV, 		KC1_STU3_DO_HMI.A3_7_2_V_XV3_2_OFF.PV, 			KC1_STU3_DI_HMI.A2_7_4_V_XV3_2_ON.PV, 	KC1_STU3_DI_HMI.A2_7_5_V_XV3_2_OFF.PV);
 imit_KC1_STU3_KR_SV1_1(		KC1_STU3_DO_HMI.A3_6_13_V_SV1_1_ON.PV, 		dummy_SV1_1);
+imit_KC1_STU3_KR_187c(		KC1_STU3_DO_HMI.A3_7_3_V_187c_ON.PV, 		KC1_STU3_DO_HMI.A3_7_4_V_187c_OFF.PV, 			KC1_STU3_DI_HMI.A2_7_6_V_187c_ON.PV, 	KC1_STU3_DI_HMI.A2_7_7_V_187c_OFF.PV);
 imit_KC1_STU3_IM_V_TO(		KC1_STU3_DO_HMI.A3_6_1_V_TO_ON.PV, 			not KC1_STU3_DO_HMI.A3_6_1_V_TO_ON.PV,			KC1_STU3_DI_HMI.A2_8_4_V_TO_WORK.PV,			dummy_V_TO);
 //imit_KC1_STU3_IM_N_P1_1(	KC1_STU3_DO_HMI.A3_6_7_N_P1_1_ON.PV, 		not KC1_STU3_DO_HMI.A3_6_7_N_P1_1_ON.PV,		KC1_STU3_DI_HMI.A2_8_11_N_P1_1_WORK.PV,			dummy_N_P1_1);
 //imit_KC1_STU3_IM_N_P1_2(	KC1_STU3_DO_HMI.A3_6_8_N_P1_2_ON.PV, 		not KC1_STU3_DO_HMI.A3_6_8_N_P1_2_ON.PV,		KC1_STU3_DI_HMI.A2_8_12_N_P1_2_WORK.PV, 		dummy_N_P1_2);
@@ -3083,6 +3148,7 @@ SEN_KC1_STU3_KR_CDL.Control.rep.0		:= BOOL#0;
 //SEN_KC1_STU3_KR_XV3_1.Control.rep.0		:= BOOL#0;
 //SEN_KC1_STU3_KR_XV3_2.Control.rep.0		:= BOOL#0;
 SEN_KC1_STU3_KR_SV1_1.Control.rep.0		:= BOOL#0;
+SEN_KC1_STU3_KR_187c.Control.rep.0		:= BOOL#0;
 SEN_KC1_STU3_IM_V_TO.Control.rep.0		:= BOOL#0;
 //SEN_KC1_STU3_IM_N_P1_1.Control.rep.0	:= BOOL#0;
 //SEN_KC1_STU3_IM_N_P1_2.Control.rep.0	:= BOOL#0;
@@ -3101,6 +3167,7 @@ KC1_STU3_VLV_LG.KR_CDL.aOnOff		:= SEN_KC1_STU3_KR_CDL.Control.aOnOff.0;
 //KC1_STU3_VLV_LG.KR_XV3_1.aOnOff		:= SEN_KC1_STU3_KR_XV3_1.Control.aOnOff.0;
 //KC1_STU3_VLV_LG.KR_XV3_2.aOnOff		:= SEN_KC1_STU3_KR_XV3_2.Control.aOnOff.0;
 KC1_STU3_VLV_LG.KR_SV1_1.aOnOff		:= SEN_KC1_STU3_KR_SV1_1.Control.aOnOff.0;
+KC1_STU3_VLV_LG.KR_187c.aOnOff		:= SEN_KC1_STU3_KR_187c.Control.aOnOff.0;
 KC1_STU3_VLV_LG.IM_V_TO.aOnOff		:= SEN_KC1_STU3_IM_V_TO.Control.aOnOff.0;
 //KC1_STU3_VLV_LG.IM_N_P1_1.aOnOff	:= SEN_KC1_STU3_IM_N_P1_1.Control.aOnOff.0;
 //KC1_STU3_VLV_LG.IM_N_P1_2.aOnOff	:= SEN_KC1_STU3_IM_N_P1_2.Control.aOnOff.0;

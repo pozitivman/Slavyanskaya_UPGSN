@@ -67,7 +67,7 @@
         <Signal Name="blc_V_TO_on" UUID="BC9B335843504EACCB46508EEA6F3F96" Type="BOOL" Usage="" Comment="блокировка включения вентилятора по сигналу Пожар" />
         <Signal Name="Step" UUID="AC747E4D4E75C5F82BAE2A8D9C684524" Type="8C327652475044D4E487FAAAD0D8F361" Usage="" Comment="Шаги алгоритмов" />
         <Signal Name="UnitState" UUID="8EFC16734737D13CA73B1F9D04CC6735" Type="2896AF7B46F5B8A34E5F69AB164F9875" Usage="" />
-        <Signal Name="TMR" UUID="EA44E1C047174D2EDB1ABFB094E2BAC8" Type="LREAL" ArraySize="2" Usage="" Comment="Таймеры алгоритмов" />
+        <Signal Name="TMR" UUID="EA44E1C047174D2EDB1ABFB094E2BAC8" Type="LREAL" ArraySize="3" Usage="" Comment="Таймеры алгоритмов" />
         <Signal Name="allow_bit_stop_AOB" UUID="3EC6C4F14C831878BEEE529CF2B9331C" Type="BOOL" Usage="" Comment="Бит разрешения останова алгоритма АОб" />
         <Signal Name="allow_bit_stop_AOS" UUID="8C26A17F43F3CB4D7A8BDF9655573968" Type="BOOL" Usage="" Comment="Бит разрешения останова алгоритма АОсс" />
         <Signal Name="MD_PZ" UUID="A4360D23482C13BEC157A9974C6FEADE" Type="BOOL" Usage="" Global="TRUE" Comment="Режим проверки защит" />
@@ -77,5 +77,8 @@
         <Signal Name="MD_PZ_HMI_off" UUID="450F67B34F0C4F3C8F9D9483E6B5BE79" Type="BOOL" Usage="" Global="TRUE" Comment="Режим проверки защит c HMI отключить" />
         <Signal Name="UPIG1" UUID="C7F11F1F425A753572ED00A282273480" Type="E0F5BC774F0876ADA63A6F8FAAA2E04F" Usage="" Global="TRUE" Comment="Параметры с УПИГ" />
         <Signal Name="PRU_Link" UUID="C888A182437F421D6BE4FAA8BFA412B6" Type="WORD" Usage="" Global="TRUE" Comment="Статус связи с ПРУ" />
+        <Signal Name="btn_V_TO_ON" UUID="3140133E4BFDD506689C5CA52EF9C2DC" Type="BOOL" Usage="" Comment="Кнопка включения вентилятора ТО местная" />
+        <Signal Name="DI_AS_AI" UUID="D7A8761142DA0FFF1ED6CF9F570EABAD" Type="885DC6C549E7A1A1131C5A956A99C209" Usage="" Global="TRUE" Comment="Дискреты уровней конденсата" />
+        <Signal Name="alg" UUID="F7F716FD4BFDA4D31334979E5E3C89F2" Type="815A82684DEF78B432C4C8BBFDCD3E08" Usage="" Comment="Переменные алгоритмов" />
     </InterfaceList>
 </SubAppType>

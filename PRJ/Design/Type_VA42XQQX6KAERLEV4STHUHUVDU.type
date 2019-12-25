@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="DI_AS_AI" Kind="Struct" UUID="885DC6C549E7A1A1131C5A956A99C209">
+    <Fields>
+        <Field Name="Lk1_E4_hi" Type="BOOL" UUID="BC70858A4B58653D459FF7854D3B7AD5" Comment="Верхний аварийный уровень в резервуаре Е4" />
+        <Field Name="Lk1_E4_hi_flt" Type="BOOL" UUID="C4FDF3504A0B198FDFC4E5AE5A3F719F" Comment="Ошибка датчика - Верхний аварийный уровень в резервуаре Е4" />
+        <Field Name="Lk1_V2_1_lo" Type="BOOL" UUID="4006F4AA46C1285096E4A5858D78B5AD" Comment="Уровень конденсата в емкости V2.1 низкий" />
+        <Field Name="Lk1_V2_1_lo_flt" Type="BOOL" UUID="2401D4BA4457AF8F8A6E91B45E65FBF9" Comment="Ошибка датчика - Уровень конденсата в емкости V2.1 низкий" />
+        <Field Name="Lk1_V2_1_hi" Type="BOOL" UUID="0B937A6F4A3D5AAF044A07827E7A0C14" Comment="Уровень конденсата в емкости V2.1 высокий" />
+        <Field Name="Lk1_V2_1_hi_flt" Type="BOOL" UUID="9978A6B54573C2A989F78380F8ED38AA" Comment="Ошибка датчика - Уровень конденсата в емкости V2.1 высокий" />
+        <Field Name="Lk1_E_lo_F2_1" Type="BOOL" UUID="B074BE9F4A03AB10EC8E6E99E35A3951" Comment="Уровень конденсата в нижней емкости фильтра F2.1" />
+        <Field Name="Lk1_E_lo_F2_1_flt" Type="BOOL" UUID="3C16970B42C01F0056E7AEBB51EFD894" Comment="Ошибка датчика - Уровень конденсата в нижней емкости фильтра F2.1" />
+        <Field Name="Lk1_E_hi_F2_1" Type="BOOL" UUID="1083662B48E64FCB06E114B8CB068D14" Comment="Уровень конденсата в верхней емкости фильтра F2.1" />
+        <Field Name="Lk1_E_hi_F2_1_flt" Type="BOOL" UUID="AE7E38734ECA00C6A2B295AF745A9C87" Comment="Ошибка датчика - Уровень конденсата в верхней емкости фильтра F2.1" />
+        <Field Name="Lk1_E_lo_F2_2" Type="BOOL" UUID="17D462F6497F13BB729285A38E62E0F5" Comment="Уровень конденсата в нижней емкости фильтра F2.2" />
+        <Field Name="Lk1_E_lo_F2_2_flt" Type="BOOL" UUID="BDE2A3C14E65D224EB1F9C9901543CFD" Comment="Ошибка датчика - Уровень конденсата в нижней емкости фильтра F2.2" />
+        <Field Name="Lk1_E_hi_F2_2" Type="BOOL" UUID="C2E663B84A9371C6D4E1269D22E67C05" Comment="Уровень конденсата в верхней емкости фильтра F2.2" />
+        <Field Name="Lk1_E_hi_F2_2_flt" Type="BOOL" UUID="DA070940415A5824601BAB95288B89A8" Comment="Ошибка датчика - Уровень конденсата в верхней емкости фильтра F2.2" />
+    </Fields>
+</Type>

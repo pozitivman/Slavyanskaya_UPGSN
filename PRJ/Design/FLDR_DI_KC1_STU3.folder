@@ -2,7 +2,8 @@
 <!DOCTYPE Folder config v. 1.0 >
 <Folder Name="DI_KC1_STU3">
     <Items>
-        <Item Name="Type_KC1_STU3_DI_HMI.type" />
         <Item Name="Type_KC1_STU3_DI_DRV.type" />
+        <Item Name="Type_KC1_STU3_DI_HMI.type" />
+        <Item Name="Type_VA42XQQX6KAERLEV4STHUHUVDU.type" />
     </Items>
 </Folder>

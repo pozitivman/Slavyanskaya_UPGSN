@@ -4,7 +4,7 @@
     <Fields>
         <Field Name="A1_3_1_Pg1" Type="A66BBC2040DE5F1DB91157BC6ACE32E7" UUID="871CD8514C04333018FA2993E0280A56" Comment="Давление газа на входе" />
         <Field Name="A1_3_2_Tg1" Type="A66BBC2040DE5F1DB91157BC6ACE32E7" UUID="3EF2B0CA4A558958B70CBA8B16F8CED2" Comment="Температура газа на входе" />
-        <Field Name="A1_3_3_Hg1" Type="A66BBC2040DE5F1DB91157BC6ACE32E7" UUID="272539F04D9BB82ADB8A6789B12DDA61" Comment="Влажность газа на входе" />
+        <Field Name="A1_3_3_Lk1_E4" Type="A66BBC2040DE5F1DB91157BC6ACE32E7" UUID="272539F04D9BB82ADB8A6789B12DDA61" Comment="Уровень конденсата в емкости Е-4" />
         <Field Name="A1_3_4_dP_F1_F2" Type="A66BBC2040DE5F1DB91157BC6ACE32E7" UUID="5EB6751D4A05091D68FF8C99D52FFB65" Comment="Перепад давления на  фильтрах 1 и 2" />
         <Field Name="A1_4_1_Ttn2_E2_1" Type="A66BBC2040DE5F1DB91157BC6ACE32E7" UUID="D1B956FC46D83A6FF3437CAEE1F10D04" Comment="Температура  теплоносителя после подогревателя Е2.1" />
         <Field Name="A1_4_2_Ttn2_E2_2" Type="A66BBC2040DE5F1DB91157BC6ACE32E7" UUID="F14B859A4F7D9F77222FCDBC1E431EDD" Comment="Температура  теплоносителя после подогревателя Е2.2" />

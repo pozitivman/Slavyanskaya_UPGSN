@@ -7,6 +7,7 @@
         <Field Name="rOff" Type="BOOL" UUID="7E3BE15A448EDC2384B3918A05CAB7B7" Comment="команда &apos;выключить&apos; (&apos;закрыть&apos;) в дистанционном режиме" />
         <Field Name="rOnOff" Type="BOOL" UUID="15A1A81541242899C8CCF680503AF43A" Comment="команда &apos;включить/выключить&apos; (&apos;открыть/закрыть&apos;) в дистанционном режиме" />
         <Field Name="aOnOff" Type="BOOL" UUID="445F44234B54D661DD14ECB31FCBAAB2" Comment="команда &apos;включить/выключить&apos; (&apos;открыть/закрыть&apos;) в автоматич режиме" />
+        <Field Name="rep" Type="BOOL" UUID="525E225A4613CFE07C2D6BB995060244" Comment="повторить последнюю команду" />
         <Field Name="cwOn" Type="BOOL" UUID="936F381A471E9E0AF7F66D83990E032B" Comment="не учитывать контроль цепи управления команды &apos;открыть&apos;" />
         <Field Name="cwOff" Type="BOOL" UUID="A09397FB4382760B23753793BBE53FB9" Comment="не учитывать контроль цепи управления команды &apos;закрыть&apos;" />
         <Field Name="non" Type="BOOL" UUID="192BE64E4A27F20B13ED0EB45BC4C328" Comment="Не включен (не открыт)" />

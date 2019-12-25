@@ -4,7 +4,7 @@
     <Fields>
         <Field Name="A1_3_1" Type="UINT" UUID="FBDED54C40BFBAE3183E50A7C4329CDC" Comment="Давление газа на входе" />
         <Field Name="A1_3_2" Type="UINT" UUID="B8EAAB5743E2141A8A8D9995567C5853" Comment="Температура газа на входе" />
-        <Field Name="A1_3_3" Type="UINT" UUID="BCCC671A4E1669714EEC6E9C3E7F770A" Comment="Влажность газа на входе" />
+        <Field Name="A1_3_3" Type="UINT" UUID="BCCC671A4E1669714EEC6E9C3E7F770A" Comment="Уровень конденсата в емкости Е-4" />
         <Field Name="A1_3_4" Type="UINT" UUID="8683226C4E27151128F75FA4D83ACB9B" Comment="Перепад давления на  фильтрах 1 и 2" />
         <Field Name="A1_4_1" Type="UINT" UUID="C0812FCF4541C605B1365E817B931EB2" Comment="Температура  теплоносителя после подогревателя Е2.1" />
         <Field Name="A1_4_2" Type="UINT" UUID="38B536C74F47E99AE7C974938072DE71" Comment="Температура  теплоносителя после подогревателя Е2.2" />

@@ -26,16 +26,16 @@
         <Field Name="state_3_2" Type="WORD" UUID="92A831594F501A5A5E1E4EA6AFD4B1D9" Comment="Состояние клапана XV3.2" />
         <Field Name="UST_3_1_MIN_PRU" Type="UINT" UUID="05B908A54005C895619C7EBF3905DF8F" Comment="Уставка минимального значения регулируемого параметра c ПРУ" />
         <Field Name="UST_3_1_MIN_HMI" Type="UINT" UUID="4613B0D14C400F93583315B0E6E153D7" Comment="Уставка минимального значения регулируемого параметра c HMI" />
-        <Field Name="UST_3_1_MIN" Type="LREAL" UUID="DBC11747421703862D3F748302F284ED" Comment="Уставка минимального значения регулируемого параметра" />
+        <Field Name="UST_3_1_MIN" Type="REAL" UUID="DBC11747421703862D3F748302F284ED" Comment="Уставка минимального значения регулируемого параметра" />
         <Field Name="UST_3_1_MAX_PRU" Type="UINT" UUID="94E0DEA24A6FE171B310B68F7DE78CF1" Comment="Уставка максимального значения регулируемого параметра c ПРУ" />
         <Field Name="UST_3_1_MAX_HMI" Type="UINT" UUID="DA0FB76B4CD20565806CA4A70A693BB1" Comment="Уставка максимального значения регулируемого параметра c HMI" />
-        <Field Name="UST_3_1_MAX" Type="LREAL" UUID="BF564A5949032C3CC861B18DA35FE99D" Comment="Уставка максимального значения регулируемого параметра" />
+        <Field Name="UST_3_1_MAX" Type="REAL" UUID="BF564A5949032C3CC861B18DA35FE99D" Comment="Уставка максимального значения регулируемого параметра" />
         <Field Name="UST_3_2_MIN_PRU" Type="UINT" UUID="7729D3AD4B14E62B86EE76892E925103" Comment="Уставка минимального значения регулируемого параметра c ПРУ" />
         <Field Name="UST_3_2_MIN_HMI" Type="UINT" UUID="846210DA4CD6CB28A0A4D790304955BF" Comment="Уставка минимального значения регулируемого параметра c HMI" />
-        <Field Name="UST_3_2_MIN" Type="LREAL" UUID="4B28AC8145539A7C2EE5C990E898E4F5" Comment="Уставка минимального значения регулируемого параметра" />
+        <Field Name="UST_3_2_MIN" Type="REAL" UUID="4B28AC8145539A7C2EE5C990E898E4F5" Comment="Уставка минимального значения регулируемого параметра" />
         <Field Name="UST_3_2_MAX_PRU" Type="UINT" UUID="B218610546B86C1952CD9A9AA9D986F4" Comment="Уставка максимального значения регулируемого параметра c ПРУ" />
         <Field Name="UST_3_2_MAX_HMI" Type="UINT" UUID="69EBD86246868A83876FA4BCB81F13E1" Comment="Уставка максимального значения регулируемого параметра c HMI" />
-        <Field Name="UST_3_2_MAX" Type="LREAL" UUID="FD52A26B4FAAD1337E178DB577BF9199" Comment="Уставка максимального значения регулируемого параметра" />
+        <Field Name="UST_3_2_MAX" Type="REAL" UUID="FD52A26B4FAAD1337E178DB577BF9199" Comment="Уставка максимального значения регулируемого параметра" />
         <Field Name="allow_bit_PRU_3_1" Type="BOOL" UUID="AED29A7C4BF366A3C4CC0AB7A3C4F020" Comment="Бит разрешения записи уставки ПРУ" />
         <Field Name="allow_bit_HMI_3_1" Type="BOOL" UUID="0E012E114AD1478F57EC87A41C518AF4" Comment="Бит разрешения записи уставки HMI" />
         <Field Name="allow_bit_PRU_3_2" Type="BOOL" UUID="66B46D144C9EE4CD3B1271B6A5DCC951" Comment="Бит разрешения записи уставки ПРУ" />
