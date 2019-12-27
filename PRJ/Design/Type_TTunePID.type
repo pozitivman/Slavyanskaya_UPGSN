@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Type v. 1.0 >
+<Type Name="TTunePID" Kind="Struct" Comment="Структура для ПИД - регуляторов" UUID="8FEB7CB64160CD86F39E399B10F88ABF">
+    <Fields>
+        <Field Name="num" Type="INT" UUID="1DFFF40C4D6297339CD1699ACABE9C98" Comment="Порядковый номер регулятора" />
+        <Field Name="SP" Type="REAL" UUID="64100E0B4CA07E024F1C81A70CB17639" Comment="Задание ПИД" />
+        <Field Name="PV" Type="REAL" UUID="6CE89F5440DA1C039716F4AF11056B7A" Comment="Регулируемый параметр" />
+        <Field Name="Kp" Type="REAL" UUID="4C21ED4E488AADFDC5E7ED8E98697B23" Comment="Пропорциональный коэффициент" />
+        <Field Name="Ki" Type="REAL" UUID="A75704284E9A38646766FBA4B28BF101" Comment="Интегральный коэффициент" />
+        <Field Name="Kd" Type="REAL" UUID="D3EB905449B5604FF0EE24A48127F874" Comment="Дифференциальный коэффициент" />
+        <Field Name="DZ" Type="REAL" UUID="0DE9033C419182696BFBF9AE4648C54C" Comment="Зона нечувствительности" />
+        <Field Name="setDU" Type="REAL" UUID="B25D54DC4648F6088B29BC9969FFA347" Comment="Задание в ДУ" />
+        <Field Name="DU" Type="BOOL" UUID="28ADF791489C5CAFEC907CAAEB548E32" Comment="Включить ДУ" />
+        <Field Name="SP_min" Type="REAL" UUID="2BC19800485790308E4248A371E08F28" Comment="Уставка минимального значения диапазона регулирования" />
+        <Field Name="SP_max" Type="REAL" UUID="ACFFDD8843B38AC373E9CF96C192BDB1" Comment="Уставка максимального значения диапазона регулирования" />
+    </Fields>
+</Type>

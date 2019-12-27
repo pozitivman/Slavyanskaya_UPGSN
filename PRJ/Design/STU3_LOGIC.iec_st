@@ -18,6 +18,7 @@
         <Variable UUID="4C1587C04940B9B44D6DA295A67AE8E8" Name="rtrig_rst_AO" Type="R_TRIG" TypeUUID="D90E3B974D4D8C72877123B1A897EB52" Usage="internal" />
         <Variable UUID="7681260545C50C16FB1B87A15B6712A6" Name="rtrig_Deblock" Type="R_TRIG" TypeUUID="D90E3B974D4D8C72877123B1A897EB52" Usage="internal" />
         <Variable UUID="C0D3978D49ADB407CC36E9B156F085DB" Name="pause_link" Type="LREAL" TypeUUID="65F1DDD44EDA9C0776BB16BBDFE36B1F" Usage="internal" />
+        <Variable UUID="5B6236684AFD43B7693F9C8A189B1C7C" Name="proc_PID_calc" Type="FB_PID_CALC" TypeUUID="9492448C4E812292EA6CB5B1185D6694" Usage="internal" />
     </Variables>
     <ST><![CDATA[//Использование C-библиотеки (время цикла и таймер 1с)
 clock_AI_cur := CLOCK();
@@ -56,6 +57,7 @@ proc_DI();
 proc_ALG();
 proc_VLV();
 
+proc_PID_calc(cycle := LREAL_TO_REAL(cycleTime));
 proc_DO();
 proc_AO();
 proc_APS();
@@ -279,6 +281,98 @@ cycleTime_AI_sys := clock_AI_cur - clock_AI_prev;]]></ST>
         </Struct>
     </DataTypes>
     <FBLibrary>
+        <Folder Name="Инструменты" Comment="" Data="" UUID="8DEB64DD4130B1884B667D8AAC38D326">
+            <Function UUID="306BC47D4D7CBF0A6CBC8DB34BCB6CA0" Name="MAX_VG" Comment="Выбор максимального из двух REAL" ResultTypeUUID="42E054C8453789BBDD3594B53BDC7DE5">
+                <Variables>
+                    <Variable UUID="318EE2B4466D19541BA42CBF55EE074E" Name="IN1" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="E66F8AA148E6029657733E9AEE4D6D0B" Name="IN2" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                </Variables>
+                <ST><![CDATA[// ===============================================================================
+// функция, возвращающая максимальное из двух значений real на входе
+// ===============================================================================
+MAX_VG := IN1;
+IF IN2 > IN1 THEN MAX_VG := IN2; END_IF;]]></ST>
+            </Function>
+            <Function UUID="6347D59B429F99B5F49133BAFCA594FD" Name="MIN_VG" Comment="Выбор минимального из двух REAL" ResultTypeUUID="42E054C8453789BBDD3594B53BDC7DE5">
+                <Variables>
+                    <Variable UUID="F5AD924D421492278109308890C6FDE6" Name="IN1" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="E893E0CE45BC3FFCDC19C59875FA8B38" Name="IN2" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                </Variables>
+                <ST><![CDATA[// ===============================================================================
+// функция, возвращающая минимальное из двух значений real на входе
+// ===============================================================================
+MIN_VG := IN1;
+IF IN2 < IN1 THEN MIN_VG := IN2; END_IF;]]></ST>
+            </Function>
+            <FunctionBlock UUID="FC714E38406E84024B957D9AFF39A636" Name="SinglePID_Proc">
+                <Variables>
+                    <Variable UUID="A821E1A34809244B03EE6CBE74B3E4C3" Name="init" Comment="Признак инициализации" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
+                    <Variable UUID="39698A3F49015EA51A56F6894D3331A9" Name="errTemp" Comment="Ошибка за вычетом мертвой зоны" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                    <Variable UUID="5313E97F485A328663F60A9EF1409269" Name="outTemp" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                    <Variable UUID="EED7A9DC4ABF19AF19B5CFBE8B9E9CB2" Name="dInteg" Comment="Приращение интегратора" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                    <Variable UUID="84C4DDD74CCA1E59B865CE8E10F25A70" Name="integ" Comment="Интегратор" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                    <Variable UUID="CEBEB7D349B328D0FB4E29A5C59E0618" Name="oldErr" Comment="Ошибка регулирования на предыдущем цикле" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                    <Variable UUID="945BAEE341161C95A2BAE290C252A466" Name="tmp" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                    <Variable UUID="017812B04DE5DE29B98E4093D83CD4E2" Name="err" Comment="Ошибка регулирования" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="35D48CBE45DEDF4CA08E36AAE5B6A0B8" Name="hiLimit" Comment="Верхнее ограничение выхода регулятора" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="47E60A394E7D178306FB5F975AB9BB5C" Name="loLimit" Comment="Нижнее ограничение выхода регулятора" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="CB88F1FD41587A06C944F4AC8E358D4F" Name="hiRate" Comment="Ограничение по скорости увеличения выхода регулятора" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="6C4B0800437526861AD6989271A3CE20" Name="loRate" Comment="Ограничение по скорости уменьшения выхода регулятора" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="CB7A074545E7342B1F49BD9DCC7D51EC" Name="cycle" Comment="Время цикла вызова регулятора" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="E2FFC27746F55AE887DE8DAD08D50F3D" Name="setDU" Comment="Выход регулятора при ДУ" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="CA2F4A8F4AFCA8B3E9537EA01341992E" Name="DU" Comment="Признак ДУ" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="input" />
+                    <Variable UUID="9BD7B2B64F5CE2F26652759D388B963C" Name="Work_ON" Comment="Включить регулятор" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="input" />
+                    <Variable UUID="D78D4506404D0EF322D6EA95D3C84485" Name="Kp" Comment="Пропорциональный коэффициент" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="9FEFB7974EA3FF9CDAE9EA9C83789368" Name="Ki" Comment="Интегральный коэффициент" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="60371F03451EB444BC01A3A066F82C0E" Name="Kd" Comment="Дифференциальный коэффициент" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="E4A0DC8C4BA647EF577BD2A9C2DDEC2E" Name="DZ" Comment="Зона нечувствительности" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                    <Variable UUID="8DBB83C243E95D50BCAC14A08A33FE4D" Name="out" Comment="Выход регулятора" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="output" />
+                </Variables>
+                <ST><![CDATA[//Инициализация
+init := Work_ON;
+	IF NOT init THEN
+    	dInteg  := 0.0;
+    	oldErr  := err;
+    	out     := setDU;
+		integ   := setDU;
+   		init    := TRUE;
+	ELSE
+  //Если осуществляется нормальная работа
+	IF NOT DU THEN  
+    //Расчет ошибки, пропущенной через зону нечувствительности
+		IF err > DZ THEN errTemp := err - DZ; ELSIF err < -DZ THEN errTemp := err + DZ; ELSE errTemp := 0.0; END_IF;
+    //Расчет приращения интегратора
+		dInteg := (errTemp + oldErr) / 2.0 * cycle * Ki;
+    //Расчет выхода регулятора
+		outTemp := integ + dInteg + ((errTemp - oldErr)/cycle) * Kd + errTemp * Kp;
+		oldErr := errTemp;
+  //Если осуществляется дистанционное управление
+	ELSE
+    //Приращение интегратора расчитывается как разность задания при ДУ и текущего выхода регулятора
+		dInteg  := setDU - out;
+    //Ошибка регулирования считается равной нулю
+		oldErr  := 0.0;
+    //Выход приравнивается заданию при ДУ
+		outTemp := setDU;
+	END_IF;
+  //Пересчет выхода и приращения интегратора с учетом ограничения скорости изменения выхода
+	IF (outTemp - out) > hiRate * cycle  THEN 
+		out := out + hiRate * cycle;
+		dInteg := MIN_VG(hiRate * cycle, dInteg);
+	ELSIF (outTemp - out) < -loRate * cycle THEN
+		out := out - loRate * cycle;     
+		dInteg := MAX_VG(-loRate * cycle, dInteg);
+	ELSE
+		out := outTemp;
+	END_IF;
+	//Расчет приращения интегратора
+		integ := MIN_VG(MAX_VG(integ + dInteg, loLimit), hiLimit);
+	//Учет ограничения выхода
+		out := MIN_VG(MAX_VG(out,loLimit), hiLimit);
+	END_IF;
+]]></ST>
+            </FunctionBlock>
+        </Folder>
         <FunctionBlock UUID="6A4FEBAC4B635BACDB1140A38C63D50E" Name="AE_Proc">
             <Variables>
                 <Variable UUID="2640D4C347D9AEED753D038568D7636C" Name="IN_bool" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="input" />
@@ -1948,6 +2042,7 @@ SEN_A3_9_4_HMI	:=	AI_init(LREAL#100, 	LREAL#0, 	LREAL#0.1,	LREAL#160,	DINT#11937
 
 END_IF;																
 																
+//if not IMIT then
 AI_001(SEN_A1_3_1_HMI,	KC1_STU3_AI_DRV.A1_3_1,		cycleTime,		KC1_STU3_AI_HMI.A1_3_1_Pg1);												
 AI_002(SEN_A1_3_2_HMI,	KC1_STU3_AI_DRV.A1_3_2,		cycleTime,		KC1_STU3_AI_HMI.A1_3_2_Tg1);												
 AI_003(SEN_A1_3_3_HMI,	KC1_STU3_AI_DRV.A1_3_3,		cycleTime,		KC1_STU3_AI_HMI.A1_3_3_Lk1_E4);												
@@ -1992,7 +2087,7 @@ AI_041(SEN_A3_9_1_HMI,	KC1_STU3_AI_DRV.A3_9_1,		cycleTime,		KC1_STU3_AI_HMI.A3_9
 AI_042(SEN_A3_9_2_HMI,	KC1_STU3_AI_DRV.A3_9_2,		cycleTime,		KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2);
 AI_043(SEN_A3_9_3_HMI,	KC1_STU3_AI_DRV.A3_9_3,		cycleTime,		KC1_STU3_AI_HMI.A3_9_3_Rez);
 AI_044(SEN_A3_9_4_HMI,	KC1_STU3_AI_DRV.A3_9_4,		cycleTime,		KC1_STU3_AI_HMI.A3_9_4_Rez);
-]]></ST>
+//end_if;]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="3F4E01994D0F833BB767D2A7EC992919" Name="FB_ALG">
             <Variables>
@@ -2003,6 +2098,8 @@ AI_044(SEN_A3_9_4_HMI,	KC1_STU3_AI_DRV.A3_9_4,		cycleTime,		KC1_STU3_AI_HMI.A3_9
                 <Variable UUID="6AB1597D4F7DF2036058E48BCD2180A1" Name="rtrigV_TO_ON" Type="R_TRIG" TypeUUID="D90E3B974D4D8C72877123B1A897EB52" Usage="internal" />
                 <Variable UUID="3A7A374D4B6515F76ECD028976644FDE" Name="SV_GB_ON_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
                 <Variable UUID="9773124F4B1C5ECE19A6C08B2CBA9037" Name="V_TO_ON_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
+                <Variable UUID="20363EBD4FED3176651B629A94B678D6" Name="APS_AOB_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
+                <Variable UUID="9839F8514081A43CDF4462B44D25EC2A" Name="APS_AOS_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
             </Variables>
             <ST><![CDATA[//В.2.3 Включение/отключение наружного освещения
 time_now	:= CURRENT_DATE_TIME();
@@ -2077,34 +2174,54 @@ end_if;
 if MD_PZ_PRU_on or MD_PZ_HMI_on then MD_PZ := BOOL#1; end_if;
 if MD_PZ_PRU_off or MD_PZ_HMI_off then MD_PZ := BOOL#0; end_if;
 
-//В.8 Аварийная остановка системы
+//В.8 Аварийный останов системы
 //Формирование флага АОб
-if (APS_KC1_STU3.A1_6_3_Pg2_out1_hi			or	//Давление газа на выходе 1 - высокое
-	APS_KC1_STU3.A2_7_1_Pig_hi				or	//Давление испульсного газа высокое
-	APS_KC1_STU3.A2_6_8_Zagaz_CH4_20p_ot	or	//Загазованность по метану 20% НКПР (технологический отсек)
-	APS_KC1_STU3.A2_6_10_Zagaz_CH4_20p_optn or	//Загазованность по метану 20% НКПР (отсек подготовки теплоносителя)
-	APS_KC1_STU3.A2_6_12_Zagaz_CO_100mgm3	or	//Загазованность по CO 100 мг/м³
-	APS_KC1_STU3.A2_6_13_Fail_PK			or	//Неисправность ПК
-	APS_KC1_STU3.A2_6_14_Fail_ASPS_SKZ_SOUE)	//Неисправность АСПС, СКЗ и СОУЭ
+if (Global_PRU.Btn_AOB						or						//Нажатие АОБ на ПРУ
+	APS_KC1_STU3.A1_6_3_Pg2_out1_hi			or						//Давление газа на выходе 1 - высокое
+	APS_KC1_STU3.A2_7_1_Pig_hi				or						//Давление испульсного газа высокое
+	APS_KC1_STU3.A2_6_8_Zagaz_CH4_20p_ot	or						//Загазованность по метану 20% НКПР (технологический отсек)
+	APS_KC1_STU3.A2_6_10_Zagaz_CH4_20p_optn or						//Загазованность по метану 20% НКПР (отсек подготовки теплоносителя)
+	APS_KC1_STU3.A2_6_12_Zagaz_CO_100mgm3	or						//Загазованность по CO 100 мг/м³
+	APS_KC1_STU3.A2_6_13_Fail_PK			or						//Неисправность ПК
+	APS_KC1_STU3.A2_6_14_Fail_ASPS_SKZ_SOUE) and not APS_AOB_prev	//Неисправность АСПС, СКЗ и СОУЭ
 	then 
 		UnitState.State := 1;
 		allow_bit_stop_AOB := false;
 else
 	allow_bit_stop_AOB := true;	
-end_if; 
+end_if;
+APS_AOB_prev :=
+				Global_PRU.Btn_AOB						or
+ 				APS_KC1_STU3.A1_6_3_Pg2_out1_hi			or
+				APS_KC1_STU3.A2_7_1_Pig_hi				or
+				APS_KC1_STU3.A2_6_8_Zagaz_CH4_20p_ot	or
+				APS_KC1_STU3.A2_6_10_Zagaz_CH4_20p_optn or
+				APS_KC1_STU3.A2_6_12_Zagaz_CO_100mgm3	or
+				APS_KC1_STU3.A2_6_13_Fail_PK			or
+				APS_KC1_STU3.A2_6_14_Fail_ASPS_SKZ_SOUE;
+
 
 //Формирование флага АОс
-if (APS_KC1_STU3.A2_6_4_Fire1ot 	or 	//Пожар в технологическом отсеке
-	APS_KC1_STU3.A2_6_5_Fire1otn	or 	//Пожар в отсеке подготовки теплоносителя
-	APS_KC1_STU3.A2_6_6_Fire1ou		or 	//Пожар в отсеке управления
-	APS_KC1_STU3.A2_7_8_ESD			or 	//Аварийный останов
-	APS_KC1_STU3.A2_7_13_EAO)			//Экстренный останов
+if (Global_PRU.Btn_AOS				or				//Нажатие АОБ на ПРУ
+	APS_KC1_STU3.A2_6_4_Fire1ot 	or 				//Пожар в технологическом отсеке
+	APS_KC1_STU3.A2_6_5_Fire1otn	or 				//Пожар в отсеке подготовки теплоносителя
+	APS_KC1_STU3.A2_6_6_Fire1ou		or 				//Пожар в отсеке управления
+	APS_KC1_STU3.A2_7_8_ESD			or 				//Аварийный останов
+	APS_KC1_STU3.A2_7_13_EAO) and not APS_AOS_prev	//Экстренный останов
 	then  
 		UnitState.State := 2;
 		allow_bit_stop_AOS := false;
 else
 	allow_bit_stop_AOS := true;	
 end_if;
+APS_AOS_prev :=
+				Global_PRU.Btn_AOS				or
+				APS_KC1_STU3.A2_6_4_Fire1ot 	or
+				APS_KC1_STU3.A2_6_5_Fire1otn	or
+				APS_KC1_STU3.A2_6_6_Fire1ou		or
+				APS_KC1_STU3.A2_7_8_ESD			or
+				APS_KC1_STU3.A2_7_13_EAO;
+
 
 //При включенном сигнале "Звуковой сигнал" и поступлении сигнала "Квитирование", отключаем сигнал "Звуковой сигнал"
 if (KC1_STU3_DO_HMI.A3_6_14_SOUND_ON.PV and Kvitir) then 
@@ -2161,7 +2278,7 @@ end_if;]]></ST>
 AO_min := real#13100;
 AO_max := real#65535;
 
-
+(*
 //Регулятор TwV1_1
 //перевод TwV1_1 в дистанционный/автоматический режим
 if KR_TwV.DA_1_1_PRU_on or KR_TwV.DA_1_1_HMI_on then KR_TwV.DA_1_1 := bool#1; end_if;
@@ -2304,9 +2421,19 @@ else
 	KR_XV.UST_3_2_MIN_PRU := real_to_uint(KR_XV.UST_3_2_MIN * real#100.0); 
 	KR_XV.UST_3_2_MAX_PRU := real_to_uint(KR_XV.UST_3_2_MAX * real#100.0); 
 end_if;
+*)
 
+//Управление регулирующим клапаном TwV1.1
+KC1_STU3_AO_DRV.A2_4_1 := real_to_uint(AO_min + (AO_max - AO_min)*KC1_STU3_AO_HMI.A2_4_1_Pos_TwV1_1/real#100.0);
 
+//Управление регулирующим клапаном TwV1.2
+KC1_STU3_AO_DRV.A2_5_1 := real_to_uint(AO_min + (AO_max - AO_min)*KC1_STU3_AO_HMI.A2_5_1_Pos_TwV1_2/real#100.0);
 
+//Управление клапаном XV3.1
+KC1_STU3_AO_DRV.A2_4_2 := real_to_uint(AO_min + (AO_max - AO_min)*KC1_STU3_AO_HMI.A2_4_2_Pos_XV3_1/real#100.0);
+
+//Управление клапаном XV3.2
+KC1_STU3_AO_DRV.A2_4_3 := real_to_uint(AO_min + (AO_max - AO_min)*KC1_STU3_AO_HMI.A2_4_3_Pos_XV3_2/real#100.0);
 
 
 
@@ -2334,9 +2461,7 @@ end_if;
         </FunctionBlock>
         <FunctionBlock UUID="2B81CBA042A176E3704178AD77DC9654" Name="FB_AOb" Comment="Аварийный останов без стравливания">
             <Variables />
-            <ST><![CDATA[if (Step.AOb <> 2 or Step.AOb <> 3) then TMR[0] := TMR[0] + cycleTime;
-else  TMR[0] := lreal#0.0;
-end_if;
+            <ST><![CDATA[if (Step.AOb <> 2 or Step.AOb <> 3) then TMR[0] := TMR[0] + cycleTime; end_if;
 if (TMR[0] >= lreal#300.0) then 
 	Step.AOb := 3;
 end_if; 
@@ -2360,17 +2485,17 @@ case Step.AOb of
 	2: //АОб завершен
 		AOB_UPGSN_DONE := true;
 		AOB_UPGSN := false;
+		TMR[0] := lreal#0.0;
 
 	3: //АОб завершен некорректно по превышению времени алгоритма 
 		AOB_UPGSN_DONE_INCORRECT := true;
-		AOB_UPGSN := false;	
+		AOB_UPGSN := false;
+		TMR[0] := lreal#0.0;	
 end_case;]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="93FE3F414C253931451739880AEDA7FA" Name="FB_AOs" Comment="Аварийный останов со стравливанием">
             <Variables />
-            <ST><![CDATA[if (Step.AOs <> 3 or Step.AOb <> 4) then TMR[1] := TMR[1] + cycleTime;
-else  TMR[1] := lreal#0.0;
-end_if;
+            <ST><![CDATA[if (Step.AOs <> 3 or Step.AOb <> 4) then TMR[1] := TMR[1] + cycleTime; end_if;
 if (TMR[1] >= lreal#300.0) then 
 	Step.AOs := 4;
 end_if; 
@@ -2386,7 +2511,7 @@ case Step.AOs of
 			KC1_STU3_VLV_LG.KR_IN.RA		:= false;
 			KC1_STU3_VLV_LG.KR_IN.aOnOff	:= false; 
 		end_if;
-		if (KC1_STU3_DI_HMI.A2_7_10_V_IN_OFF.PV) then //Входной кран закрыт
+		if (KC1_STU3_DI_HMI.A2_7_10_V_IN_OFF.PV) then //Входной кран закрыт 
 		Step.AOs := 2;
         end_if;
 
@@ -2401,10 +2526,12 @@ case Step.AOs of
 	3: //АОс завершен
 		AOS_UPGSN_DONE := true;
 		AOS_UPGSN := false;
+		TMR[1] := lreal#0.0;
 
 	4: //АОc завершен некорректно по превышению времени алгоритма 
 		AOS_UPGSN_DONE_INCORRECT := true;
 		AOS_UPGSN := false;
+		TMR[1] := lreal#0.0;
 end_case;]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="9018116F43FC2E443834D486159520D8" Name="FB_DI">
@@ -2644,11 +2771,11 @@ DI_096(KC1_STU3_DI_DRV.A3_3_16,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_3_16_CHECK_R
 DI_097(KC1_STU3_DI_DRV.A3_4_1,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_1_GC_OSN_IP_BEAO_DC_24,		'Исправность осн. ИП =24В БЭАО');
 DI_098(KC1_STU3_DI_DRV.A3_4_2,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_2_GC_REZ_IP_BEAO_DC_24,		'Исправность рез. ИП =24В БЭАО');
 DI_099(KC1_STU3_DI_DRV.A3_4_3,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_3_Door_PK_open,				'Дверь ПК открыта');
-DI_100(KC1_STU3_DI_DRV.A3_4_4,		INT#3,	BOOL#1,		KC1_STU3_DI_HMI.A3_4_4_V_IN_DU_ON,					'Входной кран дист. управление Включено');
+DI_100(KC1_STU3_DI_DRV.A3_4_4,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_4_V_IN_DU_ON,					'Входной кран дист. управление Включено');
 DI_101(KC1_STU3_DI_DRV.A3_4_5,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_5_V_IN_ALL_FTL,				'Входной кран. Общая неисправность привода');
-DI_102(KC1_STU3_DI_DRV.A3_4_6,		INT#3,	BOOL#1,		KC1_STU3_DI_HMI.A3_4_6_V_CDL_DU_ON,					'Свечной кран дист. управление Включено');
+DI_102(KC1_STU3_DI_DRV.A3_4_6,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_6_V_CDL_DU_ON,					'Свечной кран дист. управление Включено');
 DI_103(KC1_STU3_DI_DRV.A3_4_7,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_7_V_CDL_ALL_FLT,				'Свечной кран. Общая неисправность привода');
-DI_104(KC1_STU3_DI_DRV.A3_4_8,		INT#3,	BOOL#1,		KC1_STU3_DI_HMI.A3_4_8_V_187c_DU_ON,				'Кран свечной подводящего трубопровода дист. управление Включено');
+DI_104(KC1_STU3_DI_DRV.A3_4_8,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_8_V_187c_DU_ON,				'Кран свечной подводящего трубопровода дист. управление Включено');
 DI_105(KC1_STU3_DI_DRV.A3_4_9,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_9_V_187c_ALL_FLT,				'Кран свечной подводящего трубопровода. Общая неисправность привода');
 DI_106(KC1_STU3_DI_DRV.A3_4_10,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_10_NC,							'Не подключен');
 DI_107(KC1_STU3_DI_DRV.A3_4_11,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_4_11_NC,							'Не подключен');
@@ -2676,7 +2803,7 @@ DI_128(KC1_STU3_DI_DRV.A3_5_16,		INT#3,	BOOL#0,		KC1_STU3_DI_HMI.A3_5_16_V_XV3_1
 end_if;
 
 //Преобразование аналогов в дискреты
-AI_AS_DI_001(bool#1, KC1_STU3_AI_HMI.A1_3_3_Lk1_E4.PV, real#1.0,DI_AS_AI.Lk1_E4_hi, DI_AS_AI.Lk1_E4_hi_flt);]]></ST>
+AI_AS_DI_001(bool#1, KC1_STU3_AI_HMI.A1_3_3_Lk1_E4.PV, real#1.0,DI_AS_AI.Lk1_E4_hi, DI_AS_AI.Lk1_E4_hi_flt); //Верхний аварийный уровень в резервуаре Е4]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="BBCB778D49A7D5C4203B66B139CF5C01" Name="FB_DO">
             <Variables>
@@ -2747,6 +2874,184 @@ DO_030(KC1_STU3_DO_HMI.A3_7_14_NC,				KC1_STU3_DO_DRV.A3_7_14,	'Не подкл�
 DO_031(KC1_STU3_DO_HMI.A3_7_15_NC,				KC1_STU3_DO_DRV.A3_7_15,	'Не подключен');
 DO_032(KC1_STU3_DO_HMI.A3_7_16_NC,				KC1_STU3_DO_DRV.A3_7_16,	'Не подключен');
 end_if;]]></ST>
+        </FunctionBlock>
+        <FunctionBlock UUID="9492448C4E812292EA6CB5B1185D6694" Name="FB_PID_CALC">
+            <Variables>
+                <Variable UUID="DF822EB142D775118D27D388AE49F3B1" Name="cycle" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="input" />
+                <Variable UUID="DC10E5204A287EEE5318659F7C135F62" Name="pidTwV1_1" Type="SinglePID_Proc" TypeUUID="FC714E38406E84024B957D9AFF39A636" Usage="internal" />
+                <Variable UUID="B2EE0A334C4805DF12616F925AA283AC" Name="pidTwV1_2" Type="SinglePID_Proc" TypeUUID="FC714E38406E84024B957D9AFF39A636" Usage="internal" />
+                <Variable UUID="B5E6B8C14825EE417D30BEBF68AEB57C" Name="pidXV3_1" Type="SinglePID_Proc" TypeUUID="FC714E38406E84024B957D9AFF39A636" Usage="internal" />
+                <Variable UUID="72EAC325480BDD15E2509B91798438E5" Name="pidXV3_2" Type="SinglePID_Proc" TypeUUID="FC714E38406E84024B957D9AFF39A636" Usage="internal" />
+                <Variable UUID="F1C2651743298B77AC9806A58B7CD67E" Name="TwV1_1_TMO_out" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                <Variable UUID="A7CF0A6A4AAD9EE6370D608972E22B42" Name="TwV1_2_TMO_out" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                <Variable UUID="DEF4255D4DE2FBDFC8FBCBB11A71EE9B" Name="XV3_1_TMO_out" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+                <Variable UUID="B899256B48B6C6E3F16F7E9E5A7FD135" Name="XV3_2_TMO_out" Type="REAL" TypeUUID="42E054C8453789BBDD3594B53BDC7DE5" Usage="internal" />
+            </Variables>
+            <ST><![CDATA[if Firstscan then
+//настройки регулятора клапана (TwV1_1)
+	regTwV1_1.SP		:= 0.0;
+	regTwV1_1.Kp		:= 1.0;
+	regTwV1_1.Ki		:= 0.8;
+	regTwV1_1.Kd		:= 0.5;
+	regTwV1_1.DZ		:= 0.5;
+	regTwV1_1.setDU		:= 0.0;
+	regTwV1_1.SP_min	:= 20.0;
+	regTwV1_1.SP_max	:= 30.0;
+
+//настройки регулятора клапана (TwV1_2)
+	regTwV1_2.SP		:= 0.0;
+	regTwV1_2.Kp		:= 1.0;
+	regTwV1_2.Ki		:= 0.8;
+	regTwV1_2.Kd		:= 0.5;
+	regTwV1_2.DZ		:= 0.5;
+	regTwV1_2.setDU		:= 0.0;
+	regTwV1_2.SP_min	:= 5.0;
+	regTwV1_2.SP_max	:= 25.0;
+
+//настройки регулятора клапана (XV3_1)
+	regXV3_1.SP			:= 0.0;
+	regXV3_1.Kp			:= 1.0;
+	regXV3_1.Ki			:= 0.8;
+	regXV3_1.Kd			:= 0.5;
+	regXV3_1.DZ			:= 0.5;
+	regXV3_1.setDU		:= 0.0;
+	regXV3_1.SP_min		:= 0.0;
+	regXV3_1.SP_max		:= 100.0;
+
+//настройки регулятора клапана (XV3_2)
+	regXV3_2.SP			:= 0.0;
+	regXV3_2.Kp			:= 1.0;
+	regXV3_2.Ki			:= 0.8;
+	regXV3_2.Kd			:= 0.5;
+	regXV3_2.DZ			:= 0.5;
+	regXV3_2.setDU		:= 0.0;
+	regXV3_2.SP_min		:= 0.0;
+	regXV3_2.SP_max		:= 100.0;
+end_if;
+
+
+//Управление клапаном (TwV1_1)
+regTwV1_1.PV := KC1_STU3_AI_HMI.A1_8_1_Tg2_out2.PV;	//Отслеживаемый параметр
+regTwV1_1.DU := KC1_STU3_VLV_LG.KR_TwV1_1.RA;
+//regTwV1_1.setDU := ;
+pidTwV1_1(err	:= regTwV1_1.SP - regTwV1_1.PV,	//Ошибка регулирования
+		hiLimit	:= 100.0,						//Верхнее ограничение выхода регулятора
+		loLimit	:= 0.0,							//Нижнее ограничение выхода регулятора
+		hiRate	:= 5.0,							//Ограничение по скорости увеличения выхода регулятора
+		loRate	:= 5.0,							//Ограничение по скорости уменьшения выхода регулятора
+		cycle	:= cycle,						//Время цикла вызова регулятора
+		setDU	:= regTwV1_1.setDU,				//Выход регулятора при ДУ
+		DU		:= regTwV1_1.DU,				//Признак ДУ
+		Work_ON	:= true,						//Включить регулятор
+		Kp		:= regTwV1_1.Kp,				//Пропорциональный коэффициент
+		Ki		:= regTwV1_1.Ki,				//Интегральный коэффициент
+		Kd		:= regTwV1_1.Kd,				//Дифференциальный коэффициент
+		DZ		:= regTwV1_1.DZ					//Зона нечувствительности
+);
+KC1_STU3_AO_HMI.A2_4_1_Pos_TwV1_1 := pidTwV1_1.out;	//Выход регулятора
+if IMIT then
+	KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.PV := pidTwV1_1.out;
+	KC1_STU3_VLV_LG.KR_TwV1_1.state.0 := KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.PV < 2.0;
+	KC1_STU3_VLV_LG.KR_TwV1_1.state.1 := KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.PV > 98.0;
+	if KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.PV > 2.0 and  KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.PV < 98.0 then
+		KC1_STU3_VLV_LG.KR_TwV1_1.state := word#0;
+	end_if;
+end_if;
+
+
+//Управление клапаном (TwV1_2)
+regTwV1_2.PV := KC1_STU3_AI_HMI.A1_9_1_Tv1_ot.PV; //Отслеживаемый параметр
+regTwV1_2.DU := KC1_STU3_VLV_LG.KR_TwV1_2.RA;
+//regTwV1_2.setDU := ;
+pidTwV1_2(err	:= regTwV1_2.SP - regTwV1_2.PV,	//Ошибка регулирования
+		hiLimit	:= 100.0,						//Верхнее ограничение выхода регулятора
+		loLimit	:= 0.0,							//Нижнее ограничение выхода регулятора
+		hiRate	:= 5.0,							//Ограничение по скорости увеличения выхода регулятора
+		loRate	:= 5.0,							//Ограничение по скорости уменьшения выхода регулятора
+		cycle	:= cycle,						//Время цикла вызова регулятора
+		setDU	:= regTwV1_2.setDU,				//Выход регулятора при ДУ
+		DU		:= regTwV1_2.DU,				//Признак ДУ
+		Work_ON	:= true,						//Включить регулятор
+		Kp		:= regTwV1_2.Kp,				//Пропорциональный коэффициент
+		Ki		:= regTwV1_2.Ki,				//Интегральный коэффициент
+		Kd		:= regTwV1_2.Kd,				//Дифференциальный коэффициент
+		DZ		:= regTwV1_2.DZ					//Зона нечувствительности
+);
+KC1_STU3_AO_HMI.A2_5_1_Pos_TwV1_2 := pidTwV1_2.out;	//Выход регулятора
+if IMIT then
+	KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.PV := pidTwV1_2.out;
+	KC1_STU3_VLV_LG.KR_TwV1_2.state.0 := KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.PV < 2.0;
+	KC1_STU3_VLV_LG.KR_TwV1_2.state.1 := KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.PV > 98.0;
+	if KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.PV > 2.0 and  KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.PV < 98.0 then
+		KC1_STU3_VLV_LG.KR_TwV1_2.state := word#0;
+	end_if;
+end_if;
+
+
+//Управление клапаном (XV3_1)
+regXV3_1.PV := 0.0;								//Отслеживаемый параметр
+regXV3_1.DU := KC1_STU3_VLV_LG.KR_XV3_1.RA;
+//regXV3_1.setDU := ;
+pidXV3_1(err	:= regXV3_1.SP - regXV3_1.PV,	//Ошибка регулирования
+		hiLimit	:= 100.0,						//Верхнее ограничение выхода регулятора
+		loLimit	:= 0.0,							//Нижнее ограничение выхода регулятора
+		hiRate	:= 5.0,							//Ограничение по скорости увеличения выхода регулятора
+		loRate	:= 5.0,							//Ограничение по скорости уменьшения выхода регулятора
+		cycle	:= cycle,						//Время цикла вызова регулятора
+		setDU	:= regXV3_1.setDU,				//Выход регулятора при ДУ
+		DU		:= regXV3_1.DU,					//Признак ДУ
+		Work_ON	:= true,						//Включить регулятор
+		Kp		:= regXV3_1.Kp,					//Пропорциональный коэффициент
+		Ki		:= regXV3_1.Ki,					//Интегральный коэффициент
+		Kd		:= regXV3_1.Kd,					//Дифференциальный коэффициент
+		DZ		:= regXV3_1.DZ					//Зона нечувствительности
+);
+KC1_STU3_AO_HMI.A2_4_2_Pos_XV3_1 := pidXV3_1.out;	//Выход регулятора
+if IMIT then
+	KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.PV := pidXV3_1.out;
+	KC1_STU3_VLV_LG.KR_XV3_1.state.0 := KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.PV < 2.0;
+	KC1_STU3_VLV_LG.KR_XV3_1.state.1 := KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.PV > 98.0;
+	if KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.PV > 2.0 and  KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.PV < 98.0 then
+		KC1_STU3_VLV_LG.KR_XV3_1.state := word#0;
+	end_if;
+end_if;
+
+
+//Управление клапаном (XV3_2)
+regXV3_2.PV := 0.0;								//Отслеживаемый параметр
+regXV3_2.DU := KC1_STU3_VLV_LG.KR_XV3_2.RA;
+//regXV3_2.setDU := ;
+pidXV3_2(err	:= regXV3_2.SP - regXV3_2.PV,	//Ошибка регулирования
+		hiLimit	:= 100.0,						//Верхнее ограничение выхода регулятора
+		loLimit	:= 0.0,							//Нижнее ограничение выхода регулятора
+		hiRate	:= 5.0,							//Ограничение по скорости увеличения выхода регулятора
+		loRate	:= 5.0,							//Ограничение по скорости уменьшения выхода регулятора
+		cycle	:= cycle,						//Время цикла вызова регулятора
+		setDU	:= regXV3_2.setDU,				//Выход регулятора при ДУ
+		DU		:= regXV3_2.DU,					//Признак ДУ
+		Work_ON	:= true,						//Включить регулятор
+		Kp		:= regXV3_2.Kp,					//Пропорциональный коэффициент
+		Ki		:= regXV3_2.Ki,					//Интегральный коэффициент
+		Kd		:= regXV3_2.Kd,					//Дифференциальный коэффициент
+		DZ		:= regXV3_2.DZ					//Зона нечувствительности
+);
+KC1_STU3_AO_HMI.A2_4_3_Pos_XV3_2 := pidXV3_2.out;	//Выход регулятора
+if IMIT then
+	KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.PV := pidXV3_2.out;
+	KC1_STU3_VLV_LG.KR_XV3_2.state.0 := KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.PV < 2.0;
+	KC1_STU3_VLV_LG.KR_XV3_2.state.1 := KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.PV > 98.0;
+	if KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.PV > 2.0 and  KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.PV < 98.0 then
+		KC1_STU3_VLV_LG.KR_XV3_2.state := word#0;
+	end_if;
+end_if;
+
+
+
+
+
+
+
+]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="6365F2774F4DD22539CE50A3F08609D4" Name="FB_VLV">
             <Variables>
@@ -2842,6 +3147,8 @@ end_if;]]></ST>
                 <Variable UUID="8124B4B342F0546624B2CF9953505360" Name="vlv_KC1_STU3_KR_187c" Type="proc_VLV22" TypeUUID="D462FA7146F4E9F333226CA88FF08990" Usage="internal" />
                 <Variable UUID="6FF96819497E23F92D5120BCCDD35F84" Name="imit_KC1_STU3_KR_187c" Type="VLV_imit" TypeUUID="A09AE2844B73351BF94B378381A47C0F" Usage="internal" />
                 <Variable UUID="F4F7CF84480EA00509ECA1B346CD5B50" Name="ctrl_KC1_STU3_KR_187c" Type="Ctrl_crane" TypeUUID="8241A1A94DC7CD2DAF4A08841D436394" Usage="internal" />
+                <Variable UUID="5C8670154977CB4961C3AC99FCB79362" Name="ctrl_KC1_STU3_KR_TwV1_1" Type="Ctrl_crane" TypeUUID="8241A1A94DC7CD2DAF4A08841D436394" Usage="internal" />
+                <Variable UUID="C2580E4043A819CDD5131BB086B61BAB" Name="ctrl_KC1_STU3_KR_TwV1_2" Type="Ctrl_crane" TypeUUID="8241A1A94DC7CD2DAF4A08841D436394" Usage="internal" />
             </Variables>
             <ST><![CDATA[if Firstscan then		                                         //таймер команды	//таймер дожима		//цепи "откр"	//цепи "закр"	//Дист/Авто
 SEN_KC1_STU3_KR_IN		 := VLV_init(	SEN_KC1_STU3_KR_IN,		 LREAL#6, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
@@ -2867,8 +3174,8 @@ end_if;
 //                  ручн PRU                      	    	автомат PRU                    	    	ручн HMI                         	автомат HMI                       	включить в ручном PRU          		откл в ручном PRU               	включить в ручном HMI          		откл в ручном HMI              		состояние крана из логики        обобщенная авария крана из логики	 состояние крана в PRU            	состояние крана в HMI               общая авария в PRU       				общая авария в HMI							RA в блок                    	RA в PRU                      	RA в HMI                      	вкл в ручном в блок           	откл в ручном в блок       
 ctrl_KC1_STU3_KR_IN(KC1_STU3_VLV_PRU.KR_IN.RA_on, 	    	KC1_STU3_VLV_PRU.KR_IN.RA_off, 	   	 	KC1_STU3_VLV_HMI.KR_IN.RA_on,    	KC1_STU3_VLV_HMI.KR_IN.RA_off,    	KC1_STU3_VLV_PRU.KR_IN.rOn,    		KC1_STU3_VLV_PRU.KR_IN.rOff,    	KC1_STU3_VLV_HMI.KR_IN.rOn,    		KC1_STU3_VLV_HMI.KR_IN.rOff,    	KC1_STU3_VLV_LG.KR_IN.state,	 KC1_STU3_VLV_LG.KR_IN.flt_all,    	 KC1_STU3_VLV_PRU.KR_IN.state,    	KC1_STU3_VLV_HMI.KR_IN.state,		KC1_STU3_VLV_PRU.KR_IN.flt_all,			KC1_STU3_VLV_HMI.KR_IN.flt_all,    			KC1_STU3_VLV_LG.KR_IN.RA,    	KC1_STU3_VLV_PRU.KR_IN.RA,    	KC1_STU3_VLV_HMI.KR_IN.RA,    	KC1_STU3_VLV_LG.KR_IN.rOn,    	KC1_STU3_VLV_LG.KR_IN.rOff);
 ctrl_KC1_STU3_KR_CDL(KC1_STU3_VLV_PRU.KR_CDL.RA_on,     	KC1_STU3_VLV_PRU.KR_CDL.RA_off,    	 	KC1_STU3_VLV_HMI.KR_CDL.RA_on,   	KC1_STU3_VLV_HMI.KR_CDL.RA_off,   	KC1_STU3_VLV_PRU.KR_CDL.rOn,   		KC1_STU3_VLV_PRU.KR_CDL.rOff,   	KC1_STU3_VLV_HMI.KR_CDL.rOn,   		KC1_STU3_VLV_HMI.KR_CDL.rOff,   	KC1_STU3_VLV_LG.KR_CDL.state,	 KC1_STU3_VLV_LG.KR_CDL.flt_all,   	 KC1_STU3_VLV_PRU.KR_CDL.state,   	KC1_STU3_VLV_HMI.KR_CDL.state,		KC1_STU3_VLV_PRU.KR_CDL.flt_all,		KC1_STU3_VLV_HMI.KR_CDL.flt_all,   			KC1_STU3_VLV_LG.KR_CDL.RA,   	KC1_STU3_VLV_PRU.KR_CDL.RA,   	KC1_STU3_VLV_HMI.KR_CDL.RA,   	KC1_STU3_VLV_LG.KR_CDL.rOn,   	KC1_STU3_VLV_LG.KR_CDL.rOff);
-//ctrl_KC1_STU3_KR_XV3_1(KC1_STU3_VLV_PRU.KR_XV3_1.RA_on, 	KC1_STU3_VLV_PRU.KR_XV3_1.RA_off,   	KC1_STU3_VLV_HMI.KR_XV3_1.RA_on, 	KC1_STU3_VLV_HMI.KR_XV3_1.RA_off, 	KC1_STU3_VLV_PRU.KR_XV3_1.rOn, 		KC1_STU3_VLV_PRU.KR_XV3_1.rOff, 	KC1_STU3_VLV_HMI.KR_XV3_1.rOn, 		KC1_STU3_VLV_HMI.KR_XV3_1.rOff, 	KC1_STU3_VLV_LG.KR_XV3_1.state,	 KC1_STU3_VLV_LG.KR_XV3_1.flt_all, 	 KC1_STU3_VLV_PRU.KR_XV3_1.state, 	KC1_STU3_VLV_HMI.KR_XV3_1.state,	KC1_STU3_VLV_PRU.KR_XV3_1.flt_all,		KC1_STU3_VLV_HMI.KR_XV3_1.flt_all, 			KC1_STU3_VLV_LG.KR_XV3_1.RA, 	KC1_STU3_VLV_PRU.KR_XV3_1.RA, 	KC1_STU3_VLV_HMI.KR_XV3_1.RA, 	KC1_STU3_VLV_LG.KR_XV3_1.rOn, 	KC1_STU3_VLV_LG.KR_XV3_1.rOff);
-//ctrl_KC1_STU3_KR_XV3_2(KC1_STU3_VLV_PRU.KR_XV3_2.RA_on, 	KC1_STU3_VLV_PRU.KR_XV3_2.RA_off,   	KC1_STU3_VLV_HMI.KR_XV3_2.RA_on, 	KC1_STU3_VLV_HMI.KR_XV3_2.RA_off, 	KC1_STU3_VLV_PRU.KR_XV3_2.rOn, 		KC1_STU3_VLV_PRU.KR_XV3_2.rOff, 	KC1_STU3_VLV_HMI.KR_XV3_2.rOn, 		KC1_STU3_VLV_HMI.KR_XV3_2.rOff, 	KC1_STU3_VLV_LG.KR_XV3_2.state,	 KC1_STU3_VLV_LG.KR_XV3_2.flt_all, 	 KC1_STU3_VLV_PRU.KR_XV3_2.state, 	KC1_STU3_VLV_HMI.KR_XV3_2.state,	KC1_STU3_VLV_PRU.KR_XV3_2.flt_all,		KC1_STU3_VLV_HMI.KR_XV3_2.flt_all, 			KC1_STU3_VLV_LG.KR_XV3_2.RA, 	KC1_STU3_VLV_PRU.KR_XV3_2.RA, 	KC1_STU3_VLV_HMI.KR_XV3_2.RA, 	KC1_STU3_VLV_LG.KR_XV3_2.rOn, 	KC1_STU3_VLV_LG.KR_XV3_2.rOff);
+ctrl_KC1_STU3_KR_XV3_1(KC1_STU3_VLV_PRU.KR_XV3_1.RA_on, 	KC1_STU3_VLV_PRU.KR_XV3_1.RA_off,   	KC1_STU3_VLV_HMI.KR_XV3_1.RA_on, 	KC1_STU3_VLV_HMI.KR_XV3_1.RA_off, 	KC1_STU3_VLV_PRU.KR_XV3_1.rOn, 		KC1_STU3_VLV_PRU.KR_XV3_1.rOff, 	KC1_STU3_VLV_HMI.KR_XV3_1.rOn, 		KC1_STU3_VLV_HMI.KR_XV3_1.rOff, 	KC1_STU3_VLV_LG.KR_XV3_1.state,	 KC1_STU3_VLV_LG.KR_XV3_1.flt_all, 	 KC1_STU3_VLV_PRU.KR_XV3_1.state, 	KC1_STU3_VLV_HMI.KR_XV3_1.state,	KC1_STU3_VLV_PRU.KR_XV3_1.flt_all,		KC1_STU3_VLV_HMI.KR_XV3_1.flt_all, 			KC1_STU3_VLV_LG.KR_XV3_1.RA, 	KC1_STU3_VLV_PRU.KR_XV3_1.RA, 	KC1_STU3_VLV_HMI.KR_XV3_1.RA, 	KC1_STU3_VLV_LG.KR_XV3_1.rOn, 	KC1_STU3_VLV_LG.KR_XV3_1.rOff);
+ctrl_KC1_STU3_KR_XV3_2(KC1_STU3_VLV_PRU.KR_XV3_2.RA_on, 	KC1_STU3_VLV_PRU.KR_XV3_2.RA_off,   	KC1_STU3_VLV_HMI.KR_XV3_2.RA_on, 	KC1_STU3_VLV_HMI.KR_XV3_2.RA_off, 	KC1_STU3_VLV_PRU.KR_XV3_2.rOn, 		KC1_STU3_VLV_PRU.KR_XV3_2.rOff, 	KC1_STU3_VLV_HMI.KR_XV3_2.rOn, 		KC1_STU3_VLV_HMI.KR_XV3_2.rOff, 	KC1_STU3_VLV_LG.KR_XV3_2.state,	 KC1_STU3_VLV_LG.KR_XV3_2.flt_all, 	 KC1_STU3_VLV_PRU.KR_XV3_2.state, 	KC1_STU3_VLV_HMI.KR_XV3_2.state,	KC1_STU3_VLV_PRU.KR_XV3_2.flt_all,		KC1_STU3_VLV_HMI.KR_XV3_2.flt_all, 			KC1_STU3_VLV_LG.KR_XV3_2.RA, 	KC1_STU3_VLV_PRU.KR_XV3_2.RA, 	KC1_STU3_VLV_HMI.KR_XV3_2.RA, 	KC1_STU3_VLV_LG.KR_XV3_2.rOn, 	KC1_STU3_VLV_LG.KR_XV3_2.rOff);
 ctrl_KC1_STU3_KR_SV1_1(KC1_STU3_VLV_PRU.KR_SV1_1.RA_on, 	KC1_STU3_VLV_PRU.KR_SV1_1.RA_off,   	KC1_STU3_VLV_HMI.KR_SV1_1.RA_on, 	KC1_STU3_VLV_HMI.KR_SV1_1.RA_off, 	KC1_STU3_VLV_PRU.KR_SV1_1.rOn, 		KC1_STU3_VLV_PRU.KR_SV1_1.rOff, 	KC1_STU3_VLV_HMI.KR_SV1_1.rOn, 		KC1_STU3_VLV_HMI.KR_SV1_1.rOff, 	KC1_STU3_VLV_LG.KR_SV1_1.state,  KC1_STU3_VLV_LG.KR_SV1_1.flt_all,	 KC1_STU3_VLV_PRU.KR_SV1_1.state, 	KC1_STU3_VLV_HMI.KR_SV1_1.state,	KC1_STU3_VLV_PRU.KR_SV1_1.flt_all,		KC1_STU3_VLV_HMI.KR_SV1_1.flt_all, 			KC1_STU3_VLV_LG.KR_SV1_1.RA, 	KC1_STU3_VLV_PRU.KR_SV1_1.RA, 	KC1_STU3_VLV_HMI.KR_SV1_1.RA, 	KC1_STU3_VLV_LG.KR_SV1_1.rOn, 	KC1_STU3_VLV_LG.KR_SV1_1.rOff);
 ctrl_KC1_STU3_KR_187c(KC1_STU3_VLV_PRU.KR_187c.RA_on, 		KC1_STU3_VLV_PRU.KR_187c.RA_off,   		KC1_STU3_VLV_HMI.KR_187c.RA_on, 	KC1_STU3_VLV_HMI.KR_187c.RA_off, 	KC1_STU3_VLV_PRU.KR_187c.rOn, 		KC1_STU3_VLV_PRU.KR_187c.rOff, 		KC1_STU3_VLV_HMI.KR_187c.rOn, 		KC1_STU3_VLV_HMI.KR_187c.rOff, 		KC1_STU3_VLV_LG.KR_187c.state,   KC1_STU3_VLV_LG.KR_187c.flt_all,	 KC1_STU3_VLV_PRU.KR_187c.state, 	KC1_STU3_VLV_HMI.KR_187c.state,		KC1_STU3_VLV_PRU.KR_187c.flt_all,		KC1_STU3_VLV_HMI.KR_187c.flt_all, 			KC1_STU3_VLV_LG.KR_187c.RA, 	KC1_STU3_VLV_PRU.KR_187c.RA, 	KC1_STU3_VLV_HMI.KR_187c.RA, 	KC1_STU3_VLV_LG.KR_187c.rOn, 	KC1_STU3_VLV_LG.KR_187c.rOff);
 ctrl_KC1_STU3_IM_V_TO(KC1_STU3_VLV_PRU.IM_V_TO.RA_on, 		KC1_STU3_VLV_PRU.IM_V_TO.RA_off,    	KC1_STU3_VLV_HMI.IM_V_TO.RA_on,  	KC1_STU3_VLV_HMI.IM_V_TO.RA_off,  	KC1_STU3_VLV_PRU.IM_V_TO.rOn,  		KC1_STU3_VLV_PRU.IM_V_TO.rOff,  	KC1_STU3_VLV_HMI.IM_V_TO.rOn,  		KC1_STU3_VLV_HMI.IM_V_TO.rOff,  	KC1_STU3_VLV_LG.IM_V_TO.state,	 KC1_STU3_VLV_LG.IM_V_TO.flt_all,  	 KC1_STU3_VLV_PRU.IM_V_TO.state,  	KC1_STU3_VLV_HMI.IM_V_TO.state,		KC1_STU3_VLV_PRU.IM_V_TO.flt_all,		KC1_STU3_VLV_HMI.IM_V_TO.flt_all,  			KC1_STU3_VLV_LG.IM_V_TO.RA,  	KC1_STU3_VLV_PRU.IM_V_TO.RA,  	KC1_STU3_VLV_HMI.IM_V_TO.RA,  	KC1_STU3_VLV_LG.IM_V_TO.rOn,  	KC1_STU3_VLV_LG.IM_V_TO.rOff);
@@ -2880,6 +3187,8 @@ ctrl_KC1_STU3_IM_N_P1_5(KC1_STU3_VLV_PRU.IM_N_P1_5.RA_on, 	KC1_STU3_VLV_PRU.IM_N
 ctrl_KC1_STU3_IM_N_P1_6(KC1_STU3_VLV_PRU.IM_N_P1_6.RA_on, 	KC1_STU3_VLV_PRU.IM_N_P1_6.RA_off,    	KC1_STU3_VLV_HMI.IM_N_P1_6.RA_on,  	KC1_STU3_VLV_HMI.IM_N_P1_6.RA_off,  KC1_STU3_VLV_PRU.IM_N_P1_6.rOn,  	KC1_STU3_VLV_PRU.IM_N_P1_6.rOff,  	KC1_STU3_VLV_HMI.IM_N_P1_6.rOn,  	KC1_STU3_VLV_HMI.IM_N_P1_6.rOff, 	KC1_STU3_VLV_LG.IM_N_P1_6.state, KC1_STU3_VLV_LG.IM_N_P1_6.flt_all,  KC1_STU3_VLV_PRU.IM_N_P1_6.state,  KC1_STU3_VLV_HMI.IM_N_P1_6.state,	KC1_STU3_VLV_PRU.IM_N_P1_6.flt_all,		KC1_STU3_VLV_HMI.IM_N_P1_6.flt_all,  		KC1_STU3_VLV_LG.IM_N_P1_6.RA,  	KC1_STU3_VLV_PRU.IM_N_P1_6.RA,  KC1_STU3_VLV_HMI.IM_N_P1_6.RA,  KC1_STU3_VLV_LG.IM_N_P1_6.rOn,  KC1_STU3_VLV_LG.IM_N_P1_6.rOff);
 ctrl_KC1_STU3_IM_H_GB1_1(KC1_STU3_VLV_PRU.IM_H_GB1_1.RA_on, KC1_STU3_VLV_PRU.IM_H_GB1_1.RA_off,    	KC1_STU3_VLV_HMI.IM_H_GB1_1.RA_on,  KC1_STU3_VLV_HMI.IM_H_GB1_1.RA_off, KC1_STU3_VLV_PRU.IM_H_GB1_1.rOn,  	KC1_STU3_VLV_PRU.IM_H_GB1_1.rOff,  	KC1_STU3_VLV_HMI.IM_H_GB1_1.rOn,  	KC1_STU3_VLV_HMI.IM_H_GB1_1.rOff, 	KC1_STU3_VLV_LG.IM_H_GB1_1.state,KC1_STU3_VLV_LG.IM_H_GB1_1.flt_all, KC1_STU3_VLV_PRU.IM_H_GB1_1.state, KC1_STU3_VLV_HMI.IM_H_GB1_1.state,	KC1_STU3_VLV_PRU.IM_H_GB1_1.flt_all,	KC1_STU3_VLV_HMI.IM_H_GB1_1.flt_all,  		KC1_STU3_VLV_LG.IM_H_GB1_1.RA,  KC1_STU3_VLV_PRU.IM_H_GB1_1.RA, KC1_STU3_VLV_HMI.IM_H_GB1_1.RA, KC1_STU3_VLV_LG.IM_H_GB1_1.rOn, KC1_STU3_VLV_LG.IM_H_GB1_1.rOff);
 ctrl_KC1_STU3_IM_H_GB1_2(KC1_STU3_VLV_PRU.IM_H_GB1_2.RA_on, KC1_STU3_VLV_PRU.IM_H_GB1_2.RA_off,    	KC1_STU3_VLV_HMI.IM_H_GB1_2.RA_on,  KC1_STU3_VLV_HMI.IM_H_GB1_2.RA_off, KC1_STU3_VLV_PRU.IM_H_GB1_2.rOn,  	KC1_STU3_VLV_PRU.IM_H_GB1_2.rOff,  	KC1_STU3_VLV_HMI.IM_H_GB1_2.rOn,  	KC1_STU3_VLV_HMI.IM_H_GB1_2.rOff, 	KC1_STU3_VLV_LG.IM_H_GB1_2.state,KC1_STU3_VLV_LG.IM_H_GB1_2.flt_all, KC1_STU3_VLV_PRU.IM_H_GB1_2.state, KC1_STU3_VLV_HMI.IM_H_GB1_2.state,	KC1_STU3_VLV_PRU.IM_H_GB1_2.flt_all,	KC1_STU3_VLV_HMI.IM_H_GB1_2.flt_all, 		KC1_STU3_VLV_LG.IM_H_GB1_2.RA,  KC1_STU3_VLV_PRU.IM_H_GB1_2.RA, KC1_STU3_VLV_HMI.IM_H_GB1_2.RA, KC1_STU3_VLV_LG.IM_H_GB1_2.rOn, KC1_STU3_VLV_LG.IM_H_GB1_2.rOff);
+ctrl_KC1_STU3_KR_TwV1_1(KC1_STU3_VLV_PRU.KR_TwV1_1.RA_on, 	KC1_STU3_VLV_PRU.KR_TwV1_1.RA_off,    	KC1_STU3_VLV_HMI.KR_TwV1_1.RA_on,  	KC1_STU3_VLV_HMI.KR_TwV1_1.RA_off, 	KC1_STU3_VLV_PRU.KR_TwV1_1.rOn,  	KC1_STU3_VLV_PRU.KR_TwV1_1.rOff,  	KC1_STU3_VLV_HMI.KR_TwV1_1.rOn,  	KC1_STU3_VLV_HMI.KR_TwV1_1.rOff, 	KC1_STU3_VLV_LG.KR_TwV1_1.state, KC1_STU3_VLV_LG.KR_TwV1_1.flt_all,  KC1_STU3_VLV_PRU.KR_TwV1_1.state,  KC1_STU3_VLV_HMI.KR_TwV1_1.state,	KC1_STU3_VLV_PRU.KR_TwV1_1.flt_all,		KC1_STU3_VLV_HMI.KR_TwV1_1.flt_all, 		KC1_STU3_VLV_LG.KR_TwV1_1.RA,  	KC1_STU3_VLV_PRU.KR_TwV1_1.RA, 	KC1_STU3_VLV_HMI.KR_TwV1_1.RA, 	KC1_STU3_VLV_LG.KR_TwV1_1.rOn, 	KC1_STU3_VLV_LG.KR_TwV1_1.rOff);
+ctrl_KC1_STU3_KR_TwV1_2(KC1_STU3_VLV_PRU.KR_TwV1_2.RA_on, 	KC1_STU3_VLV_PRU.KR_TwV1_2.RA_off,    	KC1_STU3_VLV_HMI.KR_TwV1_2.RA_on,  	KC1_STU3_VLV_HMI.KR_TwV1_2.RA_off, 	KC1_STU3_VLV_PRU.KR_TwV1_2.rOn,  	KC1_STU3_VLV_PRU.KR_TwV1_2.rOff,  	KC1_STU3_VLV_HMI.KR_TwV1_2.rOn,  	KC1_STU3_VLV_HMI.KR_TwV1_2.rOff, 	KC1_STU3_VLV_LG.KR_TwV1_2.state, KC1_STU3_VLV_LG.KR_TwV1_2.flt_all,  KC1_STU3_VLV_PRU.KR_TwV1_2.state,  KC1_STU3_VLV_HMI.KR_TwV1_2.state,	KC1_STU3_VLV_PRU.KR_TwV1_2.flt_all,		KC1_STU3_VLV_HMI.KR_TwV1_2.flt_all, 		KC1_STU3_VLV_LG.KR_TwV1_2.RA,  	KC1_STU3_VLV_PRU.KR_TwV1_2.RA, 	KC1_STU3_VLV_HMI.KR_TwV1_2.RA, 	KC1_STU3_VLV_LG.KR_TwV1_2.rOn, 	KC1_STU3_VLV_LG.KR_TwV1_2.rOff);
 
 
 //Формирование входных сигналов и АПС для ИМ	ручн/автомат					включить в ручном				откл в ручном					CMD включить в ручном				CMD вкл в автомате					команда повторить				контроль КЦУ откр				контроль КЦУ закр					состояние открыт						состояние закрыт							КЦУ открытия									КЦУ закрытия
@@ -2915,40 +3224,6 @@ im_KC1_STU3_IM_N_P1_5(	SEN_KC1_STU3_IM_N_P1_5,	cycleTime);
 im_KC1_STU3_IM_N_P1_6(	SEN_KC1_STU3_IM_N_P1_6,	cycleTime);
 im_KC1_STU3_IM_H_GB1_1(	SEN_KC1_STU3_IM_H_GB1_1,cycleTime);
 im_KC1_STU3_IM_H_GB1_2(	SEN_KC1_STU3_IM_H_GB1_2,cycleTime);
-
-
-//Формирвание состояний клапанов TwV1.1, TwV1.2, KR3.1, KR3.2
-if KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.PV <= 5.0 and not KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.Obriv then 
-	KR_TwV.state_1_1 := WORD#1; 
-elsif KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.PV >= 95.0 and not KC1_STU3_AI_HMI.A1_9_3_Pos_TwV1_1.KZ then 
-	KR_TwV.state_1_1 := WORD#2;
-else
-	KR_TwV.state_1_1 := WORD#0;
-end_if;
-
-if KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.PV <= 5.0 and not KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.Obriv then 
-	KR_TwV.state_1_2 := WORD#1; 
-elsif KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.PV >= 95.0 and not KC1_STU3_AI_HMI.A1_9_4_Pos_TwV1_2.KZ then 
-	KR_TwV.state_1_2 := WORD#2;
-else
-	KR_TwV.state_1_2 := WORD#0;
-end_if;
-
-if KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.PV <= 5.0 and not KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.Obriv then 
-	KR_XV.state_3_1 := WORD#1; 
-elsif KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.PV >= 95.0 and not KC1_STU3_AI_HMI.A3_9_1_Pos_XV3_1.KZ then 
-	KR_XV.state_3_1 := WORD#2;
-else
-	KR_XV.state_3_1 := WORD#0;
-end_if;
-
-if KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.PV <= 5.0 and not KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.Obriv then 
-	KR_XV.state_3_2 := WORD#1; 
-elsif KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.PV >= 95.0 and not KC1_STU3_AI_HMI.A3_9_2_Pos_XV3_2.KZ then 
-	KR_XV.state_3_2 := WORD#2;
-else
-	KR_XV.state_3_2 := WORD#0;
-end_if;
 
 
 //Формирование состояний исполнительных механизмов для подсистемы УПИГ
@@ -3177,7 +3452,13 @@ KC1_STU3_VLV_LG.IM_N_P1_5.aOnOff	:= SEN_KC1_STU3_IM_N_P1_5.Control.aOnOff.0;
 KC1_STU3_VLV_LG.IM_N_P1_6.aOnOff	:= SEN_KC1_STU3_IM_N_P1_6.Control.aOnOff.0;
 KC1_STU3_VLV_LG.IM_H_GB1_1.aOnOff	:= SEN_KC1_STU3_IM_H_GB1_1.Control.aOnOff.0;
 KC1_STU3_VLV_LG.IM_H_GB1_2.aOnOff	:= SEN_KC1_STU3_IM_H_GB1_2.Control.aOnOff.0;
-end_if;]]></ST>
+end_if;
+
+SEN_KC1_STU3_KR_IN.Ins.on.0 := true;
+
+
+
+]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="03FC474C44065334B97FF8985FD8215B" Name="VLV_cfg">
             <Variables>
@@ -3268,9 +3549,9 @@ IF NOT HMI_KR_DA THEN CMD_KR_rOnOff := CMD_KR_aOnOff; ELSE CMD_KR_aOnOff := CMD_
                 <Variable UUID="671D2129434643E69A11A19EEBBAB428" Name="delay_vlv_time1" Type="TIME" TypeUUID="3EFD49044E055B696F5570BA288FA8D5" Usage="internal" />
                 <Variable UUID="1F2741F34ADEEAE92D36729DBFD13DA5" Name="delay_vlv_time2" Type="TIME" TypeUUID="3EFD49044E055B696F5570BA288FA8D5" Usage="internal" />
             </Variables>
-            <ST><![CDATA[delay_on(DO_KR_ON, T#3s, delay_vlv_bool1, delay_vlv_time1);
+            <ST><![CDATA[delay_on(DO_KR_ON, T#5s, delay_vlv_bool1, delay_vlv_time1);
 IF delay_vlv_bool1  THEN DI_KR_ON := BOOL#1; DI_KR_OFF := BOOL#0; END_IF;
-delay_off(DO_KR_OFF, T#3s, delay_vlv_bool2, delay_vlv_time2);
+delay_off(DO_KR_OFF, T#5s, delay_vlv_bool2, delay_vlv_time2);
 IF delay_vlv_bool2 THEN DI_KR_ON := BOOL#0; DI_KR_OFF := BOOL#1; END_IF;]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="F5D50D354EA4F055A7C45FA642B99021" Name="VLV_imit_11">

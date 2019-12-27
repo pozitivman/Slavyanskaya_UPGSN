@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE SubAppType v. 1.3 >
-<SubAppType Name="DRV_PRU" Kind="DRIVER.MODBUS" Args="" Comment="" UUID="BADDF20A404ECE6696BEED875FFA830D">
+<SubAppType Name="DRV_MB_TCP_SLAVE" Kind="DRIVER.MODBUS" Args="" Comment="" UUID="BADDF20A404ECE6696BEED875FFA830D">
     <InterfaceList>
         <Signal Name="@PID" UUID="DB65A6D0437C00D0222520933DD2319E" Type="STRING" Usage="output" />
         <Signal Name="@STATE" UUID="17E7FE844BFB4F403A300E8706052EBC" Type="STRING" Usage="output" />
@@ -48,5 +48,14 @@
         <Signal Name="S_PAC3200_2" UUID="7B9E7F9949D82B32D292E1BF1CEF9E5C" Type="59EA1CD143458EED487F4FBACFCC6861" Usage="" Global="TRUE" Comment="Анализатор сети SENTRON PAC3200" />
         <Signal Name="DM1" UUID="DD9953E54D4856430FD84694B5EF17ED" Type="66A83DEF41A3F19414A799B5D47C8CA9" Usage="" Global="TRUE" Comment="Вычислитель DYMETIC-5123.2" />
         <Signal Name="DI_AS_AI" UUID="D7A8761142DA0FFF1ED6CF9F570EABAD" Type="885DC6C549E7A1A1131C5A956A99C209" Usage="" Global="TRUE" Comment="Дискреты уровней конденсата" />
+        <Signal Name="bit_dummy" UUID="930C06BE420A2B76995D93BEF52296A7" Type="BOOL" Usage="" Comment="Заглушка битовая" />
+        <Signal Name="real_dummy" UUID="BC488EE440C84C76DB215CB18E5325DA" Type="BOOL" Usage="" Comment="Заглушка вещественная" />
+        <Signal Name="word_dummy" UUID="83F3DBF74C6D38F11BFC929F61BFCADE" Type="WORD" Usage="" Comment="Заглушка целая" />
+        <Signal Name="regTwV1_1" UUID="7CF864884AF132AF7E8FED95742E01D2" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора TwV1.1" />
+        <Signal Name="regTwV1_2" UUID="6B4BCA064BB2DE34D0048FA30A487598" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора TwV1.2" />
+        <Signal Name="regXV3_1" UUID="F2399CE148C7DA84CB6D0EAC95397BA0" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора XV3_1" />
+        <Signal Name="regXV3_2" UUID="4F5117B74F2827245B19108DCB5CC9E3" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора XV3_1" />
+        <Signal Name="AOB_UPGSN" UUID="051BFA154E8F13E8A979EABDE1235BB5" Type="BOOL" Usage="" Global="TRUE" Comment="АО без стравливания УПГСН" />
+        <Signal Name="AOS_UPGSN" UUID="8527F9C7409CAEEAECF26A9B1B7D83C7" Type="BOOL" Usage="" Global="TRUE" Comment="АО со стравливанием УПГСН" />
     </InterfaceList>
 </SubAppType>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE Project v. 1.0 >
-<Project Name="Slavyanskaya_STU3" Comment="" Port="10000" EndPort="30000" UUID="A088DDE1480925A2036B04BE6E3843E2" SignProject="FALSE" UsersUpdateMode="REPLACE">
+<Project Name="Slavyanskaya_STU3" Comment="" Port="10000" EndPort="30000" UUID="96E13F7D43F6E34D65BED5B1D1BFB98D" SignProject="FALSE" UsersUpdateMode="REPLACE">
     <Globals>
         <Signal Name="Global_PRU" UUID="D48E6274431C31473B814CB1BD6304D1" Type="C7B676B74C120888466E4D96C79601A4" Global="TRUE" Comment="Данные для ПРУ с ПЛК" />
         <Signal Name="Deblock" UUID="6BAECAA040B090C458A0259509A3725D" Type="BOOL" Global="TRUE" Comment="Кнопка &quot;Деблокировка&quot;" />
@@ -59,6 +59,12 @@
         <Signal Name="S_PAC3200_2" UUID="7B9E7F9949D82B32D292E1BF1CEF9E5C" Type="59EA1CD143458EED487F4FBACFCC6861" Global="TRUE" Comment="Анализатор сети SENTRON PAC3200" />
         <Signal Name="DM1" UUID="DD9953E54D4856430FD84694B5EF17ED" Type="66A83DEF41A3F19414A799B5D47C8CA9" Global="TRUE" Comment="Вычислитель DYMETIC-5123.2" />
         <Signal Name="DI_AS_AI" UUID="D7A8761142DA0FFF1ED6CF9F570EABAD" Type="885DC6C549E7A1A1131C5A956A99C209" Global="TRUE" Comment="Дискреты уровней конденсата" />
+        <Signal Name="regTwV1_1" UUID="7CF864884AF132AF7E8FED95742E01D2" Type="8FEB7CB64160CD86F39E399B10F88ABF" Global="TRUE" Comment="Настройки регулятора TwV1.1" />
+        <Signal Name="regTwV1_2" UUID="6B4BCA064BB2DE34D0048FA30A487598" Type="8FEB7CB64160CD86F39E399B10F88ABF" Global="TRUE" Comment="Настройки регулятора TwV1.2" />
+        <Signal Name="regXV3_1" UUID="F2399CE148C7DA84CB6D0EAC95397BA0" Type="8FEB7CB64160CD86F39E399B10F88ABF" Global="TRUE" Comment="Настройки регулятора XV3_1" />
+        <Signal Name="regXV3_2" UUID="4F5117B74F2827245B19108DCB5CC9E3" Type="8FEB7CB64160CD86F39E399B10F88ABF" Global="TRUE" Comment="Настройки регулятора XV3_1" />
+        <Signal Name="AOB_UPGSN" UUID="051BFA154E8F13E8A979EABDE1235BB5" Type="BOOL" Global="TRUE" Comment="АО без стравливания УПГСН" />
+        <Signal Name="AOS_UPGSN" UUID="8527F9C7409CAEEAECF26A9B1B7D83C7" Type="BOOL" Global="TRUE" Comment="АО со стравливанием УПГСН" />
     </Globals>
     <Connections />
 </Project>

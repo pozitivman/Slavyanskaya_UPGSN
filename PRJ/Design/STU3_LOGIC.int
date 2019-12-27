@@ -58,16 +58,16 @@
         <Signal Name="day" UUID="C47D03344BD0046D8CEBCCB4D07A466C" Type="UINT" Usage="" Comment="Текущий день контроллера" />
         <Signal Name="LIGHT_ON" UUID="6BE56C5E4E35D47CF8C877B38258BC9D" Type="BOOL" Usage="" Comment="Включение наружного освещения" />
         <Signal Name="EO_UPGSN" UUID="E27A69C248F93476DAB8C694BB1B317D" Type="BOOL" Usage="" Comment="Экстренный останов УПГСН" />
-        <Signal Name="AOB_UPGSN" UUID="25DEC93446DC1716923F47A0080B73AE" Type="BOOL" Usage="" Comment="АО без стравливания УПГСН" />
+        <Signal Name="AOB_UPGSN" UUID="051BFA154E8F13E8A979EABDE1235BB5" Type="BOOL" Usage="" Global="TRUE" Comment="АО без стравливания УПГСН" />
         <Signal Name="AOB_UPGSN_DONE" UUID="CFBA39204EBE731FB87CD0A1276D67DD" Type="BOOL" Usage="" Comment="АО без стравливания УПГСН завершен" />
         <Signal Name="AOB_UPGSN_DONE_INCORRECT" UUID="6746FF3740A731504C722BAA98ED82F6" Type="BOOL" Usage="" Comment="АО без стравливания УПГСН завершен по превышению  времени" />
-        <Signal Name="AOS_UPGSN" UUID="989F27E240E62D5F633D5A8FC200953B" Type="BOOL" Usage="" Comment="АО со стравливанием УПГСН" />
+        <Signal Name="AOS_UPGSN" UUID="8527F9C7409CAEEAECF26A9B1B7D83C7" Type="BOOL" Usage="" Global="TRUE" Comment="АО со стравливанием УПГСН" />
         <Signal Name="AOS_UPGSN_DONE" UUID="8C1F69634CE04A13AE6BB49C058A8121" Type="BOOL" Usage="" Comment="АО со стравливанием УПГСН завершен" />
         <Signal Name="AOS_UPGSN_DONE_INCORRECT" UUID="686541C6428004902D2C3297AEDC0C0C" Type="BOOL" Usage="" Comment="АО со стравливанием УПГСН завершен по превышению  времени" />
         <Signal Name="blc_V_TO_on" UUID="BC9B335843504EACCB46508EEA6F3F96" Type="BOOL" Usage="" Comment="блокировка включения вентилятора по сигналу Пожар" />
         <Signal Name="Step" UUID="AC747E4D4E75C5F82BAE2A8D9C684524" Type="8C327652475044D4E487FAAAD0D8F361" Usage="" Comment="Шаги алгоритмов" />
         <Signal Name="UnitState" UUID="8EFC16734737D13CA73B1F9D04CC6735" Type="2896AF7B46F5B8A34E5F69AB164F9875" Usage="" />
-        <Signal Name="TMR" UUID="EA44E1C047174D2EDB1ABFB094E2BAC8" Type="LREAL" ArraySize="3" Usage="" Comment="Таймеры алгоритмов" />
+        <Signal Name="TMR" UUID="EA44E1C047174D2EDB1ABFB094E2BAC8" Type="LREAL" ArraySize="7" Usage="" Comment="Таймеры алгоритмов" />
         <Signal Name="allow_bit_stop_AOB" UUID="3EC6C4F14C831878BEEE529CF2B9331C" Type="BOOL" Usage="" Comment="Бит разрешения останова алгоритма АОб" />
         <Signal Name="allow_bit_stop_AOS" UUID="8C26A17F43F3CB4D7A8BDF9655573968" Type="BOOL" Usage="" Comment="Бит разрешения останова алгоритма АОсс" />
         <Signal Name="MD_PZ" UUID="A4360D23482C13BEC157A9974C6FEADE" Type="BOOL" Usage="" Global="TRUE" Comment="Режим проверки защит" />
@@ -80,5 +80,9 @@
         <Signal Name="btn_V_TO_ON" UUID="3140133E4BFDD506689C5CA52EF9C2DC" Type="BOOL" Usage="" Comment="Кнопка включения вентилятора ТО местная" />
         <Signal Name="DI_AS_AI" UUID="D7A8761142DA0FFF1ED6CF9F570EABAD" Type="885DC6C549E7A1A1131C5A956A99C209" Usage="" Global="TRUE" Comment="Дискреты уровней конденсата" />
         <Signal Name="alg" UUID="F7F716FD4BFDA4D31334979E5E3C89F2" Type="815A82684DEF78B432C4C8BBFDCD3E08" Usage="" Comment="Переменные алгоритмов" />
+        <Signal Name="regTwV1_1" UUID="7CF864884AF132AF7E8FED95742E01D2" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора TwV1.1" />
+        <Signal Name="regTwV1_2" UUID="6B4BCA064BB2DE34D0048FA30A487598" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора TwV1.2" />
+        <Signal Name="regXV3_1" UUID="F2399CE148C7DA84CB6D0EAC95397BA0" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора XV3_1" />
+        <Signal Name="regXV3_2" UUID="4F5117B74F2827245B19108DCB5CC9E3" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора XV3_1" />
     </InterfaceList>
 </SubAppType>
