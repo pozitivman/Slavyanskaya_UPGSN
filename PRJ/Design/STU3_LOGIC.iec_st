@@ -47,7 +47,6 @@ Global_PRU.Check_link_bit := false;
 rtrig_Kvitir(CLK:= KC1_STU3_DI_HMI.A2_9_5_ACK_SOUND.PV, Q => Kvitir);
 //Фиксируем нажатие кнопки Сброс аварийной остановки на щите САУ
 rtrig_rst_AO(CLK:= KC1_STU3_DI_HMI.A2_9_6_RST_AO.PV, Q => Reset_AO);
-
 //Фиксируем нажатие кнопки Деблокировка из разных источников
 rtrig_Deblock(CLK:= Global_PRU.Deblock or Deblock_HMI, Q => Deblock);
 
@@ -3151,12 +3150,12 @@ end_if;
                 <Variable UUID="C2580E4043A819CDD5131BB086B61BAB" Name="ctrl_KC1_STU3_KR_TwV1_2" Type="Ctrl_crane" TypeUUID="8241A1A94DC7CD2DAF4A08841D436394" Usage="internal" />
             </Variables>
             <ST><![CDATA[if Firstscan then		                                         //таймер команды	//таймер дожима		//цепи "откр"	//цепи "закр"	//Дист/Авто
-SEN_KC1_STU3_KR_IN		 := VLV_init(	SEN_KC1_STU3_KR_IN,		 LREAL#6, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
-SEN_KC1_STU3_KR_CDL		 := VLV_init(	SEN_KC1_STU3_KR_CDL, 	 LREAL#6, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
+SEN_KC1_STU3_KR_IN		 := VLV_init(	SEN_KC1_STU3_KR_IN,		 LREAL#20, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
+SEN_KC1_STU3_KR_CDL		 := VLV_init(	SEN_KC1_STU3_KR_CDL, 	 LREAL#20, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
 //SEN_KC1_STU3_KR_XV3_1	 := VLV_init(	SEN_KC1_STU3_KR_XV3_1,	 LREAL#6, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
 //SEN_KC1_STU3_KR_XV3_2	 := VLV_init(	SEN_KC1_STU3_KR_XV3_2,	 LREAL#6, LREAL#1, BYTE#0, BYTE#0, BOOL#1);
 SEN_KC1_STU3_KR_SV1_1	 := VLV_init(	SEN_KC1_STU3_KR_SV1_1,   LREAL#6, LREAL#1, BYTE#0, BYTE#1, BOOL#1);
-SEN_KC1_STU3_KR_187c	 := VLV_init(	SEN_KC1_STU3_KR_187c,	 LREAL#6, LREAL#1, BYTE#1, BYTE#1, BOOL#1);
+SEN_KC1_STU3_KR_187c	 := VLV_init(	SEN_KC1_STU3_KR_187c,	 LREAL#20, LREAL#1, BYTE#1, BYTE#1, BOOL#1);
 
 SEN_KC1_STU3_IM_V_TO	 := VLV_init(	SEN_KC1_STU3_IM_V_TO,    LREAL#5, LREAL#1, BYTE#0, BYTE#1, BOOL#1);
 //SEN_KC1_STU3_IM_N_P1_1	 := VLV_init(	SEN_KC1_STU3_IM_N_P1_1,  LREAL#5, LREAL#1, BYTE#0, BYTE#1, BOOL#1);
