@@ -62,15 +62,19 @@ proc_AO();
 proc_APS();
 
 if DO_sound_PS then
-	KC1_STU3_DO_HMI.A3_7_11_SOUND_ALARM1_ON.PV := true; //Включить предупредительную сигнализацию на щите САУ УПГСН
+	KC1_STU3_DO_HMI.A3_7_11_SOUND_ALARM1_ON.PV	:= true; //Включить предупредительную сигнализацию на щите САУ УПГСН
+	KC1_STU3_DO_HMI.A3_7_9_BULB_FAULT_ON.PV		:= true; //Лампа "Неисправность" желтая
 else
-	KC1_STU3_DO_HMI.A3_7_11_SOUND_ALARM1_ON.PV := false;
+	KC1_STU3_DO_HMI.A3_7_11_SOUND_ALARM1_ON.PV	:= false;
+	KC1_STU3_DO_HMI.A3_7_9_BULB_FAULT_ON.PV		:= false;
 end_if;
 
 if DO_sound_AS then
-	KC1_STU3_DO_HMI.A3_7_12_SOUND_ALARM2_ON.PV := true; //Включить аварийную сигнализацию на щите САУ УПГСН
+	KC1_STU3_DO_HMI.A3_7_12_SOUND_ALARM2_ON.PV	:= true; //Включить аварийную сигнализацию на щите САУ УПГСН
+	KC1_STU3_DO_HMI.A3_7_10_BULB_PS_AS_ON.PV	:= true; //Лампа "Авария" красная
 else
-	KC1_STU3_DO_HMI.A3_7_12_SOUND_ALARM2_ON.PV := false;
+	KC1_STU3_DO_HMI.A3_7_12_SOUND_ALARM2_ON.PV	:= false;
+	KC1_STU3_DO_HMI.A3_7_10_BULB_PS_AS_ON.PV	:= false;
 end_if;
 
 //Сброс кнопок Деблокировка и Квитирование
@@ -1315,7 +1319,7 @@ DO_raw := DO_in.PV;]]></ST>
                 <Variable UUID="F16DA3264A59DEC4935DC982FEE926DC" Name="APS_615" Type="AE_Proc" TypeUUID="6A4FEBAC4B635BACDB1140A38C63D50E" Usage="internal" />
                 <Variable UUID="D01835E84374CF0FAD15D3847B50B21B" Name="APS_616" Type="AE_Proc" TypeUUID="6A4FEBAC4B635BACDB1140A38C63D50E" Usage="internal" />
             </Variables>
-            <ST><![CDATA[if not IMIT then
+            <ST><![CDATA[//if not IMIT then
 //КЗ аналоговых каналов
 APS_001(KC1_STU3_AI_HMI.A1_3_1_Pg1.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_1_Pg1_kz); //КЗ канал - Давление газа на входе
 APS_002(KC1_STU3_AI_HMI.A1_3_2_Tg1.KZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.A1_3_2_Tg1_kz); //КЗ канал - Температура газа на входе
@@ -1759,7 +1763,7 @@ APS_408(AOS_UPGSN, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.msg_AOS_U
 APS_409(AOS_UPGSN_DONE, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.msg_AOS_UPGSN_DONE); //АО со стравливанием завершен
 APS_410(AOS_UPGSN_DONE_INCORRECT, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.msg_AOS_UPGSN_DONE_INCORRECT); //АО со стравливанием завершен некорректно
 APS_411(MD_PZ, T#100ms, Deblock, Kvitir, DO_sound_PS, APS_KC1_STU3.msg_MD_PZ); //Включен режим проверки защит
-end_if;]]></ST>
+//end_if;]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="8E13A588443D3D3C4FFE289D06A77D54" Name="FB_AI">
             <Variables>
@@ -2099,8 +2103,15 @@ AI_044(SEN_A3_9_4_HMI,	KC1_STU3_AI_DRV.A3_9_4,		cycleTime,		KC1_STU3_AI_HMI.A3_9
                 <Variable UUID="9773124F4B1C5ECE19A6C08B2CBA9037" Name="V_TO_ON_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
                 <Variable UUID="20363EBD4FED3176651B629A94B678D6" Name="APS_AOB_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
                 <Variable UUID="9839F8514081A43CDF4462B44D25EC2A" Name="APS_AOS_prev" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
+                <Variable UUID="F997E5E24B6293F83E2B6EA2CC9F6647" Name="Zagaz_CH4_10p_optn_prev_on" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
+                <Variable UUID="31B92FA14712D9D03E901DAD253F924E" Name="Zagaz_CH4_10p_optn_prev_off" Type="BOOL" TypeUUID="EC797BDD4541F500AD80A78F1F991834" Usage="internal" />
             </Variables>
-            <ST><![CDATA[//В.2.3 Включение/отключение наружного освещения
+            <ST><![CDATA[//Взвод и снятие флага Проверка защит
+if MD_PZ_PRU_on or MD_PZ_HMI_on then MD_PZ := BOOL#1; end_if;
+if MD_PZ_PRU_off or MD_PZ_HMI_off then MD_PZ := BOOL#0; end_if;
+
+
+//В.2.3 Включение/отключение наружного освещения
 time_now	:= CURRENT_DATE_TIME();
 hour		:= GET_HOURS(time_now);
 min			:= GET_MINUTES(time_now);
@@ -2126,7 +2137,7 @@ rstrigLamp(S:= Lamp.rOn and Lamp.RA, R1:= Lamp.rOff and Lamp.RA, Q1=> KC1_STU3_D
 
 
 //В.6 Управление работой котлов
-if not KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV then
+if  KC1_STU3_DI_HMI.A2_6_9_Zagaz_CH4_10p_optn.PV = false and not Zagaz_CH4_10p_optn_prev_on then
 	KC1_STU3_VLV_LG.KR_SV1_1.RA			:= false;
 	KC1_STU3_VLV_LG.KR_SV1_1.aOnOff		:= true; // Открываем клапан SV1.1
 
@@ -2135,8 +2146,10 @@ if not KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV then
 
 	KC1_STU3_VLV_LG.IM_H_GB1_2.RA		:= false;	
 	KC1_STU3_VLV_LG.IM_H_GB1_2.aOnOff	:= true; // Разрешаем работу GB1.2
+end_if;
+Zagaz_CH4_10p_optn_prev_on := not KC1_STU3_DI_HMI.A2_6_9_Zagaz_CH4_10p_optn.PV;
 
-elsif KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV then
+if  KC1_STU3_DI_HMI.A2_6_9_Zagaz_CH4_10p_optn.PV = true and not Zagaz_CH4_10p_optn_prev_off  then
 	KC1_STU3_VLV_LG.KR_SV1_1.RA			:= false;
 	KC1_STU3_VLV_LG.KR_SV1_1.aOnOff		:= false; // Закрываем клапан SV1.1
 
@@ -2146,6 +2159,7 @@ elsif KC1_STU3_DI_HMI.A2_6_7_Zagaz_CH4_10p_ot.PV then
 	KC1_STU3_VLV_LG.IM_H_GB1_2.RA		:= false;	
 	KC1_STU3_VLV_LG.IM_H_GB1_2.aOnOff	:= false; // Запрещаем работу GB1.2
 end_if;
+Zagaz_CH4_10p_optn_prev_off := not KC1_STU3_DI_HMI.A2_6_9_Zagaz_CH4_10p_optn.PV;
 
 //В.7 Управление вентилятором ТО
 //Фиксируем нажатие кнопки включения вентилятора ТО
@@ -2169,20 +2183,16 @@ if (TMR[2] >= lreal#300.0) or KC1_STU3_DI_HMI.A2_6_4_Fire1ot.PV then
 end_if; 
   
 
-//Взвод и снятие флага Проверка защит
-if MD_PZ_PRU_on or MD_PZ_HMI_on then MD_PZ := BOOL#1; end_if;
-if MD_PZ_PRU_off or MD_PZ_HMI_off then MD_PZ := BOOL#0; end_if;
-
 //В.8 Аварийный останов системы
 //Формирование флага АОб
-if (Global_PRU.Btn_AOB						or						//Нажатие АОБ на ПРУ
-	APS_KC1_STU3.A1_6_3_Pg2_out1_hi			or						//Давление газа на выходе 1 - высокое
-	APS_KC1_STU3.A2_7_1_Pig_hi				or						//Давление испульсного газа высокое
-	APS_KC1_STU3.A2_6_8_Zagaz_CH4_20p_ot	or						//Загазованность по метану 20% НКПР (технологический отсек)
-	APS_KC1_STU3.A2_6_10_Zagaz_CH4_20p_optn or						//Загазованность по метану 20% НКПР (отсек подготовки теплоносителя)
-	APS_KC1_STU3.A2_6_12_Zagaz_CO_100mgm3	or						//Загазованность по CO 100 мг/м³
-	APS_KC1_STU3.A2_6_13_Fail_PK			or						//Неисправность ПК
-	APS_KC1_STU3.A2_6_14_Fail_ASPS_SKZ_SOUE) and not APS_AOB_prev	//Неисправность АСПС, СКЗ и СОУЭ
+if (Global_PRU.Btn_AOB						or									//Нажатие АОБ на ПРУ
+	APS_KC1_STU3.A1_6_3_Pg2_out1_hi			or									//Давление газа на выходе 1 - высокое
+	APS_KC1_STU3.A2_7_1_Pig_hi				or									//Давление испульсного газа высокое
+	APS_KC1_STU3.A2_6_8_Zagaz_CH4_20p_ot	or									//Загазованность по метану 20% НКПР (технологический отсек)
+	APS_KC1_STU3.A2_6_10_Zagaz_CH4_20p_optn or									//Загазованность по метану 20% НКПР (отсек подготовки теплоносителя)
+	APS_KC1_STU3.A2_6_12_Zagaz_CO_100mgm3	or									//Загазованность по CO 100 мг/м³
+	APS_KC1_STU3.A2_6_13_Fail_PK			or									//Неисправность ПК
+	APS_KC1_STU3.A2_6_14_Fail_ASPS_SKZ_SOUE) and not MD_PZ and not APS_AOB_prev	//Неисправность АСПС, СКЗ и СОУЭ
 	then 
 		UnitState.State := 1;
 		allow_bit_stop_AOB := false;
@@ -2201,12 +2211,12 @@ APS_AOB_prev :=
 
 
 //Формирование флага АОс
-if (Global_PRU.Btn_AOS				or				//Нажатие АОБ на ПРУ
-	APS_KC1_STU3.A2_6_4_Fire1ot 	or 				//Пожар в технологическом отсеке
-	APS_KC1_STU3.A2_6_5_Fire1otn	or 				//Пожар в отсеке подготовки теплоносителя
-	APS_KC1_STU3.A2_6_6_Fire1ou		or 				//Пожар в отсеке управления
-	APS_KC1_STU3.A2_7_8_ESD			or 				//Аварийный останов
-	APS_KC1_STU3.A2_7_13_EAO) and not APS_AOS_prev	//Экстренный останов
+if (Global_PRU.Btn_AOS				or							//Нажатие АОБ на ПРУ
+	APS_KC1_STU3.A2_6_4_Fire1ot 	or 							//Пожар в технологическом отсеке
+	APS_KC1_STU3.A2_6_5_Fire1otn	or 							//Пожар в отсеке подготовки теплоносителя
+	APS_KC1_STU3.A2_6_6_Fire1ou		or 							//Пожар в отсеке управления
+	APS_KC1_STU3.A2_7_8_ESD			or 							//Аварийный останов
+	APS_KC1_STU3.A2_7_13_EAO) and not MD_PZ and not APS_AOS_prev//Экстренный останов
 	then  
 		UnitState.State := 2;
 		allow_bit_stop_AOS := false;
@@ -2257,7 +2267,18 @@ if ((UnitState.State = 2 and (Step.AOs = 3 or Step.AOs = 4)) and Reset_AO) or (a
 	UnitState.State := 0;
 	AOS_UPGSN_DONE := false;
 	AOS_UPGSN_DONE_INCORRECT := false;
-end_if;]]></ST>
+end_if;
+
+
+//Промежуточные вычисления
+UPIG1.mes.Pimp_gaza_calc := int_to_real(UPIG1.mes.Pimp_gaza)/real#1000.0;
+UPIG1.mes.Pproduvki_calc := int_to_real(UPIG1.mes.Pproduvki)/real#1000.0;
+UPIG1.mes.dP_UPIG_calc := int_to_real(UPIG1.mes.dP_UPIG)/real#1000.0;
+UPIG1.mes.Tads_1_calc := int_to_real(UPIG1.mes.Tads_1)/real#10.0;
+UPIG1.mes.Tads_2_calc := int_to_real(UPIG1.mes.Tads_2)/real#10.0;
+UPIG1.mes.Tros_calc := int_to_real(UPIG1.mes.Tros)/real#10.0;
+
+]]></ST>
         </FunctionBlock>
         <FunctionBlock UUID="C00E829141671F64BF18EEBD96433F95" Name="FB_AO">
             <Variables>

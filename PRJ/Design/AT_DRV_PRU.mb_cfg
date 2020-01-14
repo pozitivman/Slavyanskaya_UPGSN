@@ -8,6 +8,7 @@
             <Group Name="Rd_APS_SP_aps" Function="READ_HOLDING_REGISTERS" UpdatePeriod="0" />
             <Group Name="Wr_SP_aps__SP_reg" Function="PRESET_MULTIPLY_REGISTERS" UpdatePeriod="0" />
             <Group Name="Rd_UPIG_params__Rd_DM1_params__Rd_MM1_params" Function="READ_HOLDING_REGISTERS" UpdatePeriod="0" />
+            <Group Name="Rd_UPIG_params_float" Function="READ_HOLDING_REGISTERS" UpdatePeriod="0" />
         </Device>
         <Device Address="2" RetryCount="3" RetryDelay="5000" SymbolTimeout="10000" ResponseTimeout="0" InterpacketDelay="5000" MaxStatus="32" MaxRegs="32" DisconnectInReserve="FALSE">
             <Group Name="Rd_AI__Rd_AO__Rd_AI_flt__Rd_DI__Rd_DO__Rd_VLV_state__Rd_VLV_RA_RAon_RAoff_Allow_bits_Flt__Rd_VLV_Setpoint_SPmin_SP_max__Rd_VLV_Pos__Rd_Sys_tags" Function="READ_HOLDING_REGISTERS" UpdatePeriod="0" />
@@ -1212,6 +1213,12 @@
         <Connection ItemName="UPIG1.mes.Rezerv_16" Device="1" Channel="3126:SHORT_BA" Group="Rd_UPIG_params__Rd_DM1_params__Rd_MM1_params" UUID="C7F11F1F425A753572ED00A282273480.88B86E98408A7B91DC9F7E8BDE179491.C59B967349DD5053BC27DEA2772C0716" />
         <Connection ItemName="DM1.Q" Device="1" Channel="3150:FLOAT_BADC" Group="Rd_UPIG_params__Rd_DM1_params__Rd_MM1_params" UUID="DD9953E54D4856430FD84694B5EF17ED.0DBEE0004A76828AFF12D887AB0D81FD" />
         <Connection ItemName="MM1.Qv" Device="1" Channel="3152:FLOAT_BADC" Group="Rd_UPIG_params__Rd_DM1_params__Rd_MM1_params" UUID="EB23ED2649F304F3720685973EF2EC25.CA194B3744149279B32E76B7465C7BD7" />
+        <Connection ItemName="UPIG1.mes.Pimp_gaza_calc" Device="1" Channel="3160:FLOAT_BADC" Group="Rd_UPIG_params_float" UUID="C7F11F1F425A753572ED00A282273480.88B86E98408A7B91DC9F7E8BDE179491.8427A8D74A9E74296BE1CEB965764ED7" />
+        <Connection ItemName="UPIG1.mes.Pproduvki_calc" Device="1" Channel="3162:FLOAT_BADC" Group="Rd_UPIG_params_float" UUID="C7F11F1F425A753572ED00A282273480.88B86E98408A7B91DC9F7E8BDE179491.B5113031487911604A2C769F2F17B0ED" />
+        <Connection ItemName="UPIG1.mes.dP_UPIG_calc" Device="1" Channel="3164:FLOAT_BADC" Group="Rd_UPIG_params_float" UUID="C7F11F1F425A753572ED00A282273480.88B86E98408A7B91DC9F7E8BDE179491.919EB7644C8C83C587B91487078689FB" />
+        <Connection ItemName="UPIG1.mes.Tads_1_calc" Device="1" Channel="3166:FLOAT_BADC" Group="Rd_UPIG_params_float" UUID="C7F11F1F425A753572ED00A282273480.88B86E98408A7B91DC9F7E8BDE179491.2626CB0043621C2192918EA73A6C8A94" />
+        <Connection ItemName="UPIG1.mes.Tads_2_calc" Device="1" Channel="3168:FLOAT_BADC" Group="Rd_UPIG_params_float" UUID="C7F11F1F425A753572ED00A282273480.88B86E98408A7B91DC9F7E8BDE179491.6EB4B4F24D0ACFE3C2CF3280622BF0F1" />
+        <Connection ItemName="UPIG1.mes.Tros_calc" Device="1" Channel="3170:FLOAT_BADC" Group="Rd_UPIG_params_float" UUID="C7F11F1F425A753572ED00A282273480.88B86E98408A7B91DC9F7E8BDE179491.0D4C7D614AD9CD51D6EB60B35ECD6CAB" />
         <Connection ItemName="KC1_STU3_AI_HMI.A1_3_1_Pg1.AS" Device="2" Channel="200:BIT" Group="Rd_AI__Rd_AO__Rd_AI_flt__Rd_DI__Rd_DO__Rd_VLV_state__Rd_VLV_RA_RAon_RAoff_Allow_bits_Flt__Rd_VLV_Setpoint_SPmin_SP_max__Rd_VLV_Pos__Rd_Sys_tags" UUID="787CB2E34FB3C89C7940D4BD2A5FD4AB.871CD8514C04333018FA2993E0280A56.00EC37E34138F5D059BB8593AEA8FF01" />
         <Connection ItemName="KC1_STU3_AI_HMI.A1_3_2_Tg1.AS" Device="2" Channel="200.1:BIT" Group="Rd_AI__Rd_AO__Rd_AI_flt__Rd_DI__Rd_DO__Rd_VLV_state__Rd_VLV_RA_RAon_RAoff_Allow_bits_Flt__Rd_VLV_Setpoint_SPmin_SP_max__Rd_VLV_Pos__Rd_Sys_tags" UUID="787CB2E34FB3C89C7940D4BD2A5FD4AB.3EF2B0CA4A558958B70CBA8B16F8CED2.00EC37E34138F5D059BB8593AEA8FF01" />
         <Connection ItemName="KC1_STU3_AI_HMI.A1_3_3_Lk1_E4.AS" Device="2" Channel="200.2:BIT" Group="Rd_AI__Rd_AO__Rd_AI_flt__Rd_DI__Rd_DO__Rd_VLV_state__Rd_VLV_RA_RAon_RAoff_Allow_bits_Flt__Rd_VLV_Setpoint_SPmin_SP_max__Rd_VLV_Pos__Rd_Sys_tags" UUID="787CB2E34FB3C89C7940D4BD2A5FD4AB.272539F04D9BB82ADB8A6789B12DDA61.00EC37E34138F5D059BB8593AEA8FF01" />

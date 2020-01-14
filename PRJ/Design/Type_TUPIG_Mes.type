@@ -29,5 +29,11 @@
         <Field Name="Rezerv_14" Type="INT" UUID="25B71ECD4D9721FC7ACAD293034B0EC3" Comment="Резерв" />
         <Field Name="Rezerv_15" Type="INT" UUID="A287A55B414D560A9845139328A50693" Comment="Резерв" />
         <Field Name="Rezerv_16" Type="INT" UUID="C59B967349DD5053BC27DEA2772C0716" Comment="Резерв" />
+        <Field Name="Pimp_gaza_calc" Type="REAL" UUID="8427A8D74A9E74296BE1CEB965764ED7" Comment="Давление импульсного газа масштабированное, МПа" />
+        <Field Name="Pproduvki_calc" Type="REAL" UUID="B5113031487911604A2C769F2F17B0ED" Comment="Давление продувки масштабированное, МПа" />
+        <Field Name="dP_UPIG_calc" Type="REAL" UUID="919EB7644C8C83C587B91487078689FB" Comment="Перепад давления на УПИГ масштабированный, МПа" />
+        <Field Name="Tads_1_calc" Type="REAL" UUID="2626CB0043621C2192918EA73A6C8A94" Comment="Температура адсорбера 1 масштабированная, С" />
+        <Field Name="Tads_2_calc" Type="REAL" UUID="6EB4B4F24D0ACFE3C2CF3280622BF0F1" Comment="Температура адсорбера 2 масштабированная, С" />
+        <Field Name="Tros_calc" Type="REAL" UUID="0D4C7D614AD9CD51D6EB60B35ECD6CAB" Comment="Температура росы масштабированная, С" />
     </Fields>
 </Type>
