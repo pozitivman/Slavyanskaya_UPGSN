@@ -5,9 +5,7 @@
         <SubApp Name="App_Drv_A1" Type="DC867C2F47BA800F00B402B7EE8D9ABF" Disabled="TRUE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="E94418F646BD862309EC0F8E26A697E3" />
         <SubApp Name="App_Drv_A2_A3" Type="4797D68248FDADA78927B1B4F1D3EE9E" Disabled="TRUE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="0AAF9BE54E9EB7F0B26DE790169F8C5A" />
         <SubApp Name="App_Logic" Type="35B0AEED49E76C9382BAB391E2DAC40C" Disabled="FALSE" Args="" ExecTimeout="1000000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="126576E7487FCF18900E39A67884AC33" />
-        <SubApp Name="App_PRU" Type="BADDF20A404ECE6696BEED875FFA830D" Disabled="FALSE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="5CB385EF44A29C91C42280BDB4B4CAD9" />
-        <SubApp Name="App_MB_MGATE_AU01" Type="578DD797458D96D0BA37F08F6796FA0A" Disabled="TRUE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="06E4270C49784A7251FFDC84F01FCE58" />
-        <SubApp Name="App_MB_MGATE_AU02" Type="A7A51A654125FA589BBA20AC66585F1F" Disabled="TRUE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="C8885D5E4AB7DCE2EAB899B015CDB6FB" />
-        <SubApp Name="App_MB_NKU" Type="97795FB14A088CA02FA09AA91890513D" Disabled="TRUE" Args="" ExecTimeout="10000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="616557F1454DD259A53E82A6E8FB920F" />
+        <SubApp Name="App_PRU" Type="BADDF20A404ECE6696BEED875FFA830D" Disabled="FALSE" Args="" ExecTimeout="1000000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="5CB385EF44A29C91C42280BDB4B4CAD9" />
+        <SubApp Name="App_MB_MGATE" Type="0D671419481E5C5DFC57608686869B24" Disabled="FALSE" Args="" ExecTimeout="1000000" ShutdownTimeout="1000" GoodResult="0" Comment="" UUID="06E4270C49784A7251FFDC84F01FCE58" />
     </InterfaceList>
 </Node>

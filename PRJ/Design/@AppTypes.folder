@@ -2,7 +2,8 @@
 <!DOCTYPE Folder config v. 1.0 >
 <Folder Name="Типы приложений">
     <Items>
-        <Item Name="FLDR_PROTOCOL.folder" />
         <Item Name="FLDR_KC1.folder" />
+        <Item Name="FLDR_PROTOCOL.folder" />
+        <Item Name="FLDR_SPZTODVHDO3ELBJZO6XVJIGY7Q.folder" />
     </Items>
 </Folder>
