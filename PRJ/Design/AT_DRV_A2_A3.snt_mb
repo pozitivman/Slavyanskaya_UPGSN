@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE Driver.Sonet.MODBUS v. 1.0 >
 <Configuration>
-    <Wire Port="/dev/ser2" ReservePort="" InverseRTS="TRUE" HardwareRTS="TRUE" RTSReleaseOffset="0" BaudRate="115200" CyclePeriod="100000" ConfigUpdatePeriod="3000000" FailoverTimeout="1000000" ResponseTimeout="20000" SymbolTimeout="5000" MinResponseTimeout="700" RetryDelay="2000" RetryCount="5">
-        <Device Address="1" HasReserve="FALSE" ConnectedToReservePort="FALSE">
+    <Wire Port="/dev/ser2" ReservePort="" InverseRTS="TRUE" HardwareRTS="TRUE" RTSReleaseOffset="0" BaudRate="57600" CyclePeriod="100000" ConfigUpdatePeriod="3000000" FailoverTimeout="1000000" ResponseTimeout="20000" SymbolTimeout="5000" MinResponseTimeout="700" RetryDelay="2000" RetryCount="5">
+        <Device Address="1">
             <Slot Address="1" ModuleType="68" ChannelCount="4" Min="4" Max="20" Units="mA" IsAnalog="TRUE" IsInput="TRUE" />
             <Slot Address="2" ModuleType="40" ChannelCount="4" Min="4" Max="20" Units="mA" IsAnalog="TRUE" IsInput="FALSE" />
             <Slot Address="3" ModuleType="40" ChannelCount="4" Min="4" Max="20" Units="mA" IsAnalog="TRUE" IsInput="FALSE" />
@@ -12,7 +12,7 @@
             <Slot Address="7" ModuleType="33" ChannelCount="16" Min="0" Max="1" Units="" IsAnalog="FALSE" IsInput="TRUE" />
             <Slot Address="8" ModuleType="33" ChannelCount="16" Min="0" Max="1" Units="" IsAnalog="FALSE" IsInput="TRUE" />
         </Device>
-        <Device Address="2" HasReserve="FALSE" ConnectedToReservePort="FALSE">
+        <Device Address="2">
             <Slot Address="1" ModuleType="33" ChannelCount="16" Min="0" Max="1" Units="" IsAnalog="FALSE" IsInput="TRUE" />
             <Slot Address="2" ModuleType="33" ChannelCount="16" Min="0" Max="1" Units="" IsAnalog="FALSE" IsInput="TRUE" />
             <Slot Address="3" ModuleType="33" ChannelCount="16" Min="0" Max="1" Units="" IsAnalog="FALSE" IsInput="TRUE" />

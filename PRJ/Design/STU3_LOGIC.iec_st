@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE Program >
-<Program UUID="35B0AEED49E76C9382BAB391E2DAC40C" Name="STU3_LOGIC" Period="150" PutDataAtEndOfCycle="false">
+<Program UUID="35B0AEED49E76C9382BAB391E2DAC40C" Name="STU3_LOGIC" Period="200" PutDataAtEndOfCycle="false">
     <Variables>
         <Variable UUID="5DE8CF4A44A4F827EF4AF2BB8A2B67F2" Name="proc_AI" Type="FB_AI" TypeUUID="8E13A588443D3D3C4FFE289D06A77D54" Usage="internal" />
         <Variable UUID="B85FD50D470D9C25332A6FB1F9E3E3B0" Name="proc_DI" Type="FB_DI" TypeUUID="9018116F43FC2E443834D486159520D8" Usage="internal" />
