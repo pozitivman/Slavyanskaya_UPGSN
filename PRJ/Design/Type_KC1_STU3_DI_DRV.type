@@ -52,8 +52,8 @@
         <Field Name="A2_8_16" Type="BOOL" UUID="817FC89C494743E074CB9E8DF6D46B86" Comment="Насос P1.6. В работе" />
         <Field Name="A2_9_1" Type="BOOL" UUID="3FBF2D864D357F975DC841958CCD802A" Comment="Открыть кран XV3.2. КЦУ" />
         <Field Name="A2_9_2" Type="BOOL" UUID="DE53CA384BC4BC95BCD8E4AB3702724F" Comment="Закрыть кран XV3.2. КЦУ" />
-        <Field Name="A2_9_3" Type="BOOL" UUID="E377838141DFADF009FC7F89557FB9CB" Comment="Резерв. КЦУ" />
-        <Field Name="A2_9_4" Type="BOOL" UUID="909A77F140E46328DC14FBA4B40748E3" Comment="Резерв. КЦУ" />
+        <Field Name="A2_9_3" Type="BOOL" UUID="E377838141DFADF009FC7F89557FB9CB" Comment="Кран свечной 187с открыть. КЦУ" />
+        <Field Name="A2_9_4" Type="BOOL" UUID="909A77F140E46328DC14FBA4B40748E3" Comment="Кран свечной 187с закрыть. КЦУ" />
         <Field Name="A2_9_5" Type="BOOL" UUID="4EFD73DD417F92B630FED992917CB363" Comment="Съем звука (кнопка)" />
         <Field Name="A2_9_6" Type="BOOL" UUID="47090A5E4232B1C4334BFEA94ACFAC6E" Comment="Сброс АО (кнопка)" />
         <Field Name="A2_9_7" Type="BOOL" UUID="C22D3E18457F9F8F1D3CFFB04C6738E1" Comment="Двери закрыты" />

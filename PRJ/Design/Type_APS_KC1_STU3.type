@@ -165,8 +165,8 @@
         <Field Name="A2_8_16_N_P1_6_WORK" Type="BOOL" UUID="423D457448677A3282CA698DB7C6AC50" Comment="Насос P1.6. В работе" />
         <Field Name="A2_9_1_V_XV3_2_ON_KCU" Type="BOOL" UUID="140310B44FFCB9B7AA516489FC59AE3F" Comment="Неисправность канала КЦУ - Открыть кран XV3.2. КЦУ" />
         <Field Name="A2_9_2_V_XV3_2_OFF_KCU" Type="BOOL" UUID="A997097642015791B19917901CE4A4A6" Comment="Неисправность канала КЦУ - Закрыть кран XV3.2. КЦУ" />
-        <Field Name="A2_9_3_Rez_KCU" Type="BOOL" UUID="D9BFCFED40ED648FAFEB83B1F9E63360" Comment="Неисправность канала КЦУ - Резерв. КЦУ" />
-        <Field Name="A2_9_4_Rez_KCU" Type="BOOL" UUID="424E4CDF41E753DB870199A7D780DA12" Comment="Неисправность канала КЦУ - Резерв. КЦУ" />
+        <Field Name="A2_9_3_V_187c_ON_KCU" Type="BOOL" UUID="D9BFCFED40ED648FAFEB83B1F9E63360" Comment="Неисправность канала КЦУ - Кран свечной 187с открыть. КЦУ" />
+        <Field Name="A2_9_4_V_187c_OFF_KCU" Type="BOOL" UUID="424E4CDF41E753DB870199A7D780DA12" Comment="Неисправность канала КЦУ - Кран свечной 187с открыть. КЦУ" />
         <Field Name="A2_9_5_ACK_SOUND" Type="BOOL" UUID="8195DC3B42B91012CE74408CB4ECFF5A" Comment="Съем звука (кнопка)" />
         <Field Name="A2_9_6_RST_AO" Type="BOOL" UUID="357D51E845BF4E770D95B5A304480A89" Comment="Сброс АО (кнопка)" />
         <Field Name="A2_9_7_DOORS_CL" Type="BOOL" UUID="CFE8C48348F84BBC739DF68266AC9120" Comment="Двери закрыты" />

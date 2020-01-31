@@ -24,6 +24,7 @@
         <Signal Name="TEST_REAL" UUID="94E9B79F48AC3EB2B103E9A666E0A459" Type="UINT" Usage="" Global="TRUE" />
         <Signal Name="APS_KC1_STU3" UUID="7C80A6DE46E7366CD29CCB958060E276" Type="DE51DA9C4A2BA83B04F40A81D9A2D3EC" Usage="" Global="TRUE" />
         <Signal Name="Deblock_PRU" UUID="F2F84E504F643C72489365BDED794987" Type="BOOL" Usage="" Global="TRUE" Comment="Кнопка &quot;Деблокировка&quot; с панели ПРУ" />
+        <Signal Name="Deblock_HMI" UUID="721D1E2B47816844F4C2EA81FB2B11E9" Type="BOOL" Usage="" Global="TRUE" Comment="Кнопка &quot;Деблокировка&quot; из скады" />
         <Signal Name="MD_PZ" UUID="A4360D23482C13BEC157A9974C6FEADE" Type="BOOL" Usage="" Global="TRUE" Comment="Режим проверки защит" />
         <Signal Name="MD_PZ_PRU_on" UUID="C7E072CB481F2547C8BD359BA4DF91E6" Type="BOOL" Usage="" Global="TRUE" Comment="Режим проверки защит c ПРУ включить" />
         <Signal Name="MD_PZ_PRU_off" UUID="AB9932EE4BB2AF6846BAF6ADEE5A02E0" Type="BOOL" Usage="" Global="TRUE" Comment="Режим проверки защит c ПРУ отключить" />
