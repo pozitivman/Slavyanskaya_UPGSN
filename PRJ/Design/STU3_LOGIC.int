@@ -84,5 +84,6 @@
         <Signal Name="regTwV1_2" UUID="6B4BCA064BB2DE34D0048FA30A487598" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора TwV1.2" />
         <Signal Name="regXV3_1" UUID="F2399CE148C7DA84CB6D0EAC95397BA0" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора XV3_1" />
         <Signal Name="regXV3_2" UUID="4F5117B74F2827245B19108DCB5CC9E3" Type="8FEB7CB64160CD86F39E399B10F88ABF" Usage="" Global="TRUE" Comment="Настройки регулятора XV3_1" />
+        <Signal Name="reg_test" UUID="D3890B20411D87C02AF2A18979BE364C" Type="BOOL" Usage="" />
     </InterfaceList>
 </SubAppType>
