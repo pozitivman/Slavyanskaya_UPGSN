@@ -215,7 +215,7 @@
         <Field Name="A3_4_2_GC_REZ_IP_BEAO_DC_24" Type="BOOL" UUID="CC76001442C665969B10399CEEEFFFD6" Comment="Неисправность рез. ИП =24В БЭАО" />
         <Field Name="A3_4_3_Door_PK_open" Type="BOOL" UUID="AB602A744F1E062CE684578B7E311BAD" Comment="Дверь ПК открыта" />
         <Field Name="A3_4_4_V_IN_DU_ON" Type="BOOL" UUID="A0DDB4EA4CA1B0330CAA48BFAAB90295" Comment="Входной кран дист. управление Включено" />
-        <Field Name="A3_4_5_V_IN_ALL_FTL" Type="BOOL" UUID="764748CF43ED6C0D2B1EC1A1131C0657" Comment="Входной кран. Общая неисправность привода" />
+        <Field Name="A3_4_5_V_IN_ALL_FLT" Type="BOOL" UUID="764748CF43ED6C0D2B1EC1A1131C0657" Comment="Входной кран. Общая неисправность привода" />
         <Field Name="A3_4_6_V_CDL_DU_ON" Type="BOOL" UUID="E7AA61074224A662C2710A8A9B41C558" Comment="Свечной кран дист. управление Включено" />
         <Field Name="A3_4_7_V_CDL_ALL_FLT" Type="BOOL" UUID="15498D0F49A57D31F7EDA29F8A8218D3" Comment="Свечной кран. Общая неисправность привода" />
         <Field Name="A3_4_8_V_187c_DU_ON" Type="BOOL" UUID="5DAAA2254CBB03BCB53AA683DADEA449" Comment="Кран свечной подводящего трубопровода дист. управление Включено" />

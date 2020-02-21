@@ -102,7 +102,7 @@
         <Field Name="A3_4_2_GC_REZ_IP_BEAO_DC_24" Type="24096E3F4C0C396B81199DA606D417FF" UUID="C86EEA704251CB4B51684EAEA019DE7A" Comment="Исправность рез. ИП =24В БЭАО" />
         <Field Name="A3_4_3_Door_PK_open" Type="24096E3F4C0C396B81199DA606D417FF" UUID="2C2A6103441AFD8D92E947AD6F12C35B" Comment="Дверь ПК открыта" />
         <Field Name="A3_4_4_V_IN_DU_ON" Type="24096E3F4C0C396B81199DA606D417FF" UUID="64C4F9CB4614470B7D6C7B9A80A58691" Comment="Входной кран дист. управление Включено" />
-        <Field Name="A3_4_5_V_IN_ALL_FTL" Type="24096E3F4C0C396B81199DA606D417FF" UUID="C52D506A4E5EC764ECFC47BADD6737FC" Comment="Входной кран. Общая неисправность привода" />
+        <Field Name="A3_4_5_V_IN_ALL_FLT" Type="24096E3F4C0C396B81199DA606D417FF" UUID="C52D506A4E5EC764ECFC47BADD6737FC" Comment="Входной кран. Общая неисправность привода" />
         <Field Name="A3_4_6_V_CDL_DU_ON" Type="24096E3F4C0C396B81199DA606D417FF" UUID="588344214D68EB0B2DE09982458A7E73" Comment="Свечной кран дист. управление Включено" />
         <Field Name="A3_4_7_V_CDL_ALL_FLT" Type="24096E3F4C0C396B81199DA606D417FF" UUID="7BB1F4074152A3FF0C542F985976EFC3" Comment="Свечной кран. Общая неисправность привода" />
         <Field Name="A3_4_8_V_187c_DU_ON" Type="24096E3F4C0C396B81199DA606D417FF" UUID="6B69830449CB191AAEFD5EBBC810EFA4" Comment="Кран свечной подводящего трубопровода дист. управление Включено" />
