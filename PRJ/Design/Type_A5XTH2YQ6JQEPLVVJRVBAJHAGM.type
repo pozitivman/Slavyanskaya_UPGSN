@@ -10,7 +10,7 @@
         <Field Name="Vn" Type="REAL" UUID="766CDCC14A515DC526DBEB9D9A727CCB" Comment="Объём газа в СУ, m3" />
         <Field Name="Qn" Type="REAL" UUID="5BF409244DC40BC376ECC4AC5ABE6AD1" Comment="Расход газа в СУ, m3/h" />
         <Field Name="P" Type="REAL" UUID="AA51FDFC43F04457739251AD8B78DF4E" Comment="Давление газа, kPa" />
-        <Field Name="T" Type="BOOL" UUID="67929496402427DA92BB8B9303597995" Comment="Температура газа, °C" />
+        <Field Name="T" Type="REAL" UUID="67929496402427DA92BB8B9303597995" Comment="Температура газа, °C" />
         <Field Name="qc" Type="REAL" UUID="979CA2944CEFB4AB887749B542406D0A" Comment="Плотность газа в СУ, кг/м3" />
         <Field Name="MN2" Type="REAL" UUID="C77C4367492C9FAA5FDA078CDED2182A" Comment="Содержание азота N2, моль" />
         <Field Name="MCO2" Type="REAL" UUID="6AC3550F499793004E3308B7CD7CC9AE" Comment="Содержание углекислого газа CO2, моль" />
@@ -19,6 +19,6 @@
         <Field Name="tmode" Type="REAL" UUID="8840916F4F7F7CBE06A33B8B725E5373" Comment="Время работы счётчика в режиме, 10xсек" />
         <Field Name="tdeal" Type="REAL" UUID="C7A3A330457F49578DFB6BA2A78C7C9A" Comment="Время работы счётчика в договорном режиме, 10xсек" />
         <Field Name="D_st" Type="REAL" UUID="A64DF73D400605F3A52E3DB1C58D6C44" Comment="Признаки аварийного состояния и вмешательства" />
-        <Field Name="D_hour" Type="BOOL" UUID="3F284FCC4066A8DDE531279E8792E7AD" Comment="Час запроса" />
+        <Field Name="D_hour" Type="REAL" UUID="3F284FCC4066A8DDE531279E8792E7AD" Comment="Час запроса" />
     </Fields>
 </Type>
